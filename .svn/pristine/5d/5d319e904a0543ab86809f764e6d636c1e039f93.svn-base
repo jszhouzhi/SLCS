@@ -1,0 +1,20 @@
+package com.slzr.system.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.slzr.system.domain.StatisticsDO;
+import com.slzr.system.vo.DayDebitVO;
+import com.slzr.system.vo.DayRegisterVO;
+import com.slzr.system.vo.TopupDayVO;
+
+@Mapper
+public interface StatisticsDao {
+	List<StatisticsDO> GetTotalStatistics();
+	List<StatisticsDO> GetTodayStatistics();
+
+	List<DayDebitVO> GetWeekDebit();
+	List<DayRegisterVO> GetWeekRegister();
+	List<TopupDayVO> GetWeekTopup();
+}

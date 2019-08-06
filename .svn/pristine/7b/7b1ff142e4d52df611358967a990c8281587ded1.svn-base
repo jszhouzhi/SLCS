@@ -1,0 +1,77 @@
+package com.slzr.ureport.domain;
+
+import java.math.BigDecimal;
+import java.util.Date;
+/**
+ * 一级统计  部门消费统计
+ * @author Administrator
+ *
+ */
+public class ACountDeptDo {
+	private static final long serialVersionUID = 1L;
+	
+	private Long id;
+	
+	private Date dateTime;  //日期
+	
+	private String dept;		//部门
+	
+	private int consumptionPerson; //消费人次
+	
+	private BigDecimal consumptionAmount; //消费金额
+
+	public ACountDeptDo() {
+		super();
+	}
+
+	public ACountDeptDo(Long id, Date dateTime, String dept, int consumptionPerson, BigDecimal consumptionAmount) {
+		super();
+		this.id = id;
+		this.dateTime = dateTime;
+		this.dept = dept;
+		this.consumptionPerson = consumptionPerson;
+		this.consumptionAmount = consumptionAmount;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Date getDateTime() {
+		return dateTime;
+	}
+
+	public void setDateTime(Date dateTime) {
+		this.dateTime = dateTime;
+	}
+
+	public String getDept() {
+		return dept;
+	}
+
+	public void setDept(String dept) {
+		this.dept = dept;
+	}
+
+	public int getConsumptionPerson() {
+		return consumptionPerson;
+	}
+
+	public void setConsumptionPerson(int consumptionPerson) {
+		this.consumptionPerson = consumptionPerson;
+	}
+
+	public BigDecimal getConsumptionAmount() {
+		return consumptionAmount;
+	}
+
+	public void setConsumptionAmount(BigDecimal consumptionAmount) {
+		this.consumptionAmount = consumptionAmount;
+	}
+
+	
+}

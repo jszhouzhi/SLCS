@@ -1,0 +1,33 @@
+package com.slzr.common.config;
+
+import com.slzr.ureport.bean.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import com.slzr.ureport.bean.IcTransferCountBean;
+
+@Configuration
+public class ReportBeanConfig {
+  
+    
+    @Bean
+    public ACountBean aCountBean(){
+        return new ACountBean();
+    }
+
+
+    @Bean
+    public IcTransferCountBean icTransferCountBean(){
+        return new IcTransferCountBean();
+    }
+
+    @Bean
+    public  BCountBean bCountBean(){
+        return  new BCountBean();
+    }
+    @Bean
+    public  AccountCountBean accountCountBean(){
+        return  new AccountCountBean();
+    }
+
+}

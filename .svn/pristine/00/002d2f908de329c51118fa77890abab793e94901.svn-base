@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.ICTopupTransactionDao">
+
+	<sql id="IC_TopupTransaction_Column">
+        IC_TopupTransaction.ID as ID
+        ,IC_TopupTransaction.OperatorNO as OperatorNO
+        ,IC_TopupTransaction.CardAppNO as CardAppNO
+        ,IC_TopupTransaction.CardTypeID as CardTypeID
+        ,IC_TopupTransaction.Balance as Balance
+        ,IC_TopupTransaction.TerminalTxnNO as TerminalTxnNO
+        ,IC_TopupTransaction.Amount as Amount
+        ,IC_TopupTransaction.TxnType as TxnType
+        ,IC_TopupTransaction.MerchNO as MerchNO
+        ,IC_TopupTransaction.TAC as TAC
+        ,IC_TopupTransaction.OrderNO as OrderNO
+        ,IC_TopupTransaction.TerminalNO as TerminalNO
+        ,IC_TopupTransaction.CardNO as CardNO
+        ,IC_TopupTransaction.CardCTC as CardCTC
+        ,IC_TopupTransaction.BeforeBalance as BeforeBalance
+        ,IC_TopupTransaction.SummaryTime as SummaryTime
+        ,IC_TopupTransaction.TxnDateTime as TxnDateTime
+
+    </sql>
+	<select id="get" resultType="com.slzr.operation.domain.ICTopupTransactionDO">
+		select 
+		<include refid="IC_TopupTransaction_Column" />
+		from IC_TopupTransaction where ID = #{id}
+	</select>
+
+
+	<select id="list" resultType="com.slzr.operation.domain.ICTopupTransactionDO">
+		select 
+		<include refid="IC_TopupTransaction_Column" />
+		from IC_TopupTransaction
+        <where>
+            <if test="auditRemark != null and  auditRemark != ''"> and IC_TopupTransaction.CardAppNO like '%${auditRemark}%'</if>
+            <if test="auditRemark != null and  auditRemark != ''"> OR IC_TopupTransaction.OrderNO like '%${auditRemark}%'</if>
+
+            <if test="sdate != null and  sdate!= ''"> and IC_TopupTransaction.TxnDateTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="edate != null and  edate!= ''"> and IC_TopupTransaction.TxnDateTime &lt;= '${edate} 23:59:59'</if>
+
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+
+            <otherwise>
+                order by ID desc
+            </otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from IC_TopupTransaction
+        <where>
+            <if test="auditRemark != null and  auditRemark != ''"> and IC_TopupTransaction.CardAppNO like '%${auditRemark}%'</if>
+            <if test="auditRemark != null and  auditRemark != ''"> OR IC_TopupTransaction.OrderNO like '%${auditRemark}%'</if>
+
+            <if test="sdate != null and  sdate!= ''"> and IC_TopupTransaction.TxnDateTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="edate != null and  edate!= ''"> and IC_TopupTransaction.TxnDateTime &lt;= '${edate} 23:59:59'</if>
+
+        </where>
+	</select>
+	
+	<select id="updateAudit">
+		update IC_TopupTransaction set IC_TopupTransaction.AuditStatus = #{auditvalue},IC_TopupTransaction.AuditUID = #{chkuserid},IC_TopupTransaction.AuditDateTime=getdate(), IC_TopupTransaction.AuditRemark=#{remark} where IC_TopupTransaction.ID=#{id}
+	</select>
+
+</mapper>

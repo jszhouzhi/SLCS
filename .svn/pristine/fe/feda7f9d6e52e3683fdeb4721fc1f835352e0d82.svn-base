@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg commonquerypage">
+
+<style th:utext="${reportStyle}">
+
+</style>
+<div>
+	<div style="border:solid 1px #ddd;border-radius:5px;height:35px;width:100%;margin-bottom:5px;background:#f8f8f8;margin-top: 5px">
+	        <div style="text-align:left">
+					<button type="button" data="pdf/show" class="btn btn-default ureport-pdf-direct-print" style="display:inline-block;padding:0;background:#f8f8f8;border:none;margin:3px" title="PDF在线打印">
+							<img src="/ureport/res/ureport-asserts/icons/pdf-direct-print.svg" width="20px" height="20px">
+					</button>		
+	                <button type="button" data="pdf" class="btn btn-default ureport-export-pdf" style="display:inline-block;padding:0;background:#f8f8f8;border:none;margin:3px" title="导出PDF">
+	                        <img src="/ureport/res/ureport-asserts/icons/pdf.svg" height="20px" width="20px"></button>
+	                <button type="button" data="word" class="btn btn-default ureport-export-word" style="display:inline-block;padding:0;background:#f8f8f8;border:none;margin:3px" title="导出WORD">
+	                        <img src="/ureport/res/ureport-asserts/icons/word.svg" height="20px" width="20px"></button>
+	                <button type="button" data="excel" class="btn btn-default ureport-export-excel" style="display:inline-block;padding:0;background:#f8f8f8;border:none;margin:3px" title="导出EXCEL">
+	                        <img src="/ureport/res/ureport-asserts/icons/excel.svg" height="20px" width="20px"></button>
+	
+	<!--                  <div class="btn-group">
+	                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="background:#f8f8f8;border:none;color:#337ab7">预览
+	                                <span class="caret"></span></button>
+	                        <ul class="dropdown-menu" role="menu">
+	                                <li>
+	                                        <a href="/ureport/preview?_u=file:IcTransferCount.ureport.xml&amp;datetype=D&amp;startDate=2018-04-03&amp;endDate=2018-04-10" style="color:#337ab7">预览</a></li>
+	                                <li>
+	                                        <a href="/ureport/preview?_u=file:IcTransferCount.ureport.xml&amp;_i=1&amp;datetype=D&amp;startDate=2018-04-03&amp;endDate=2018-04-10" style="color:#337ab7">分页预览</a></li>
+	                        </ul>
+	                </div> -->
+	        </div>
+	</div>
+
+</div>
+<div th:utext="${reportContent}"></div>
+<div th:include="include :: footer"></div>
+
+<script th:inline="javascript">
+
+	$(function() {
+	
+
+		$(".btn-default").click(function(){
+			var data = $(this).attr('data');
+			 window.location.href= "/ureport/" + data + "?"+[[${reportCondition}]]
+		});
+
+		
+	});
+</script> 
+
+</body>
+</html>

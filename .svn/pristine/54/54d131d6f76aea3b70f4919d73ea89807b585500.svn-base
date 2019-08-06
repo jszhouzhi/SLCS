@@ -1,0 +1,22 @@
+package com.slzr.system.service.impl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.slzr.system.dao.StatisticsDao;
+import com.slzr.system.service.StatisticsService;
+import com.slzr.system.vo.StatisticsVO;
+
+@Service
+public class StatisticsServiceImpl implements StatisticsService {
+	@Autowired
+	private StatisticsDao statisticmapper;
+	
+	@Override
+	public StatisticsVO GetStatisticsVO() {
+		StatisticsVO vo=new StatisticsVO();
+		vo.setRecentlyWeekStatistics(statisticmapper.GetRecentlyWeekStatistics());
+		vo.setTodayStatistics(statisticmapper.GetTodayStatistics().size()>0?statisticmapper.GetTodayStatistics().get(0):null);
+		vo.setTotalStatistics(statisticmapper.GetTotalStatistics().size()>0?statisticmapper.GetTotalStatistics().get(0):null);
+		return vo;
+	}
+}

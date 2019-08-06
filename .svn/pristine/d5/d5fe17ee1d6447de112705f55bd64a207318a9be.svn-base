@@ -1,0 +1,14 @@
+package com.slzr.ureport.dao;
+
+
+import com.slzr.ureport.domain.BCountDo;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
+
+@Repository
+public interface BCountLineBusDao {
+
+    List<BCountDo> list(Map<String, Object> parameters);
+}

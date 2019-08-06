@@ -1,0 +1,43 @@
+package com.slzr.system.vo;
+
+import java.util.List;
+
+import com.slzr.system.domain.StatisticsDO;
+
+public class StatisticsVO {
+	private List<StatisticsDO> TotalStatistics;
+	private List<StatisticsDO> TodayStatistics;
+	private List<DayDebitVO> WeekDayDebit;
+	private List<DayRegisterVO> WeekDayRegister;
+	private List<TopupDayVO> WeekTopupDay;
+	public List<StatisticsDO> getTotalStatistics() {
+		return TotalStatistics;
+	}
+	public void setTotalStatistics(List<StatisticsDO> totalStatistics) {
+		TotalStatistics = totalStatistics;
+	}
+	public List<StatisticsDO> getTodayStatistics() {
+		return TodayStatistics;
+	}
+	public void setTodayStatistics(List<StatisticsDO> todayStatistics) {
+		TodayStatistics = todayStatistics;
+	}
+	public List<DayDebitVO> getWeekDayDebit() {
+		return WeekDayDebit;
+	}
+	public void setWeekDayDebit(List<DayDebitVO> weekDayDebit) {
+		WeekDayDebit = weekDayDebit;
+	}
+	public List<DayRegisterVO> getWeekDayRegister() {
+		return WeekDayRegister;
+	}
+	public void setWeekDayRegister(List<DayRegisterVO> weekDayRegister) {
+		WeekDayRegister = weekDayRegister;
+	}
+	public List<TopupDayVO> getWeekTopupDay() {
+		return WeekTopupDay;
+	}
+	public void setWeekTopupDay(List<TopupDayVO> weekTopupDay) {
+		WeekTopupDay = weekTopupDay;
+	}
+}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.system.dao.StatisticsDao">	
+	<select id="GetTotalStatistics" resultType="com.slzr.system.domain.StatisticsDO">
+		SELECT 'debit' as datatype,COUNT(*) AS DebitNum, SUM(TxnAmount)AS DebitAmount FROM[dbo].[BAR_DebitTransaction] union SELECT 'topup' as datatype, COUNT(*) AS DebitNum, SUM(TxnAmount) AS DebitAmount FROM[dbo].[BAR_TopupTransaction] where payresult = 1 union SELECT 'refund' as datatype, COUNT(*) AS DebitNum, SUM(RefundAmount) AS DebitAmount FROM[dbo].[BAR_WX_Refund] where RefundResult = 1 union SELECT 'register' as datatype, COUNT(*) AS DebitNum, 0 AS DebitAmount FROM[dbo].[BAR_Account] order by datatype
+	</select>
+	
+	<select id="GetTodayStatistics" resultType="com.slzr.system.domain.StatisticsDO">
+		SELECT 'debit' as datatype, CONVERT(varchar(10), TxnDateTime, 121)  AS TxnDateTime, COUNT(*) AS DebitNum, SUM(TxnAmount) AS DebitAmount FROM[dbo].[BAR_DebitTransaction] WHERE(DATEDIFF(d, TxnDateTime, GETDATE()) = 0) GROUP BY CONVERT(varchar(10), TxnDateTime, 121) union SELECT 'topup' as datatype, CONVERT(varchar(10), TxnDateTime, 121)  AS TxnDateTime, COUNT(*) AS DebitNum, SUM(TxnAmount) AS DebitAmount FROM[dbo].[BAR_TopupTransaction] WHERE(DATEDIFF(d, TxnDateTime, GETDATE()) = 0) and payresult = 1 GROUP BY CONVERT(varchar(10), TxnDateTime, 121)union SELECT 'register' as datatype, CONVERT(varchar(10), [CreatedDate], 121)  AS TxnDateTime, COUNT(*) AS DebitNum, 0 AS DebitAmount FROM[dbo].[BAR_Account] WHERE(DATEDIFF(d, CreatedDate, GETDATE()) = 0) GROUP BY CONVERT(varchar(10), [CreatedDate], 121)union SELECT 'refund' as datatype, CONVERT(varchar(10), [RefundTime], 121)  AS TxnDateTime, COUNT(*) AS DebitNum, SUM(RefundAmount) AS DebitAmount FROM[dbo].[BAR_WX_Refund] WHERE(DATEDIFF(d, RefundTime, GETDATE()) = 0) and RefundResult = 1 GROUP BY CONVERT(varchar(10), RefundTime, 121)  order by datatype, TxnDateTime
+	</select>
+	
+	<select id="GetWeekDebit" resultType="com.slzr.system.vo.DayDebitVO">
+	SELECT CONVERT(varchar(10), [TxnDate], 121) as date
+	  ,sum([DebitNum]) as DayDebitNum 
+      ,sum([DebitAmount]) as DayDebitAmount
+  FROM [QRPay_Union_New].[dbo].[BAR_DailySummary_Debit] 
+  where DATEDIFF(d, [TxnDate], GETDATE()) &lt; 7 GROUP BY CONVERT(varchar(10), [TxnDate], 121)
+	</select>
+	
+	<select id="GetWeekRegister" resultType="com.slzr.system.vo.DayRegisterVO">
+	SELECT Convert(varchar(10),createddate,121) as date,count(*) as DayRegister FROM [dbo].[BAR_Account] where createddate>DATEADD(day,-7,getdate()) group by Convert(varchar(10),createddate,121);
+	</select>
+	
+	<select id="GetWeekTopup" resultType="com.slzr.system.vo.TopupDayVO">
+		SELECT [TxnDate] as date
+	      ,SUM([TopupNum]) as DayTopupNum
+	      ,SUM([TopupAmount]) as DayTopupAmount
+	      ,SUM([RefundNum]) as DayRefundNum
+	      ,SUM([RefundAmount]) as DayRefundAmount
+	  FROM [QRPay_Union_New].[dbo].[BAR_DailySummary_Topup] where DATEDIFF(d, [TxnDate], GETDATE()) &lt; 7 GROUP BY CONVERT(varchar(10), [TxnDate], 121)
+	</select>
+	
+</mapper>

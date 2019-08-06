@@ -1,0 +1,22 @@
+package com.slzr.ureport.service.impl;
+
+import com.slzr.ureport.dao.BCountLineBusDao;
+import com.slzr.ureport.domain.BCountDo;
+import com.slzr.ureport.service.BCountLineBusService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class BCountLineBusServiceImpl implements BCountLineBusService {
+        @Autowired
+    private BCountLineBusDao bCountLineBusDao;
+
+
+    @Override
+    public List<BCountDo> list(Map<String, Object> parameters) {
+        return bCountLineBusDao.list(parameters);
+    }
+}

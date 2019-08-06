@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.system.dao.UserDao">
+
+	<select id="get" resultType="com.slzr.system.domain.UserDO">
+		select UserId,UserName,Name,Password,DeptId,Email,Mobile,Status,UserIdCreate,GmtCreate,GmtModified,Sex,Birth,PicId,LiveAddress,Hobby,Province,City,District from SYS_User where UserId = #{value}
+	</select>
+
+	<select id="list" resultType="com.slzr.system.domain.UserDO">
+		select UserId,UserName,Name,Password,DeptId,Email,Mobile,Status,UserIdCreate,GmtCreate,GmtModified,Sex,Birth,PicId,LiveAddress,Hobby,Province,City,District from SYS_User
+        <where>  
+		  		  <if test="userId != null and userId != ''"> and UserId = #{userId} </if>
+		  		  <if test="username != null and username != ''"> and UserName = #{username} </if>
+		  		  <if test="name != null and name != ''"> and Name = #{name} </if>
+		  		  <if test="password != null and password != ''"> and Password = #{password} </if>
+		  		  <if test="deptId != null and deptId != ''"> and DeptId = #{deptId} </if>
+		  		  <if test="email != null and email != ''"> and Email = #{email} </if>
+		  		  <if test="mobile != null and mobile != ''"> and Mobile = #{mobile} </if>
+		  		  <if test="status != null and status != ''"> and Status = #{status} </if>
+		  		  <if test="userIdCreate != null and userIdCreate != ''"> and UserIdCreate = #{userIdCreate} </if>
+		  		  <if test="gmtCreate != null and gmtCreate != ''"> and GmtCreate = #{gmtCreate} </if>
+		  		  <if test="gmtModified != null and gmtModified != ''"> and GmtModified = #{gmtModified} </if>
+		  		  <if test="sex != null and sex != ''"> and sex = #{sex} </if>
+		  		  <if test="birth != null and birth != ''"> and Birth = #{birth} </if>
+		  		  <if test="picId != null and picId != ''"> and PicId = #{picId} </if>
+		  		  <if test="liveAddress != null and liveAddress != ''"> and LiveAddress = #{liveAddress} </if>
+		  		  <if test="hobby != null and hobby != ''"> and Hobby = #{hobby} </if>
+		  		  <if test="province != null and province != ''"> and Province = #{province} </if>
+		  		  <if test="city != null and city != ''"> and City = #{city} </if>
+		  		  <if test="district != null and district != ''"> and District = #{district} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by UserId desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from SYS_User
+		 <where>  
+		  		  <if test="userId != null and userId != ''"> and UserId = #{userId} </if>
+		  		  <if test="username != null and username != ''"> and UserName = #{username} </if>
+		  		  <if test="name != null and name != ''"> and Name = #{name} </if>
+		  		  <if test="password != null and password != ''"> and Password = #{password} </if>
+		  		  <if test="deptId != null and deptId != ''"> and DeptId = #{deptId} </if>
+		  		  <if test="email != null and email != ''"> and Email = #{email} </if>
+		  		  <if test="mobile != null and mobile != ''"> and Mobile = #{mobile} </if>
+		  		  <if test="status != null and status != ''"> and Status = #{status} </if>
+		  		  <if test="userIdCreate != null and userIdCreate != ''"> and UserIdCreate = #{userIdCreate} </if>
+		  		  <if test="gmtCreate != null and gmtCreate != ''"> and GmtCreate = #{gmtCreate} </if>
+		  		  <if test="gmtModified != null and gmtModified != ''"> and GmtModified = #{gmtModified} </if>
+		  		  <if test="sex != null and sex != ''"> and Sex = #{sex} </if>
+		  		  <if test="birth != null and birth != ''"> and Birth = #{birth} </if>
+		  		  <if test="picId != null and picId != ''"> and PicId = #{picId} </if>
+		  		  <if test="liveAddress != null and liveAddress != ''"> and LiveAddress = #{liveAddress} </if>
+		  		  <if test="hobby != null and hobby != ''"> and Hobby = #{hobby} </if>
+		  		  <if test="province != null and province != ''"> and Province = #{province} </if>
+		  		  <if test="city != null and city != ''"> and City = #{city} </if>
+		  		  <if test="district != null and district != ''"> and District = #{district} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.slzr.system.domain.UserDO" useGeneratedKeys="true" keyProperty="userId">
+		insert into SYS_User
+		(
+			UserName, 
+			Name, 
+			Password, 
+			DeptId, 
+			Email, 
+			Mobile, 
+			Status, 
+			UserIdCreate, 
+			GmtCreate, 
+			GmtModified, 
+			Sex, 
+			Birth, 
+			PicId, 
+			LiveAddress, 
+			Hobby, 
+			Province, 
+			City, 
+			District
+		)
+		values
+		(
+			#{username}, 
+			#{name}, 
+			#{password}, 
+			#{deptId}, 
+			#{email}, 
+			#{mobile}, 
+			#{status}, 
+			#{userIdCreate}, 
+			#{gmtCreate}, 
+			#{gmtModified}, 
+			#{sex}, 
+			#{birth}, 
+			#{picId}, 
+			#{liveAddress}, 
+			#{hobby}, 
+			#{province}, 
+			#{city}, 
+			#{district}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.slzr.system.domain.UserDO">
+		update SYS_User 
+		<set>
+			<if test="username != null">UserName = #{username}, </if>
+			<if test="name != null">Name = #{name}, </if>
+			<if test="password != null">Password = #{password}, </if>
+			<if test="deptId != null">DeptId = #{deptId}, </if>
+			<if test="email != null">Email = #{email}, </if>
+			<if test="mobile != null">Mobile = #{mobile}, </if>
+			<if test="status != null">Status = #{status}, </if>
+			<if test="userIdCreate != null">UserIdCreate = #{userIdCreate}, </if>
+			<if test="gmtCreate != null">GmtCreate = #{gmtCreate}, </if>
+			<if test="gmtModified != null">GmtModified = #{gmtModified}, </if>
+			<if test="sex != null">Sex = #{sex}, </if>
+			<if test="birth != null">Birth = #{birth}, </if>
+			<if test="picId != null">PicId = #{picId}, </if>
+			<if test="liveAddress != null">LiveAddress = #{liveAddress}, </if>
+			<if test="hobby != null">Hobby = #{hobby}, </if>
+			<if test="province != null">Province = #{province}, </if>
+			<if test="city != null">City = #{city}, </if>
+			<if test="district != null">District = #{district}</if>
+		</set>
+		where UserId = #{userId}
+	</update>
+
+
+	<update id="updateNameAndPasW" >
+		update SYS_User
+		<set>
+			<if test="password != null">Password = #{password} </if>
+		</set>
+		where UserId = #{userId}
+	</update>
+
+	<delete id="remove">
+		delete from SYS_User where UserId = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from SYS_User where UserId in 
+		<foreach item="userId" collection="array" open="(" separator="," close=")">
+			#{userId}
+		</foreach>
+
+	</delete>
+
+	<select id="listAllDept" resultType="long">
+				select DISTINCT DeptId from SYS_User
+	</select>
+</mapper>

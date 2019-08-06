@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.ureport.dao.AccountCountDao">
+
+	<select id="list" resultType="com.slzr.ureport.domain.AccountCountDo">
+		SELECT
+		TxnDate txnDate,
+		PayMethodId payMethod,
+		AuditUID payAddress,
+		SUM(TopupNum) topupNum,
+		sum(TopupAmount) topupAmount
+		FROM
+		BAR_DailySummary_Topup
+		<where>
+			<if test="payMethod != null and payMethod != ''"> and PayMethodId = #{payMethod} </if>
+			<if test="payAddress != null and payAddress != ''"> and AuditUID = #{payAddress} </if>
+			<if test="startDate != null and startDate != '' and endDate!='' and endDate!=null "> and TxnDate BETWEEN #{startDate}  AND  #{endDate}</if>
+		</where>
+		GROUP by txnDate, PayMethodId,AuditUID
+		ORDER BY TxnDate DESC
+	</select>
+
+
+</mapper>

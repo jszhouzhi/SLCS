@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.slzr.set.dao.ApiDao">
+    <!-- ApiDo的resultMap,column是给数据库列起的别名,它对应property类的属性-->
+    <resultMap id="result_ApiDo_Map" type="com.slzr.set.domain.ApiDo">
+        <id column="ID" property="id" />
+        <result column="UpdatedBy" property="updatedBy" />
+        <result column="CreatedBy" property="createdBy" />
+        <result column="AppId" property="appId" />
+        <result column="UpdatedDate" property="updatedDate" />
+        <result column="AppKey" property="appKey" />
+        <result column="CreatedDate" property="createdDate" />
+        <result column="ExpireTime" property="expireTime" />
+        <result column="AppType" property="appType" />
+        <result column="Remark" property="remark" />
+    </resultMap>
+
+    <!-- 数据库中表名为:SYS_ApiUser的列名,as前是数据库的列明,as后是列的别名用于映射成实体类中的属性,需要注意的是别名必须与resultMap中的column别名一致 -->
+    <sql id="SYS_ApiUser_Column">
+         id ,updatedBy  , createdBy
+        ,appId
+        ,updatedDate
+        ,appKey
+        ,createdDate
+        ,expireTime
+        ,appType
+        ,remark
+    </sql>
+
+    <!--获得类名为:ApiDo对应的数据库表的数据总行数 -->
+    <select id="count" resultType="int">
+        select count(*) from SYS_ApiUser
+        <where>
+            <if test="keyWord != null and keyWord != ''">(   appType LIKE	 '${keyWord}%' OR appId  LIKE	 '${keyWord}%' ) </if>
+            <if test="appKey != null and appKey != ''"> AND appKey = #{appKey} </if>
+        </where>
+    </select>
+
+    <!-- 获得类名为:ApiDo对应数据库中表的数据集合 -->
+    <select id="list" resultMap="result_ApiDo_Map">
+        select <include refid="SYS_ApiUser_Column" />
+        from SYS_ApiUser
+        <where>
+            <if test="keyWord != null and keyWord != ''">(   appType LIKE	 '${keyWord}%' OR appId  LIKE	 '${keyWord}%' ) </if>
+            <if test="appKey != null and appKey != ''"> AND appKey = #{appKey} </if>
+            <if test="appId != null and appId != ''"> AND appId = #{appId} </if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by expireTime desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            Offset ${offset} Row Fetch Next ${limit} Rows Only
+        </if>
+    </select>
+
+    <!-- 获得一个ApiDo对象,以参数ApiDo对象中不为空的属性作为条件进行查询-->
+    <select id="selectApiDoByObj" parameterType="com.slzr.set.domain.ApiDo" resultMap="result_ApiDo_Map">
+        select 
+            <include refid="SYS_ApiUser_Column" /> 
+        from SYS_ApiUser
+        <where>
+            <if test="remark != null "> and SYS_ApiUser.Remark = #{remark}</if>
+            <if test="appType != null "> and SYS_ApiUser.AppType = #{appType}</if>
+            <if test="expireTime != null "> and SYS_ApiUser.ExpireTime = #{expireTime}</if>
+            <if test="createdDate != null "> and SYS_ApiUser.CreatedDate = #{createdDate}</if>
+            <if test="appKey != null "> and SYS_ApiUser.AppKey = #{appKey}</if>
+            <if test="updatedDate != null "> and SYS_ApiUser.UpdatedDate = #{updatedDate}</if>
+            <if test="appId != null "> and SYS_ApiUser.AppId = #{appId}</if>
+            <if test="createdBy != null "> and SYS_ApiUser.CreatedBy = #{createdBy}</if>
+            <if test="updatedBy != null "> and SYS_ApiUser.UpdatedBy = #{updatedBy}</if>
+            <if test="iD != null "> and SYS_ApiUser.ID = #{iD}</if>
+        </where>
+    </select> 
+
+    <!-- 通过ApiDo的id获得对应数据库中表的数据对象-->
+    <select id="selectApiDoById" parameterType="java.lang.Object" resultMap="result_ApiDo_Map">
+        select 
+            <include refid="SYS_ApiUser_Column" /> 
+        from SYS_ApiUser
+        where SYS_ApiUser.ID = #{id}
+    </select> 
+
+    <!-- 将ApiDo插入到对应数据库的表中,包括属性值为null的数据-->
+
+    <insert id="save" parameterType="com.slzr.set.domain.ApiDo">
+        insert into SYS_ApiUser(UpdatedBy,CreatedBy,AppId,UpdatedDate,AppKey,CreatedDate,ExpireTime,AppType,Remark)
+        values(#{updatedBy},#{createdBy},#{appId},#{updatedDate},#{appKey},#{createdDate},#{expireTime},#{appType},#{remark})
+    </insert>
+
+    <!-- 将ApiDo中属性值不为null的数据,插入到对应数据库的表中-->
+    <insert id="insertNonEmptyApiDo" parameterType="com.slzr.set.domain.ApiDo">
+        insert into SYS_ApiUser
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="iD != null">ID,</if>
+            <if test="updatedBy != null">UpdatedBy,</if>
+            <if test="createdBy != null">CreatedBy,</if>
+            <if test="appId != null">AppId,</if>
+            <if test="updatedDate != null">UpdatedDate,</if>
+            <if test="appKey != null">AppKey,</if>
+            <if test="createdDate != null">CreatedDate,</if>
+            <if test="expireTime != null">ExpireTime,</if>
+            <if test="appType != null">AppType,</if>
+            <if test="remark != null">Remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="iD != null"> #{iD},</if>
+            <if test="updatedBy != null"> #{updatedBy},</if>
+            <if test="createdBy != null"> #{createdBy},</if>
+            <if test="appId != null"> #{appId},</if>
+            <if test="updatedDate != null"> #{updatedDate},</if>
+            <if test="appKey != null"> #{appKey},</if>
+            <if test="createdDate != null"> #{createdDate},</if>
+            <if test="expireTime != null"> #{expireTime},</if>
+            <if test="appType != null"> #{appType},</if>
+            <if test="remark != null"> #{remark},</if>
+        </trim>
+    </insert>
+
+    <!-- 将ApiDo批量插入到对应数据库的表中-->
+    <insert id="insertApiDoByBatch" parameterType="ArrayList">
+        insert into SYS_ApiUser(ID,UpdatedBy,CreatedBy,AppId,UpdatedDate,AppKey,CreatedDate,ExpireTime,AppType,Remark) 
+        <foreach collection="list" item="item" index="index" separator=" union all " >
+            select #{item.iD},#{item.updatedBy},#{item.createdBy},#{item.appId},#{item.updatedDate},#{item.appKey},#{item.createdDate},#{item.expireTime},#{item.appType},#{item.remark}
+        </foreach>
+    </insert>
+
+    <!-- 通过ApiDo的id将数据库表中对应的数据删除-->
+    <delete id="remove" parameterType="java.lang.Integer">
+        delete from SYS_ApiUser
+        where ID = #{id}
+    </delete>
+
+    <!-- 通过ApiDo的id将ApiDo的数据更新到数据库中对应的表,包括值null的数据-->
+    <update id="updateApiDoById" parameterType="com.slzr.set.domain.ApiDo">
+        update SYS_ApiUser set
+            UpdatedBy=#{updatedBy}
+            ,CreatedBy=#{createdBy}
+            ,AppId=#{appId}
+            ,UpdatedDate=#{updatedDate}
+            ,AppKey=#{appKey}
+            ,CreatedDate=#{createdDate}
+            ,ExpireTime=#{expireTime}
+            ,AppType=#{appType}
+            ,Remark=#{remark}
+        where ID=#{id}
+    </update>
+
+    <!-- 通过ApiDo的id将ApiDo中属性值不为null的数据更新到数据库对应的表中-->
+    <update id="updateNonEmptyApiDoById" parameterType="com.slzr.set.domain.ApiDo">
+        update SYS_ApiUser
+        <set>
+            <if test="updatedBy != null">
+                UpdatedBy=#{updatedBy},
+            </if>
+            <if test="createdBy != null">
+                CreatedBy=#{createdBy},
+            </if>
+            <if test="appId != null">
+                AppId=#{appId},
+            </if>
+            <if test="updatedDate != null">
+                UpdatedDate=#{updatedDate},
+            </if>
+            <if test="appKey != null">
+                AppKey=#{appKey},
+            </if>
+            <if test="createdDate != null">
+                CreatedDate=#{createdDate},
+            </if>
+            <if test="expireTime != null">
+                ExpireTime=#{expireTime},
+            </if>
+            <if test="appType != null">
+                AppType=#{appType},
+            </if>
+            <if test="remark != null">
+                Remark=#{remark},
+            </if>
+        </set>
+        where ID=#{iD}
+    </update>
+
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.DailysummaryBaseDao">
+
+    <sql id="BAR_DailySummary_Base_Column">
+        BAR_DailySummary_Base.ID as ID
+        ,BAR_DailySummary_Base.TopupFreeAmount as topupFreeAmount
+        ,BAR_DailySummary_Base.DelayPaidAmount as delayPaidAmount
+        ,BAR_DailySummary_Base.DelayPaidNum as delayPaidNum
+        ,BAR_DailySummary_Base.DebitNum as debitNum
+        ,BAR_DailySummary_Base.AccountFreeBalance as accountFreeBalance
+        ,BAR_DailySummary_Base.UnPaidNum as unPaidNum
+        ,BAR_DailySummary_Base.TotalTopupAmount as totalTopupAmount
+        ,BAR_DailySummary_Base.QRRefundNum as qRRefundNum
+        ,BAR_DailySummary_Base.TopupFreeNum as topupFreeNum
+        ,BAR_DailySummary_Base.AccountCancelNum as accountCancelNum
+        ,BAR_DailySummary_Base.DebitFreeNum as debitFreeNum
+        ,BAR_DailySummary_Base.UnPaidAmount as unPaidAmount
+        ,BAR_DailySummary_Base.AccountBalance as accountBalance
+        ,convert(varchar(10),BAR_DailySummary_Base.SummaryDateTime,121) as summaryDateTime
+        ,BAR_DailySummary_Base.AccountApplyNum as accountApplyNum
+        ,BAR_DailySummary_Base.DebitFreeAmount as debitFreeAmount
+        ,BAR_DailySummary_Base.TopupAmount as topupAmount
+        ,BAR_DailySummary_Base.TotalTopupFreeAmount as totalTopupFreeAmount
+        ,BAR_DailySummary_Base.ICRefundNum as iCRefundNum
+        ,BAR_DailySummary_Base.TxnDate as txnDate
+        ,BAR_DailySummary_Base.TotalDebitFreeAmount as totalDebitFreeAmount
+        ,BAR_DailySummary_Base.RefundAmount as refundAmount
+        ,BAR_DailySummary_Base.TopupNum as topupNum
+        ,BAR_DailySummary_Base.QRRefundAmount as qRRefundAmount
+        ,BAR_DailySummary_Base.ICRefundAmount as iCRefundAmount
+        ,BAR_DailySummary_Base.RefundNum as refundNum
+        ,BAR_DailySummary_Base.TotalDebitAmount as totalDebitAmount
+        ,BAR_DailySummary_Base.MerchantCode as merchantCode
+        ,BAR_DailySummary_Base.DebitAmount as debitAmount
+        ,ISNULL(BAR_DailySummary_Base.RefundServiceFee,0) as refundServiceFee
+    </sql>
+ 
+
+	<select id="list" resultType="com.slzr.operation.domain.DailysummaryBaseDO">
+		select 
+		<include refid="BAR_DailySummary_Base_Column" /> ,
+		isnull(m.ShortName,m.MerchantName) as shortName
+ 		from BAR_DailySummary_Base
+ 		left join BAR_Merchant m on  m.MerchantCode = BAR_DailySummary_Base.MerchantCode
+        <where>
+ 
+            <if test="sdate != null and  sdate!= ''"> and TxnDate &gt;= '${sdate}'</if>
+            
+             <if test="edate != null and  edate!= ''"> and TxnDate &lt;= '${edate}'</if>
+            <!-- <if test="edate != null and  edate!= ''"> and BAR_DailySummary_Topup.SummaryDateTime &lt;= '${edate} 23:59:59'</if> -->
+            
+            <if test="merchantCode != null and  merchantCode!= ''"> and BAR_DailySummary_Base.MerchantCode = '${merchantCode}'</if>
+ 
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by TxnDate desc
+			</otherwise>
+        </choose>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from BAR_DailySummary_Base
+        <where>
+            <if test="sdate != null and  sdate!= ''"> and TxnDate &gt;= '${sdate}'</if>
+            
+             <if test="edate != null and  edate!= ''"> and TxnDate &lt;= '${edate}'</if>
+            
+            <if test="merchantCode != null and  merchantCode!= ''"> and MerchantCode = '${merchantCode}'</if>
+        </where>
+	</select>
+	
+
+
+
+</mapper>

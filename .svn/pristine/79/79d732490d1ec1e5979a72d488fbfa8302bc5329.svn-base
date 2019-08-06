@@ -1,0 +1,56 @@
+(function(){
+	var chart1 = echarts.init(document.getElementById('chart1')); 
+	var option = {
+	    title : {
+	        text: '最近一周交易情况'
+	    },
+	    tooltip : {
+	        trigger: 'axis'
+	    },
+	    legend: {
+	        data:['用户新增数','充值报表数','消费总笔数','退款总比数']
+	    },
+	    toolbox: {
+	        show : false
+	    },
+	    calculable : true,
+	    xAxis : [
+	        {
+	            type : 'category',
+	            boundaryGap : false,
+	            data : ['周一','周二','周三','周四','周五','周六','周日']
+	        }
+	    ],
+	    yAxis : [
+	        {
+	            type : 'value',
+	            axisLabel : {
+	                formatter: '{value}'
+	            }
+	        }
+	    ],
+	    series : [
+	        {
+	            name:'用户新增数',
+	            type:'line',
+	            data:[11, 11, 15, 13, 12, 13, 10]
+	        },
+	        {
+	            name:'充值报表数',
+	            type:'line',
+	            data:[2, 18, 19, 11, 12, 14, 7]
+	        },
+	        {
+	            name:'消费总笔数',
+	            type:'line',
+	            data:[11, 18, 10, 11, 18, 11, 12]
+	        },
+	        {
+	            name:'退款总比数',
+	            type:'line',
+	            data:[1, 9, 1, 6, 9, 1, 5]
+	        }
+	    ]
+	};
+	chart1.setOption(option);
+})();

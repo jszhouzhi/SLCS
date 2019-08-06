@@ -1,0 +1,221 @@
+$().ready(function() {
+    validateRule();
+    
+    var topupFeeTypeValue = $('#topupFeeType').val();  
+    if(topupFeeTypeValue==0){
+    	$("#topupFee").val(0);
+    	$('input[name=topupFee]').attr("readonly","readonly")
+    }else if(topupFeeTypeValue==1){
+    	$("#textlabel").text('圈存服务金额（固定金额）');
+    }else if(topupFeeTypeValue==2){
+    	$("#textlabel").text('圈存服务金额（充值金额百分比）');
+    }
+
+    $("#topupFeeType").bind("change",function(){
+            var typeId = $(this).val();  
+            if(typeId==0){
+            	$("#topupFee").val(0);
+            	$('input[name=topupFee]').attr("readonly","readonly")
+            	$("#textlabel").text('圈存服务金额');
+            }else if(typeId==1){
+            	$("#textlabel").text('圈存服务金额（固定金额）');
+            	$('input[name=topupFee]').removeAttr("readonly");
+            }else if(typeId==2){
+            	$("#textlabel").text('圈存服务金额（充值金额百分比）');
+            	$('input[name=topupFee]').removeAttr("readonly");
+            }
+       
+    });
+ 
+});
+
+$.validator.setDefaults({
+    submitHandler : function() {
+        save();
+    }
+});
+
+
+function save() {
+    $.ajax({
+        cache : true,
+        type : "POST",
+        url : "/Merchant/merchantSet/update",
+        data : $('#signupForm').serialize(),// 你的formid
+        async : false,
+        error : function(request) {
+            parent.layer.alert("Connection error");
+        },
+        success : function(data) {
+            if (data.code == 0) {
+                parent.layer.msg("操作成功");
+                parent.reLoad();
+                var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+                parent.layer.close(index);
+
+            } else {
+                parent.layer.alert(data.msg)
+            }
+
+        }
+    });
+
+}
+function validateRule() {
+    var icon = "<i class='fa fa-times-circle'></i> ";
+    $("#signupForm").validate({
+        rules : {
+            name : {
+                required : true
+            },
+            merchantCode : {
+                required : true,
+                maxlength : 6
+            },
+            mapMerchantCode : {
+                required : true,
+                maxlength : 6
+            },
+            merchantName : {
+                required : true,
+                minlength : 2,
+            /*    remote : {
+                    url : "/Merchant/merchantSet/exit", // 后台处理程序
+                    type : "post", // 数据发送方式
+                    dataType : "json", // 接受数据格式
+                    data : { // 要传递的数据
+                        merchantName : function() {
+                            return $("#merchantName").val();
+                        }
+                    }
+                }*/
+            },
+            shortName : {
+                required : true,
+                minlength : 2,
+               /* remote : {
+                    url : "/Merchant/merchantSet/exit", // 后台处理程序
+                    type : "post", // 数据发送方式
+                    dataType : "json", // 接受数据格式
+                    data : { // 要传递的数据
+                        shortName : function() {
+                            return $("#shortName").val();
+                        }
+                    }
+                }*/
+            },
+            cityCode : {
+                required : true,
+                remote : {
+                    url : "/Merchant/merchantSet/check", // 后台处理程序
+                    type : "post", // 数据发送方式
+                    dataType : "json", // 接受数据格式
+                    data : { // 要传递的数据
+                        cityCode : function() {
+                            return $("#cityCode").val();
+                        }
+                    }
+                }
+            },
+            settleMethod : {
+                required : true,
+            },
+            settlePeriod  :{
+                required : true,
+            },
+            settlePeriodUnit :{
+                required : true,
+            },
+            settleDay :{
+                required : true,
+            },
+            settleRate :{
+                range : [0,99.99],
+                required : true,
+                number : true,
+            },
+            onlySettleRate :{
+                range : [0,99.99],
+                required : true,
+                number : true,
+            },
+            serviceFee :{
+                required : true,
+                digits:true
+            },
+            topic : {
+                required : "#newsletter:checked",
+                minlength : 2
+            },
+            autoAuditCancelDays :{
+            	required : true,
+            	digits : true
+            },
+            topupFee :{
+                range : [0,99.99],
+                //required : true,
+                number : true,
+            },
+            agree : "required"
+        },
+        messages : {
+
+            cityCode : {
+                required : icon + "请输入城市代码",
+                remote :icon + "请输入六个以内的字母或者数字"
+            },
+            merchantCode : {
+                required : icon + "请输入商户代码",
+                maxlength : icon + "请输入六个以内的字母或者数字"
+            },
+            mapMerchantCode : {
+                required : icon + "请输入映射商户代码",
+                maxlength : icon + "请输入六个以内的字母或者数字"
+            },
+            merchantName : {
+                required : icon + "请输入商户名称",
+                minlength : icon + "商户名称必须两个字符以上",
+               // remote : icon + "商户名称已经存在"
+            },
+            shortName : {
+                required : icon + "请输入商户简称",
+                minlength : icon + "商户简称必须两个字符以上",
+              //  remote : icon + "商户简称已经存在"
+            },
+            settleMethod : {
+                required : icon + "请选择结算方式",
+            },
+            settlePeriod  :{
+                required : icon + "请选择结算周期",
+            },
+            settlePeriodUnit :{
+                required : icon + "请选择结算单位",
+            },
+            settleDay  :{
+                required : icon + "请选择结算日",
+            },
+            settleRate   :{
+                range :icon+"输入值必须介于 0 到 99.99 之间",
+                required : icon + "请输入结算费率",
+                number :icon +"请输入数字格式"
+            },
+            onlySettleRate   :{
+                range : icon+"输入值必须介于 0 到 99.99 之间",
+                required : icon + "请输入非平台账号结算费率",
+                number :icon +"请输入数字格式"
+            },
+            autoAuditCancelDays:{ 
+            	required : icon + "请输入注销申请自动审核天数",
+            	digits :icon +"请输入整数"
+            },
+            serviceFee   :{
+                required : icon + "请输入服务费",
+                digits :icon +"请输入整数（元）"
+            },
+            topupFee   :{
+                range : icon+"输入的圈存服务费金额必须介于 0 到 99.99 之间",
+                number :icon +"请输入数字格式"
+            }
+        }
+    })
+}

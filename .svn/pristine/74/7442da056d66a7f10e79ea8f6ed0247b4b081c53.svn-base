@@ -1,0 +1,32 @@
+package com.slzr.operation.service;
+
+import com.slzr.operation.domain.SendCaseDo;
+
+import java.util.List;
+import java.util.Map;
+
+public interface SendCaseService {
+
+
+    List<SendCaseDo> list(Map<String, Object> map);
+
+    List<SendCaseDo> lists(Map<String, Object> map);
+
+    int count(Map<String, Object> map);
+
+    int save(Map<String, Object> params);
+    int update(SendCaseDo SendCaseDo);
+
+    /**
+     * 移除
+     */
+    int remove(SendCaseDo sendCaseDo);
+
+    /**
+     * 修改启用状态
+     * @param sendCaseDo
+     * @return
+     */
+    int updateEnable(SendCaseDo sendCaseDo);
+
+}

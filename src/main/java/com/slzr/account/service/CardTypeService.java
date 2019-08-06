@@ -1,0 +1,31 @@
+package com.slzr.account.service;
+ 
+
+import java.util.List;
+import java.util.Map;
+
+import com.slzr.account.domain.CardTypeDO;
+
+ 
+public interface CardTypeService {
+	
+	List<CardTypeDO> get();
+	
+	CardTypeDO getByid(Integer id);
+	
+	List<CardTypeDO> list(Map<String, Object> map);
+	
+	int count(Map<String, Object> map);
+	
+	int save(CardTypeDO cardType);
+	
+	int update(CardTypeDO cardType);
+	
+	int remove(Integer cardTypeID);
+	
+	int batchRemove(Integer[] ids);
+	
+	List<CardTypeDO> exis(Map<String, Object> params);
+	
+	CardTypeDO getByCardTypeID(Map<String, Object> map);
+}

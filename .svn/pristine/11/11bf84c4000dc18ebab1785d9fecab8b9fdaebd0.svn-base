@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.GuestMessageDao">
+
+	<select id="list" resultType="com.slzr.operation.domain.GuestMessageDO">
+		select top ${limit}  *  from (
+		select 
+		ROW_NUMBER() OVER(ORDER BY g.SubmitDateTime desc) AS Seq,
+		
+		g.id AS gid, g.MsgTypeID,m.TrueName,m.MobilePhone,m.Gender,g.MsgContent,g.SubmitDateTime,
+		g.AttachPhotoUrl,g.LastReplyUID, m.NickName, m.id AS mid, r.id As rid, r.ReplyContent,
+		g.LastReplyDateTime,g.IsResolved, a.TrueName AS aTrueName from BAR_GuestMessage g
+		LEFT JOIN SYS_User a ON  g.LastReplyUID = a.ID
+		LEFT JOIN BAR_Member m on m.id = g.uid
+		left JOIN BAR_GuestMessageReply r on r.MsgID = g.ID
+
+        <where>  
+			<if test="searchName != null and searchName != ''"> and m.MobilePhone like  CONCAT('%', #{searchName}, '%')  OR m.NickName like CONCAT('%', #{searchName}, '%') </if>
+			<if test="state != null and state != ''"> and IsResolved = #{state} </if>
+			<if test="isresolved != null and isresolved != ''"> and IsResolved = #{isresolved} </if>
+			<if test="id != null and isresolved != ''"> and id = #{id} </if>
+		</where>
+
+		GROUP BY  g.id, g.MsgTypeID,m.TrueName,m.MobilePhone,m.Gender,g.MsgContent,g.SubmitDateTime,
+		g.AttachPhotoUrl,g.LastReplyUID, m.NickName, m.id, r.id, r.ReplyContent,g.LastReplyDateTime,g.IsResolved,  a.TrueName
+		
+      ) a
+		where seq BETWEEN ${offset+1} and ${limit+offset}
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by a.SubmitDateTime desc
+			</otherwise>
+        </choose>
+ 
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from BAR_GuestMessage
+		 <where>  
+		  		  <if test="id != null and id != ''"> and ID = #{id} </if>
+		  		  <if test="msgtypeid != null and msgtypeid != ''"> and MsgTypeID = #{msgtypeid} </if>
+		  		  <if test="uid != null and uid != ''"> and UID = #{uid} </if>
+		  		  <if test="mobilephone != null and mobilephone != ''"> and MobilePhone = #{mobilephone} </if>
+		  		  <if test="truename != null and truename != ''"> and TrueName = #{truename} </if>
+		  		  <if test="gender != null and gender != ''"> and Gender = #{gender} </if>
+		  		  <if test="msgcontent != null and msgcontent != ''"> and MsgContent = #{msgcontent} </if>
+		  		  <if test="attachphotourl != null and attachphotourl != ''"> and AttachPhotoUrl = #{attachphotourl} </if>
+		  		  <if test="submitdatetime != null and submitdatetime != ''"> and SubmitDateTime = #{submitdatetime} </if>
+		  		  <if test="lastreplyuid != null and lastreplyuid != ''"> and LastReplyUID = #{lastreplyuid} </if>
+		  		  <if test="lastreplydatetime != null and lastreplydatetime != ''"> and LastReplyDateTime = #{lastreplydatetime} </if>
+		  		  <if test="isresolved != null and isresolved != ''"> and IsResolved = #{isresolved} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.slzr.operation.domain.GuestMessageDO">
+		insert into BAR_GuestMessage
+		(
+			`ID`, 
+			`MsgTypeID`, 
+			`UID`, 
+			`MobilePhone`, 
+			`TrueName`, 
+			`Gender`, 
+			`MsgContent`, 
+			`AttachPhotoUrl`, 
+			`SubmitDateTime`, 
+			`LastReplyUID`, 
+			`LastReplyDateTime`, 
+			`IsResolved`
+		)
+		values
+		(
+			#{id,jdbcType=INTEGER}, 
+			#{msgtypeid,jdbcType=INTEGER}, 
+			#{uid,jdbcType=INTEGER}, 
+			#{mobilephone,jdbcType=VARCHAR}, 
+			#{truename,jdbcType=VARCHAR}, 
+			#{gender,jdbcType=VARCHAR}, 
+			#{msgcontent,jdbcType=VARCHAR}, 
+			#{attachphotourl,jdbcType=VARCHAR}, 
+			#{submitdatetime,jdbcType=TIMESTAMP}, 
+			#{lastreplyuid,jdbcType=INTEGER}, 
+			#{lastreplydatetime,jdbcType=TIMESTAMP}, 
+			#{isresolved,jdbcType=INTEGER}
+		)
+	</insert>
+
+
+	<select id="getByID" resultType="com.slzr.operation.domain.GuestMessageDO">
+		select * from BAR_GuestMessage   where  id = #{value}
+	</select>
+
+
+
+
+	<update id="update" parameterType="com.slzr.operation.domain.GuestMessageDO">
+		update BAR_GuestMessage
+		<set>
+			<if test="msgtypeid != null">MsgTypeID = #{msgtypeid}, </if>
+			<if test="uid != null">UID = #{uid}, </if>
+			<if test="mobilephone != null">MobilePhone = #{mobilephone}, </if>
+			<if test="truename != null">TrueName = #{truename}, </if>
+			<if test="gender != null">Gender = #{gender}, </if>
+			<if test="msgcontent != null">MsgContent = #{msgcontent}, </if>
+			<if test="attachphotourl != null">AttachPhotoUrl = #{attachphotourl}, </if>
+			<if test="submitdatetime != null">SubmitDateTime = #{submitdatetime}, </if>
+			<if test="lastreplyuid != null">LastReplyUID = #{lastreplyuid}, </if>
+			<if test="lastreplydatetime != null">LastReplyDateTime = #{lastreplydatetime}, </if>
+			<if test="isresolved != null">IsResolved = #{isresolved}, </if>
+		</set>
+		where ID = #{id}
+	</update>
+
+
+	<delete id="remove">
+		delete from BAR_GuestMessage where ID = #{value}
+	</delete>
+	
+
+</mapper>

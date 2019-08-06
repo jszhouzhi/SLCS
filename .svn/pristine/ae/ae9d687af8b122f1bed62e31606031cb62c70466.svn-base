@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.common.dao.LogDao">
+
+	<select id="get" resultType="com.slzr.common.domain.LogDO">
+		select ID,DictCode,DataCode,DataValue,OrderNo,State,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,Remark from SYS_Dictionary where ID = #{value}
+	</select>
+
+	<insert id="createLog" parameterType="com.slzr.common.domain.LogDO" >
+		insert into SYS_SystemLog
+		(
+		UserID,
+		OperateTypeID,
+		ModuleID,
+		LogTypeID,
+		LogContent,
+		LogDateTime,
+		IP,
+		SourceMethod
+		)
+		values
+		(
+		#{userId},
+		#{operateTypeID},
+		#{moduleID},
+		#{logTypeID},
+		#{logContent},
+		#{logDateTime},
+		#{ip},
+		#{sourceMethod}
+		)
+	</insert>
+
+	<update id="updateLog" parameterType="com.slzr.common.domain.LogDO">
+		update SYS_SystemLog
+		<set>
+			<if test="logTypeID != null">logTypeID = #{logTypeID}, </if>
+			<if test="logContent != null">logContent = #{logContent}, </if>
+		</set>
+		where moduleID = #{moduleID} AND  operateTypeID=#{operateTypeID} AND  logDateTime=#{logDateTime}
+	</update>
+
+</mapper>

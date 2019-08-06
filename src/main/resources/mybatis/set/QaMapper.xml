@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.set.dao.QaDao">
+
+	<select id="get" resultType="com.slzr.set.domain.QaDO">
+		select ID,Question,Answer,QuestionTypeID,ViewNum,SortNum,IsEnable,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,MerchantCode from AD_QA where ID = #{value}
+	</select>
+
+	<select id="list" resultType="com.slzr.set.domain.QaDO">
+	select
+		q.ID,
+		q.Question,
+		q.Answer,
+		q.ViewNum,
+		q.SortNum,
+		q.IsEnable,
+		u.UserName as createUserName,
+		q.CreatedDate,
+		u2.UserName as updateUserName,
+		q.UpdatedDate,
+		d.DataValue as questionTypeName,
+		m.MerchantName as merchantCode
+		FROM AD_QA q
+		LEFT JOIN BAR_Merchant m ON m.MerchantCode = q.MerchantCode
+		LEFT JOIN SYS_Dictionary d ON CONVERT (VARCHAR, q.QuestionTypeID) = d.DataCode AND d.DictCode = 'QAType'
+		LEFT JOIN SYS_User u on u.ID = q.CreatedBy  
+		LEFT JOIN SYS_User u2 on u2.ID = q.UpdatedBy 	
+		        <where>  
+		         <if test="merchantCode != null and merchantCode != ''"> and q.MerchantCode = #{merchantCode} </if>
+		  		  <if test="id != null and id != ''"> and ID = #{id} </if>
+		  		  <if test="question != null and question != ''"> and Question = #{question} </if>
+		  		  <if test="answer != null and answer != ''"> and Answer = #{answer} </if>
+		  		  <if test="questionTypeId != null and questionTypeId != ''"> and QuestionTypeID = #{questionTypeId} </if>
+		  		  <if test="viewNum != null and viewNum != ''"> and ViewNum = #{viewNum} </if>
+		  		  <if test="sortNum != null and sortNum != ''"> and SortNum = #{sortNum} </if>
+		  		  <if test="isEnable != null and isEnable != ''"> and IsEnable = #{isEnable} </if>
+		  		  
+		  		  <if test="searchName != null and  searchName != ''"> and Question like '%${searchName}%'</if>
+		  		  
+		  		  <if test="createdBy != null and createdBy != ''"> and CreatedBy = #{createdBy} </if>
+		  		  <if test="createdDate != null and createdDate != ''"> and CreatedDate = #{createdDate} </if>
+		  		  <if test="updatedBy != null and updatedBy != ''"> and UpdatedBy = #{updatedBy} </if>
+		  		  <if test="updatedDate != null and updatedDate != ''"> and UpdatedDate = #{updatedDate} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by ID desc
+			</otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            Offset ${offset} Row Fetch Next ${limit} Rows Only
+        </if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from AD_QA
+		 <where>  
+		 		<if test="merchantCode != null and merchantCode != ''"> and MerchantCode = #{merchantCode} </if>
+		  		  <if test="id != null and id != ''"> and ID = #{id} </if>
+		  		  <if test="question != null and question != ''"> and Question = #{question} </if>
+		  		  <if test="answer != null and answer != ''"> and Answer = #{answer} </if>
+		  		  <if test="questionTypeId != null and questionTypeId != ''"> and QuestionTypeID = #{questionTypeId} </if>
+		  		  <if test="viewNum != null and viewNum != ''"> and ViewNum = #{viewNum} </if>
+		  		  <if test="sortNum != null and sortNum != ''"> and SortNum = #{sortNum} </if>
+		  		  <if test="isEnable != null and isEnable != ''"> and IsEnable = #{isEnable} </if>
+		  		  
+		  		  <if test="searchName != null and  searchName != ''"> and Question like '%${searchName}%'</if>
+		  		  
+		  		  <if test="createdBy != null and createdBy != ''"> and CreatedBy = #{createdBy} </if>
+		  		  <if test="createdDate != null and createdDate != ''"> and CreatedDate = #{createdDate} </if>
+		  		  <if test="updatedBy != null and updatedBy != ''"> and UpdatedBy = #{updatedBy} </if>
+		  		  <if test="updatedDate != null and updatedDate != ''"> and UpdatedDate = #{updatedDate} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.slzr.set.domain.QaDO">
+		insert into AD_QA
+		
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">ID,</if>
+            <if test="question != null">Question,</if>
+            <if test="answer != null">Answer,</if>
+            <if test="questionTypeId != null">QuestionTypeId,</if>
+            <if test="viewNum != null">ViewNum,</if>
+            <if test="sortNum != null">SortNum,</if>
+            <if test="isEnable != null">IsEnable,</if>
+            <if test="createdBy != null">CreatedBy,</if>
+            <if test="createdDate != null">CreatedDate,</if>
+            <if test="updatedBy != null">UpdatedBy,</if>
+            <if test="updatedDate != null">UpdatedDate,</if>
+             <if test="merchantCode != null">MerchantCode,</if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null"> #{id},</if>
+            <if test="question != null"> #{question},</if>
+            <if test="answer != null"> #{answer},</if>
+            <if test="questionTypeId != null"> #{questionTypeId},</if>
+            <if test="viewNum != null"> #{viewNum},</if>
+            <if test="sortNum != null"> #{sortNum},</if>
+            <if test="isEnable != null"> #{isEnable},</if>
+            <if test="createdBy != null"> #{createdBy},</if>
+            <if test="createdDate != null"> #{createdDate},</if>
+            <if test="updatedBy != null"> #{updatedBy},</if>
+            <if test="updatedDate != null"> #{updatedDate},</if>
+            <if test="merchantCode != null"> #{merchantCode},</if>
+ 
+        </trim>
+	</insert>
+	 
+	<update id="update" parameterType="com.slzr.set.domain.QaDO">
+		update AD_QA 
+		<set>
+			<if test="question != null">Question = #{question}, </if>
+			<if test="answer != null">Answer = #{answer}, </if>
+			<if test="questionTypeId != null">QuestionTypeID = #{questionTypeId}, </if>
+			<if test="viewNum != null">ViewNum = #{viewNum}, </if>
+			<if test="sortNum != null">SortNum = #{sortNum}, </if>
+			<if test="isEnable != null">IsEnable = #{isEnable}, </if>
+			<if test="createdBy != null">CreatedBy = #{createdBy}, </if>
+			<if test="createdDate != null">CreatedDate = #{createdDate}, </if>
+			<if test="updatedBy != null">UpdatedBy = #{updatedBy}, </if>
+			<if test="updatedDate != null">UpdatedDate = #{updatedDate},</if>
+			<if test="merchantCode != null">
+                MerchantCode=#{merchantCode}
+            </if>
+		</set>
+		where ID = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from AD_QA where ID = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from AD_QA where ID in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

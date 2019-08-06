@@ -1,0 +1,153 @@
+package com.slzr.ureport.domain;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * 一级统计 
+ * @author Administrator
+ *
+ */
+public class ACountDo implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
+	private Long id;
+	
+	private Date DateTime;  //日期
+	
+	private int ConsumptionPerson; //消费人次
+	
+	private BigDecimal ConsumptionAmount; //消费金额
+
+	private String DeptName; //部门
+	
+	private String LineName; //线路
+	
+	private String DriverName; //司机
+	
+	private String BusNO; //车辆
+	
+	
+	
+	public ACountDo() {
+		super();
+	}
+
+
+
+	public ACountDo(Long id, Date dateTime, int consumptionPerson, BigDecimal consumptionAmount, String deptName,
+			String lineName, String driverName, String busNO) {
+		super();
+		this.id = id;
+		DateTime = dateTime;
+		ConsumptionPerson = consumptionPerson;
+		ConsumptionAmount = consumptionAmount;
+		DeptName = deptName;
+		LineName = lineName;
+		DriverName = driverName;
+		BusNO = busNO;
+	}
+
+
+
+	public Long getId() {
+		return id;
+	}
+
+
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+
+
+	public Date getDateTime() {
+		return DateTime;
+	}
+
+
+
+	public void setDateTime(Date dateTime) {
+		DateTime = dateTime;
+	}
+
+
+
+	public int getConsumptionPerson() {
+		return ConsumptionPerson;
+	}
+
+
+
+	public void setConsumptionPerson(int consumptionPerson) {
+		ConsumptionPerson = consumptionPerson;
+	}
+
+
+
+	public BigDecimal getConsumptionAmount() {
+		return ConsumptionAmount;
+	}
+
+
+
+	public void setConsumptionAmount(BigDecimal consumptionAmount) {
+		ConsumptionAmount = consumptionAmount;
+	}
+
+
+
+	public String getDeptName() {
+		return DeptName;
+	}
+
+
+
+	public void setDeptName(String deptName) {
+		DeptName = deptName;
+	}
+
+
+
+	public String getLineName() {
+		return LineName;
+	}
+
+
+
+	public void setLineName(String lineName) {
+		LineName = lineName;
+	}
+
+
+
+	public String getDriverName() {
+		return DriverName;
+	}
+
+
+
+	public void setDriverName(String driverName) {
+		DriverName = driverName;
+	}
+
+
+
+	public String getBusNO() {
+		return BusNO;
+	}
+
+
+
+	public void setBusNO(String busNO) {
+		BusNO = busNO;
+	}
+
+	
+	
+	
+	
+}
+ 

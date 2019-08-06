@@ -1,0 +1,208 @@
+package com.slzr.account.domain;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+
+
+public class AccountCancelDO implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
+	//ID
+	private Integer id;
+	//MerchantCode
+	private String merchantcode;
+	//AccountNO
+	private String accountno;
+	//SubmitTime
+	private Date submittime;
+	//UID
+	private Integer uid;
+	//MobilePhone
+	private String mobilephone;
+	//Balance
+	private BigDecimal balance;
+	//ServiceFee
+	private BigDecimal servicefee;
+	//DealResult
+	private Integer dealresult;
+	//DealTime
+	private Date dealtime;
+	//DealMsg
+	private String dealmsg;
+	//UserConfirm
+	private Integer userconfirm;
+	//UserConfirmTime
+	private Date userconfirmtime;
+	//SummaryDateTime
+	private Date summarydatetime;
+
+	/**
+	 * 设置：ID
+	 */
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	/**
+	 * 获取：ID
+	 */
+	public Integer getId() {
+		return id;
+	}
+	/**
+	 * 设置：MerchantCode
+	 */
+	public void setMerchantcode(String merchantcode) {
+		this.merchantcode = merchantcode;
+	}
+	/**
+	 * 获取：MerchantCode
+	 */
+	public String getMerchantcode() {
+		return merchantcode;
+	}
+	/**
+	 * 设置：AccountNO
+	 */
+	public void setAccountno(String accountno) {
+		this.accountno = accountno;
+	}
+	/**
+	 * 获取：AccountNO
+	 */
+	public String getAccountno() {
+		return accountno;
+	}
+	/**
+	 * 设置：SubmitTime
+	 */
+	public void setSubmittime(Date submittime) {
+		this.submittime = submittime;
+	}
+	/**
+	 * 获取：SubmitTime
+	 */
+	public Date getSubmittime() {
+		return submittime;
+	}
+	/**
+	 * 设置：UID
+	 */
+	public void setUid(Integer uid) {
+		this.uid = uid;
+	}
+	/**
+	 * 获取：UID
+	 */
+	public Integer getUid() {
+		return uid;
+	}
+	/**
+	 * 设置：MobilePhone
+	 */
+	public void setMobilephone(String mobilephone) {
+		this.mobilephone = mobilephone;
+	}
+	/**
+	 * 获取：MobilePhone
+	 */
+	public String getMobilephone() {
+		return mobilephone;
+	}
+	/**
+	 * 设置：Balance
+	 */
+	public void setBalance(BigDecimal balance) {
+		this.balance = balance;
+	}
+	/**
+	 * 获取：Balance
+	 */
+	public BigDecimal getBalance() {
+		return balance;
+	}
+	/**
+	 * 设置：ServiceFee
+	 */
+	public void setServicefee(BigDecimal servicefee) {
+		this.servicefee = servicefee;
+	}
+	/**
+	 * 获取：ServiceFee
+	 */
+	public BigDecimal getServicefee() {
+		return servicefee;
+	}
+	/**
+	 * 设置：DealResult
+	 */
+	public void setDealresult(Integer dealresult) {
+		this.dealresult = dealresult;
+	}
+	/**
+	 * 获取：DealResult
+	 */
+	public Integer getDealresult() {
+		return dealresult;
+	}
+	/**
+	 * 设置：DealTime
+	 */
+	public void setDealtime(Date dealtime) {
+		this.dealtime = dealtime;
+	}
+	/**
+	 * 获取：DealTime
+	 */
+	public Date getDealtime() {
+		return dealtime;
+	}
+	/**
+	 * 设置：DealMsg
+	 */
+	public void setDealmsg(String dealmsg) {
+		this.dealmsg = dealmsg;
+	}
+	/**
+	 * 获取：DealMsg
+	 */
+	public String getDealmsg() {
+		return dealmsg;
+	}
+	/**
+	 * 设置：UserConfirm
+	 */
+	public void setUserconfirm(Integer userconfirm) {
+		this.userconfirm = userconfirm;
+	}
+	/**
+	 * 获取：UserConfirm
+	 */
+	public Integer getUserconfirm() {
+		return userconfirm;
+	}
+	/**
+	 * 设置：UserConfirmTime
+	 */
+	public void setUserconfirmtime(Date userconfirmtime) {
+		this.userconfirmtime = userconfirmtime;
+	}
+	/**
+	 * 获取：UserConfirmTime
+	 */
+	public Date getUserconfirmtime() {
+		return userconfirmtime;
+	}
+	/**
+	 * 设置：SummaryDateTime
+	 */
+	public void setSummarydatetime(Date summarydatetime) {
+		this.summarydatetime = summarydatetime;
+	}
+	/**
+	 * 获取：SummaryDateTime
+	 */
+	public Date getSummarydatetime() {
+		return summarydatetime;
+	}
+}

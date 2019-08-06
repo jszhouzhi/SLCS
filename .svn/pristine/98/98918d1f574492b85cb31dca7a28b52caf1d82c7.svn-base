@@ -1,0 +1,17 @@
+package com.slzr.ureport.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@RequestMapping("/report/icTopupTrans")
+@Controller
+public class ICTopupTransController {
+	
+	private String prefix = "report/icTopupTrans";
+	
+	@GetMapping("/index")
+	public String index() {
+		return prefix + "/index";
+	}
+}

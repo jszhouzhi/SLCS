@@ -1,0 +1,36 @@
+package com.slzr.system.domain;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+public class StatisticsDO {
+	private String datatype;
+	private String TxnDateTime;
+	private int DebitNum;
+	private BigDecimal DebitAmount;
+	public String getDatatype() {
+		return datatype;
+	}
+	public void setDatatype(String datatype) {
+		this.datatype = datatype;
+	}
+	public String getTxnDateTime() {
+		return TxnDateTime;
+	}
+	public void setTxnDateTime(String txnDateTime) {
+		TxnDateTime = txnDateTime;
+	}
+	public int getDebitNum() {
+		return DebitNum;
+	}
+	public void setDebitNum(int debitNum) {
+		DebitNum = debitNum;
+	}
+	public BigDecimal getDebitAmount() {
+		return DebitAmount;
+	}
+	public void setDebitAmount(BigDecimal debitAmount) {
+		DebitAmount = debitAmount;
+	}
+	
+}

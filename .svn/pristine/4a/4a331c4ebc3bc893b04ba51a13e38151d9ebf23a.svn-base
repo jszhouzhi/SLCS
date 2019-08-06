@@ -1,0 +1,48 @@
+package com.slzr.ureport.bean;
+
+import com.slzr.common.utils.TimeConverUtils;
+import com.slzr.ureport.domain.BCountDo;
+import com.slzr.ureport.service.BCountService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.Map;
+
+public class BCountBean {
+
+    @Autowired
+    private BCountService bCountService;
+
+    public List<BCountDo> getBusDriverlist(String dsName, String datasetName, Map<String, Object> parameters) {
+        Map<String, Object> stringObjectMap=null;
+        if (parameters != null) {
+            stringObjectMap = TimeConverUtils.converDate(parameters);
+        }
+
+        List<BCountDo> list = bCountService.BusDriverlist(stringObjectMap);
+
+
+        return list;
+    }
+    public List<BCountDo> getLineBuslist(String dsName, String datasetName, Map<String, Object> parameters) {
+        Map<String, Object> stringObjectMap=null;
+        if (parameters != null) {
+            stringObjectMap = TimeConverUtils.converDate(parameters);
+        }
+
+        List<BCountDo> list = bCountService.LineBuslist(stringObjectMap);
+
+
+        return list;
+    }
+    public List<BCountDo> getDeptLinelist(String dsName, String datasetName, Map<String, Object> parameters) {
+        Map<String, Object> stringObjectMap=null;
+        if (parameters != null) {
+            stringObjectMap = TimeConverUtils.converDate(parameters);
+        }
+        List<BCountDo> list = bCountService.DeptLinelist(stringObjectMap);
+
+
+        return list;
+    }
+}

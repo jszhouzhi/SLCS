@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.DebittransactionDistanceDao">
+
+	<select id="get" resultType="com.slzr.operation.domain.DebittransactionDistanceDO">
+		select  ID , MerchantCode , TerminalCounter , TerminalNO , CardTypeID , TxnTypeID , TxnBalance , AccountNO , Balance , TxnAmount , TxnDateTime , DriverNO , CompanyCode , [LineNO] , Counter , TicketMac , KerVersion , TerminalID , RecordTAC , AppVersion , TicketData , UploadDateTime , StationCode , DoorFlag , Direction , IsMatched  from BAR_DebitTransaction_Distance where ID = #{value}
+	</select>
+
+	<select id="list" resultType="com.slzr.operation.domain.DebittransactionDistanceDO">
+		select top ${limit}  *  from (
+		select 
+		ROW_NUMBER() OVER(ORDER BY b.TxnDateTime desc) AS Seq, 
+		
+		b.ID,b.MerchantCode,b.TerminalCounter,b.TerminalNO,b.CardTypeID,b.TxnTypeID,b.TxnBalance,b.AccountNO,b.Balance,b.TxnAmount,
+		format(b.TxnDateTime ,'yyyy-MM-dd HH:mm:ss') as TxnDateTime,
+		b.DriverNO,b.CompanyCode,b.[LineNO],b.Counter,b.TicketMac,b.KerVersion,b.TerminalID,b.RecordTAC,b.AppVersion,b.TicketData,b.UploadDateTime,
+		b.StationCode,b.DoorFlag,b.Direction,b.IsMatched,
+		CASE b.DoorFlag WHEN  1 THEN '上车' WHEN 2 THEN '下车' END  doorFlagName,
+		CASE b.Direction WHEN  'U' THEN '上线' WHEN 'D' THEN '下线' END  directionName
+		FROM BAR_DebitTransaction_Distance b
+		left join OPT_Line o on b.[LineNO]=o.LineCode
+        <where>  
+            <if test="searchvalue != null and  searchvalue!= ''"> and (b.AccountNO like '${searchvalue}%' or b.[LineNO] like '${searchvalue}%' or b.TerminalNO like '${searchvalue}%' )</if>
+            <if test="sdate != null and  sdate!= ''"> and b.TxnDateTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="edate != null and  edate!= ''"> and b.TxnDateTime &lt;= '${edate} 23:59:59'</if>
+            <if test="merchantCode != null and  merchantCode!= ''">AND b.MerchantCode IN (select MapMerchantCode from BAR_Merchant WHERE merchantcode= #{merchantCode}) </if>
+            <if test="lineName != null and  lineName!= ''"> AND b.[LineNO] = #{lineName}</if>
+            <if test="busNO != null and  busNO!= ''"> AND b.TerminalNO = #{busNO}</if>
+            <if test="driverName != null and  driverName!= ''"> AND b.DriverNO = #{driverName}</if>
+            <if test="deptName != null and  deptName!= ''"> AND o.[DeptID] = #{deptName}</if>
+            <if test="status != null and  status!= ''"> AND b.DoorFlag = #{status}</if>
+		</where>
+		) a
+		where seq BETWEEN ${offset+1} and ${limit+offset}
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by a.TxnDateTime desc
+			</otherwise>
+        </choose>
+
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from BAR_DebitTransaction_Distance b  left join OPT_Line o on b.[LineNO]=o.LineCode
+		 <where>  
+            <if test="searchvalue != null and  searchvalue!= ''"> and (b.AccountNO like '${searchvalue}%' or b.[LineNO] like '${searchvalue}%' or b.TerminalNO like '${searchvalue}%' )</if>
+            <if test="sdate != null and  sdate!= ''"> and b.TxnDateTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="edate != null and  edate!= ''"> and b.TxnDateTime &lt;= '${edate} 23:59:59'</if>
+            <if test="merchantCode != null and  merchantCode!= ''">AND b.MerchantCode IN (select MapMerchantCode from BAR_Merchant WHERE merchantcode= #{merchantCode}) </if>
+            <if test="lineName != null and  lineName!= ''"> AND b.[LineNO] = #{lineName}</if>
+            <if test="busNO != null and  busNO!= ''"> AND b.TerminalNO = #{busNO}</if>
+            <if test="driverName != null and  driverName!= ''"> AND b.DriverNO = #{driverName}</if>
+            <if test="deptName != null and  deptName!= ''"> AND o.[DeptID] = #{deptName}</if>
+            <if test="status != null and  status!= ''"> AND b.DoorFlag = #{status}</if>
+		 </where>
+	</select>
+	 
+
+
+</mapper>

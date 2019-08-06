@@ -1,0 +1,27 @@
+package com.slzr.set.service.impl;
+
+import com.slzr.set.dao.MerchDao;
+import com.slzr.set.domain.MerchDo;
+import com.slzr.set.service.MerchService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class MerchServiceImpl  implements MerchService{
+
+    @Autowired
+    private MerchDao MerchMapper;
+
+    @Override
+    public List<MerchDo> list(Map<String, Object> map) {
+        return MerchMapper.list(map);
+    }
+
+    @Override
+    public int count(Map<String,Object> map) {
+        return MerchMapper.count(map);
+    }
+}

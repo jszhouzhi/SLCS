@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<table class="layui-table">
+						  <colgroup>
+						    <col width="150">
+						    <col width="200">
+						    <col>
+						  </colgroup>
+						  <thead>
+						    <tr>
+						      <th>&nbsp;</th>
+						      <th>&nbsp;</th>
+						    </tr> 
+						  </thead>
+						  <tbody>
+						    <tr>
+						      <td>商户代码</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>商户简称</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>充值金额</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>充值笔数</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>消费金额</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>消费笔数</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>退款金额</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>退款笔数</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>服务费</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>结算方式</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>结算费率</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>结算金额</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>审核状态</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>审核时间</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>审核人</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>转账金额</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>转账时间</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>转账单号</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>转账说明</td>
+						      <td>11111</td>
+						    </tr>
+						    <tr>
+						      <td>结算时间</td>
+						      <td>11111</td>
+						    </tr>
+						  </tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+	</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<!-- <script type="text/javascript" src="/js/appjs/operation/topup/edit.js"></script>
+	</script> -->
+</body>
+</html>

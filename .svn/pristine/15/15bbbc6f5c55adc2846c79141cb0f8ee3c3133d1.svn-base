@@ -1,0 +1,36 @@
+package com.slzr.ureport.bean;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import com.slzr.ureport.domain.ACountDriverDo;
+
+/**
+ * 一级统计  司机消费统计
+ * @author Administrator
+ *
+ */
+public class ACountDriverBean {
+    public List<ACountDriverDo> loadReportData(String dsName,String datasetName,Map<String,Object> parameters){
+    	List<ACountDriverDo> aCountDriverDoList=new ArrayList<ACountDriverDo>();        
+        String p = null;
+        if(parameters.containsKey("a")){  
+        	p = parameters.get("a").toString();
+        }
+        int i;
+        for(i=1;i<15;i++) {
+        	ACountDriverDo aCountDriverDo=new ACountDriverDo();
+        	aCountDriverDo.setId((long) i);
+        	aCountDriverDo.setDateTime(new Date());
+        	aCountDriverDo.setDept("司机消费统计(O_o)??部"+i+"参数为:"+p);       	
+        	aCountDriverDo.setConsumptionPerson(3*i);
+        	aCountDriverDo.setConsumptionAmount( new BigDecimal(33.63*i));      
+        	
+        	aCountDriverDoList.add(aCountDriverDo);
+        }    
+        return aCountDriverDoList;
+    }
+}

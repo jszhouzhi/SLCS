@@ -1,0 +1,130 @@
+package com.slzr.operation.domain;
+
+import io.swagger.models.auth.In;
+
+import java.util.Date;
+
+public class SendCaseDo {
+
+    private  Integer id;
+
+    //折扣名字
+    private  String  discountName;
+    //商户代码
+    private String merchantCode;
+    //商户名称
+    private  String merchantName;
+    //折扣描叙
+    private  String DiscountDesc;
+    //起始日期
+    private  String effectiveDateTime;
+    //截止时间
+    private Date expiredDateTime;
+
+    //是否启用(o代表启用。1代表禁用)
+    private Integer  enabled;
+    //开始金额
+    private  Integer fromAmount;
+    //截止金额
+    private  Integer toAmount;
+    //优惠金额
+    private Integer discountAmount;
+    //优惠折扣
+    private  String discountAmountUnit;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getMerchantCode() {
+        return merchantCode;
+    }
+
+    public void setMerchantCode(String merchantCode) {
+        this.merchantCode = merchantCode;
+    }
+
+    public String getMerchantName() {
+        return merchantName;
+    }
+
+    public void setMerchantName(String merchantName) {
+        this.merchantName = merchantName;
+    }
+
+    public String getDiscountName() {
+        return discountName;
+    }
+
+    public void setDiscountName(String discountName) {
+        this.discountName = discountName;
+    }
+
+    public String getDiscountDesc() {
+        return DiscountDesc;
+    }
+
+    public void setDiscountDesc(String discountDesc) {
+        DiscountDesc = discountDesc;
+    }
+
+    public String getEffectiveDateTime() {
+        return effectiveDateTime;
+    }
+
+    public void setEffectiveDateTime(String effectiveDateTime) {
+        this.effectiveDateTime = effectiveDateTime;
+    }
+
+    public Date getExpiredDateTime() {
+        return expiredDateTime;
+    }
+
+    public void setExpiredDateTime(Date expiredDateTime) {
+        this.expiredDateTime = expiredDateTime;
+    }
+
+    public Integer getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Integer enabled) {
+        this.enabled = enabled;
+    }
+
+    public Integer getFromAmount() {
+        return fromAmount;
+    }
+
+    public void setFromAmount(Integer fromAmount) {
+        this.fromAmount = fromAmount;
+    }
+
+    public Integer getToAmount() {
+        return toAmount;
+    }
+
+    public void setToAmount(Integer toAmount) {
+        this.toAmount = toAmount;
+    }
+
+    public Integer getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(Integer discountAmount) {
+        this.discountAmount = discountAmount;
+    }
+
+    public String getDiscountAmountUnit() {
+        return discountAmountUnit;
+    }
+
+    public void setDiscountAmountUnit(String discountAmountUnit) {
+        this.discountAmountUnit = discountAmountUnit;
+    }
+}

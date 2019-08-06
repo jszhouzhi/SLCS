@@ -1,0 +1,150 @@
+package com.slzr.set.controller;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.druid.util.StringUtils;
+import com.slzr.common.annotation.SystemControllerLog;
+import com.slzr.common.config.Constant;
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.utils.JSONUtils;
+import com.slzr.common.utils.PageUtils;
+import com.slzr.common.utils.Query;
+import com.slzr.common.utils.R;
+import com.slzr.set.domain.ICSysSettingDo;
+import com.slzr.set.domain.JTSysSetting;
+import com.slzr.set.domain.M1SysSetting;
+import com.slzr.set.domain.SLSysSetting;
+import com.slzr.set.domain.ZJSysSetting;
+import com.slzr.set.service.ICSysSettingService;
+
+@RequestMapping("/ICSys/Setting")
+@Controller
+public class ICSysSettingController extends BaseController {
+	private String prefix = "set/icsys";
+
+	@Autowired
+	private ICSysSettingService icSysSettingService;
+
+	@SystemControllerLog(description = "0")
+	@GetMapping("")
+	String merch(Model model) {
+		return prefix + "/setting";
+	}
+
+	@GetMapping("/list")
+	@ResponseBody
+	PageUtils list(@RequestParam Map<String, Object> params) {
+		// 查询列表数据
+		Query query = new Query(params);
+		List<ICSysSettingDo> sysUserList = icSysSettingService.list(query);
+
+		int total = icSysSettingService.count(query);
+		PageUtils pageUtil = new PageUtils(sysUserList, total);
+		return pageUtil;
+	}
+
+	@GetMapping("/add")
+	String add(Model model) {
+		return prefix + "/add";
+	}
+
+	@SystemControllerLog(description = "1")
+	@PostMapping("/save")
+	@ResponseBody
+	public R save(@RequestParam Map<String, String> params) {
+		ICSysSettingDo icSysSettingDo = new ICSysSettingDo();
+        icSysSettingDo.setCreatedBy(getId());
+        icSysSettingDo.setCreatedDateTime(new Date());
+        
+        icSysSettingDo.setMerchantCode(params.get("merchantCode"));
+        
+        icSysSettingDo.setMaxAmount(StringUtils.isEmpty(params.get("maxAmount")) ? null : new BigDecimal(params.get("maxAmount")));
+        icSysSettingDo.setRemark(params.get("remark"));
+        
+        M1SysSetting m1SysSetting = new M1SysSetting(params.get("m1InitParam"), params.get("m1ReverseCardNO"), params.get("m1KeyType"), params.get("m1CardNOLength"));
+        icSysSettingDo.setM1(JSONUtils.beanPascalNameToJson(m1SysSetting));
+        
+        JTSysSetting jtSysSetting = new JTSysSetting(params.get("jtInitParam"), params.get("jtReverseCardNO"), params.get("jtKeyType"), params.get("jtCardNOLength"));
+        icSysSettingDo.setJt(JSONUtils.beanPascalNameToJson(jtSysSetting));
+        
+        ZJSysSetting zjSysSetting = new ZJSysSetting(params.get("zjInitParam"), params.get("zjReverseCardNO"), params.get("zjKeyType"), params.get("zjCardNOLength"));
+        icSysSettingDo.setZj(JSONUtils.beanPascalNameToJson(zjSysSetting));
+        
+        SLSysSetting slSysSetting = new SLSysSetting(params.get("slInitParam"), params.get("slReverseCardNO"), params.get("slKeyType"), params.get("slCardNOLength"));
+        icSysSettingDo.setSl(JSONUtils.beanPascalNameToJson(slSysSetting));
+		
+		if (icSysSettingService.save(icSysSettingDo) > 0) {
+			return R.ok();
+		}
+		return R.error();
+	}
+	
+	
+    @GetMapping("/edit/{id}")
+    String edit(Model model, @PathVariable("id") Long id) {
+    	ICSysSettingDo icSysSettingDo = icSysSettingService.get(id);
+    	
+        model.addAttribute("icSysSettingDo", icSysSettingDo);
+
+        return prefix + "/edit";
+    }
+    
+    
+    @PostMapping("/update")
+    @ResponseBody
+    public R update(@RequestParam Map<String, String> params) {
+    	ICSysSettingDo icSysSettingDo = new ICSysSettingDo();
+        icSysSettingDo.setUpdatedBy(getId());
+        icSysSettingDo.setUpdatedDateTime(new Date());
+        
+        icSysSettingDo.setId(Integer.parseInt(params.get("id")));
+        icSysSettingDo.setMerchantCode(params.get("merchantCode"));
+        
+        icSysSettingDo.setMaxAmount(StringUtils.isEmpty(params.get("maxAmount")) ? null : new BigDecimal(params.get("maxAmount")));
+        icSysSettingDo.setRemark(params.get("remark"));
+        
+        M1SysSetting m1SysSetting = new M1SysSetting(params.get("m1InitParam"), params.get("m1ReverseCardNO"), params.get("m1KeyType"), params.get("m1CardNOLength"));
+        icSysSettingDo.setM1(JSONUtils.beanPascalNameToJson(m1SysSetting));
+        
+        JTSysSetting jtSysSetting = new JTSysSetting(params.get("jtInitParam"), params.get("jtReverseCardNO"), params.get("jtKeyType"), params.get("jtCardNOLength"));
+        icSysSettingDo.setJt(JSONUtils.beanPascalNameToJson(jtSysSetting));
+        
+        ZJSysSetting zjSysSetting = new ZJSysSetting(params.get("zjInitParam"), params.get("zjReverseCardNO"), params.get("zjKeyType"), params.get("zjCardNOLength"));
+        icSysSettingDo.setZj(JSONUtils.beanPascalNameToJson(zjSysSetting));
+        
+        SLSysSetting slSysSetting = new SLSysSetting(params.get("slInitParam"), params.get("slReverseCardNO"), params.get("slKeyType"), params.get("slCardNOLength"));
+        icSysSettingDo.setSl(JSONUtils.beanPascalNameToJson(slSysSetting));
+        
+        if (icSysSettingService.update(icSysSettingDo) > 0) {
+            return R.ok();
+        }
+        return R.error();
+    }
+	
+    @PostMapping("/remove")
+    @ResponseBody
+    R remove(Long id) {
+        if (Constant.DEMO_ACCOUNT.equals(getUserName())) {
+            return R.error(1, "演示系统不允许修改,完整体验请部署程序");
+        }
+        
+        if (icSysSettingService.remove(id) > 0) {
+            return R.ok();
+        }
+        return R.error();
+    }
+
+}

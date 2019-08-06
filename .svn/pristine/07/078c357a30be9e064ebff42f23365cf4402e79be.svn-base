@@ -1,0 +1,84 @@
+package com.slzr.ureport.domain;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * 一级统计  线路消费统计
+ * @author Administrator
+ *
+ */
+public class ACountLineDo {
+	private static final long serialVersionUID = 1L;
+	
+	private Long id;
+	
+	private Date DateTime;  //日期
+	
+	private String Dept;		//部门
+	
+	private int ConsumptionPerson; //消费人次
+	
+	private BigDecimal ConsumptionAmount; //消费金额
+
+	public ACountLineDo() {
+		super();
+	}
+
+	public ACountLineDo(Long id, Date dateTime, String dept, int consumptionPerson, BigDecimal consumptionAmount) {
+		super();
+		this.id = id;
+		DateTime = dateTime;
+		Dept = dept;
+		ConsumptionPerson = consumptionPerson;
+		ConsumptionAmount = consumptionAmount;
+	}
+
+	public ACountLineDo(Date dateTime, String dept, int consumptionPerson, BigDecimal consumptionAmount) {
+		super();
+		DateTime = dateTime;
+		Dept = dept;
+		ConsumptionPerson = consumptionPerson;
+		ConsumptionAmount = consumptionAmount;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Date getDateTime() {
+		return DateTime;
+	}
+
+	public void setDateTime(Date dateTime) {
+		DateTime = dateTime;
+	}
+
+	public String getDept() {
+		return Dept;
+	}
+
+	public void setDept(String dept) {
+		Dept = dept;
+	}
+
+	public int getConsumptionPerson() {
+		return ConsumptionPerson;
+	}
+
+	public void setConsumptionPerson(int consumptionPerson) {
+		ConsumptionPerson = consumptionPerson;
+	}
+
+	public BigDecimal getConsumptionAmount() {
+		return ConsumptionAmount;
+	}
+
+	public void setConsumptionAmount(BigDecimal consumptionAmount) {
+		ConsumptionAmount = consumptionAmount;
+	}
+}

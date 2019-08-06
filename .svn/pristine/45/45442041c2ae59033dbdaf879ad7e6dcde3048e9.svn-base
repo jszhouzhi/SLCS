@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.set.dao.MerchDao">
+
+
+	<select id="get" resultType="com.slzr.set.domain.MerchDo">
+		select id,merchantCode,mapMerchantCode,merchantName,shortName,cityCode,contactPhone,contactPerson,settleMethod,settleRate,autoAuditCancelDays,onlySettleRate,
+		MerchantCodeIC,ApiUrlIC,AA_ApplyExpireDays,AA_ConfirmExpireDays,
+		settlePeriod,settlePeriodUnit,settleDay,serviceFee,lastSettleDateTime,enableStatus,enableWhiteList,whiteList,topupFeeType,topupFee from BAR_Merchant where id = #{id}
+	</select>
+
+	<select id="list" resultType="com.slzr.set.domain.MerchDo">
+		<if test="offset != null and limit != null">
+		select top ${limit}  *  from (	
+		</if>
+	
+		SELECT 
+		<if test="offset != null and limit != null">
+			ROW_NUMBER() OVER(ORDER BY merchantCode desc) AS Seq,
+		</if> id,merchantCode,mapMerchantCode,merchantName,shortName,cityCode,contactPhone,contactPerson, AutoAuditCancelDays,OnlySettleRate,
+		MerchantCodeIC,ApiUrlIC,AA_ApplyExpireDays,AA_ConfirmExpireDays,
+		case when settleMethod = 1 then '充值金额' when settleMethod = 2 then '消费金额'  when settleMethod = 3 then '消费笔数' end AS settleMethod,
+		settleRate,
+		settlePeriod,settlePeriodUnit,settleDay,serviceFee,lastSettleDateTime,enableStatus,enableWhiteList,whiteList,topupFeeType,topupFee from BAR_Merchant
+       <where>
+		  		  <if test="keyWord != null and keyWord != ''">(   merchantName LIKE	 '${keyWord}%' OR cityCode LIKE	 '${keyWord}%' OR merchantCode LIKE '${keyWord}%' ) </if>
+		  		  <if test="settleMethod != null and settleMethod != ''"> AND settleMethod = #{settleMethod} </if>
+		   			<if test="merchantCode != null and merchantCode != ''"> AND merchantCode = #{merchantCode} </if>
+		   			<if test="mapMerchantCode != null and mapMerchantCode != ''"> AND mapMerchantCode = #{mapMerchantCode} </if>
+		  		 <if test="merchantName != null and merchantName != ''"> AND merchantName = #{merchantName} </if>
+		  		 <if test="shortName != null and shortName != ''"> AND shortName = #{shortName} </if>
+		          AND enableStatus = '1'
+	   </where>
+	   
+		
+		<if test="offset != null and limit != null">
+			) a where seq BETWEEN ${offset+1} and ${limit+offset}
+		</if>
+	   
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by merchantCode desc
+			</otherwise>
+        </choose>
+	</select>
+
+	<select id="count" resultType="int">
+		select count(*) from BAR_Merchant
+		<where>
+			<if test="keyWord != null and keyWord != ''">(   merchantName LIKE	 '${keyWord}%' OR cityCode LIKE	 '${keyWord}%' OR merchantCode LIKE '${keyWord}%' ) </if>
+			<if test="settleMethod != null and settleMethod != ''"> AND settleMethod = #{settleMethod} </if>
+			<if test="merchantCode != null and merchantCode != ''"> AND merchantCode = #{merchantCode} </if>
+			<if test="merchantName != null and merchantName != ''"> AND merchantCode = #{merchantName} </if>
+			<if test="shortName != null and shortName != ''"> AND merchantCode = #{shortName} </if>
+			AND enableStatus = '1'
+		</where>
+	</select>
+
+	<update id="remove" parameterType="java.lang.Long">
+		UPDATE  BAR_Merchant
+		<set>
+			enableStatus='2'
+		</set>
+		WHERE  id=#{id}
+	</update>
+
+
+	<insert id="save" parameterType="com.slzr.set.domain.MerchDo" useGeneratedKeys="true" keyProperty="id">
+		insert into BAR_Merchant
+		(
+		MapMerchantCode,
+		MerchantCode,
+		MerchantName,
+		ShortName,
+		CityCode,
+		ContactPhone,
+		ContactPerson,
+		SettleMethod,
+		SettleRate,
+		SettlePeriod,
+		SettlePeriodUnit,
+		SettleDay,
+		ServiceFee,
+		lastSettleDateTime,
+		EnableStatus,
+		EnableWhiteList,
+		WhiteList,
+		CreatedBy,
+		CreatedDateTime,
+		UpdatedBy,
+		UpdatedDateTime,
+		AutoAuditCancelDays,
+		OnlySettleRate,
+		TopupFeeType,
+		MerchantCodeIC,
+		ApiUrlIC,
+		AA_ApplyExpireDays,
+		AA_ConfirmExpireDays,
+		TopupFee
+		)
+		values
+		(
+		#{mapMerchantCode,jdbcType=VARCHAR},
+		#{merchantCode,jdbcType=VARCHAR},
+		#{merchantName,jdbcType=VARCHAR},
+		#{shortName,jdbcType=VARCHAR},
+		#{cityCode,jdbcType=VARCHAR},
+		#{contactPhone,jdbcType=VARCHAR},
+		#{contactPerson,jdbcType=VARCHAR},
+		#{settleMethod,jdbcType=CHAR},
+		#{settleRate,jdbcType=DECIMAL},
+		#{settlePeriod,jdbcType=INTEGER},
+		#{settlePeriodUnit,jdbcType=VARCHAR},
+		#{settleDay,jdbcType=INTEGER},
+		#{serviceFee,jdbcType=INTEGER},
+		#{lastSettleDateTime,jdbcType=TIMESTAMP},
+		#{enableStatus,jdbcType=CHAR},
+		#{enableWhiteList,jdbcType=CHAR},
+		#{whiteList,jdbcType=VARCHAR},
+		#{createdBy,jdbcType=INTEGER},
+		#{createdDate,jdbcType=TIMESTAMP},
+		#{updatedBy,jdbcType=INTEGER},
+		#{updatedDateTime,jdbcType=TIMESTAMP},
+		#{autoAuditCancelDays,jdbcType=INTEGER},
+		#{onlySettleRate,jdbcType=DECIMAL},
+		#{topupFeeType,jdbcType=INTEGER},
+		#{merchantCodeIC,jdbcType=VARCHAR},
+		#{apiUrlIC,jdbcType=VARCHAR},
+		#{aAApplyExpireDays,jdbcType=INTEGER},
+		#{aAConfirmExpireDays,jdbcType=INTEGER},
+		#{topupFee,jdbcType=DECIMAL}
+		)
+	</insert>
+
+
+	<update id="update" parameterType="com.slzr.set.domain.MerchDo">
+		update BAR_Merchant
+		<set>
+			<if test="merchantCode != null">merchantCode = #{merchantCode}, </if>
+			<if test="mapMerchantCode != null">mapMerchantCode = #{mapMerchantCode}, </if>
+			<if test="merchantName != null">merchantName = #{merchantName}, </if>
+			<if test="shortName != null">shortName = #{shortName}, </if>
+			<if test="cityCode != null">cityCode = #{cityCode}, </if>
+			<if test="contactPhone != null">contactPhone = #{contactPhone}, </if>
+			<if test="contactPerson != null">contactPerson = #{contactPerson}, </if>
+			<if test="settleMethod != null">settleMethod = #{settleMethod}, </if>
+			<if test="settleRate != null">settleRate = #{settleRate}, </if>
+			<if test="settlePeriod != null">settlePeriod = #{settlePeriod}, </if>
+			<if test="settlePeriodUnit != null">settlePeriodUnit = #{settlePeriodUnit}, </if>
+			<if test="settleDay != null">settleDay = #{settleDay}, </if>
+			<if test="serviceFee != null">serviceFee = #{serviceFee}, </if>
+			<if test="lastSettleDateTime != null">lastSettleDateTime = #{lastSettleDateTime}, </if>
+			<if test="enableStatus != null">enableStatus = #{enableStatus}, </if>
+			<if test="enableWhiteList != null">enableWhiteList = #{enableWhiteList}, </if>
+			<if test="whiteList != null">whiteList = #{whiteList}, </if>
+			<if test="createdDate != null">createdDateTime = #{createdDate}, </if>
+			<if test="updatedBy != null">updatedBy = #{updatedBy}, </if>
+			<if test="updatedDateTime != null">updatedDateTime = #{updatedDateTime},</if>
+			<if test="autoAuditCancelDays != null">AutoAuditCancelDays = #{autoAuditCancelDays},</if>
+			<if test="onlySettleRate != null">OnlySettleRate = #{onlySettleRate},</if>			
+			<if test="topupFeeType != null">TopupFeeType = #{topupFeeType},</if>
+			<if test="merchantCodeIC != null">MerchantCodeIC = #{merchantCodeIC},</if>
+			<if test="apiUrlIC != null">ApiUrlIC = #{apiUrlIC},</if>
+			<if test="aAApplyExpireDays != null">AA_ApplyExpireDays = #{aAApplyExpireDays},</if>
+			<if test="aAConfirmExpireDays != null">AA_ConfirmExpireDays = #{aAConfirmExpireDays},</if>
+			<if test="topupFee != null">TopupFee = #{topupFee}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<select id="getServiceFee" resultType="com.slzr.set.domain.MerchDo">
+		select * from BAR_Merchant where merchantCode = #{merchantcode}
+	</select>
+	
+</mapper>

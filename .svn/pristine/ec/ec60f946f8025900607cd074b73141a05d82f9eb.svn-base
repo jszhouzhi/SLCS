@@ -1,0 +1,276 @@
+
+var prefix = "/account/member"
+$(function() {
+	load();
+	//good test morning
+});
+$('#exampleTable').on('load-success.bs.table', function (e, data) {
+    if (data.total && !data.rows.length) {
+        $('#exampleTable').bootstrapTable('selectPage').bootstrapTable('refresh');
+    }
+});
+
+layui.use('form', function(){
+	  var form = layui.form;
+	  
+	  var users = $.cookie("onlyDeductions") || '';
+	  if(users == '')
+		  $('#isDeductions').remove('checked');
+	  else
+		 $('#isDeductions').attr('checked','checked');
+
+	  form.on('checkbox(checkDeductionsUsers)', function(data){
+		  var users = data.elem.checked ? '1' : '';
+		  $.cookie("onlyDeductions", users);
+	  });  
+	  form.render();
+	  
+	});
+
+function load() {
+	$('#exampleTable')
+			.bootstrapTable(
+					{
+						method : 'get', // 服务器数据的请求方式 get or post
+						url : prefix + "/list", // 服务器数据的加载地址
+					//	showRefresh : true,
+					//	showToggle : true,
+					//	showColumns : true,
+						iconSize : 'outline',
+						toolbar : '#exampleToolbar',
+						striped : true, // 设置为true会有隔行变色效果
+						dataType : "json", // 服务器返回的数据类型
+						pagination : true, // 设置为true会在底部显示分页条
+						// queryParamsType : "limit",
+						// //设置为limit则会发送符合RESTFull格式的参数
+						singleSelect : false, // 设置为true将禁止多选
+						// contentType : "application/x-www-form-urlencoded",
+						// //发送到服务器的数据编码类型
+						pageSize : 10, // 如果设置了分页，每页数据条数
+						pageNumber : 1, // 如果设置了分布，首页页码
+						//search : true, // 是否显示搜索框
+						showColumns : false, // 是否显示内容下拉框（选择显示的列）
+						sidePagination : "server", // 设置在哪里进行分页，可选值为"client" 或者 "server"
+						queryParams : function(params) {
+							return {
+								//说明：传入后台的参数包括offset开始索引，limit步长，sort排序列，order：desc或者,以及所有列的键值对
+								limit: params.limit,
+								offset:params.offset,
+								enable:$('#enable').val(),
+								searchName:$('#searchName').val()
+							};
+						},
+						// //请求服务器数据时，你可以通过重写参数的方式添加一些额外的参数，例如 toolbar 中的参数 如果
+						// queryParamsType = 'limit' ,返回参数必须包含
+						// limit, offset, search, sort, order 否则, 需要包含:
+						// pageSize, pageNumber, searchText, sortName,
+						// sortOrder.
+						// 返回false将会终止请求
+						columns : [
+							{
+								field : 'id', 
+								visible : 'false',
+								title : 'ID' 
+							},
+								{
+									field : 'merchantName', 
+									align : 'center',
+									title : '商户代码' 
+								},
+																{
+									field : 'typeID', 
+									align : 'center',
+									title : '会员类型' ,
+									formatter : function(value, row, index) {
+										if (value == '1') {
+											return '折扣会员';
+										}
+										return value;
+									}
+								},
+																{
+									field : 'name', 
+									align : 'left',
+									title : '名称' 
+								},
+																{
+									field : 'describe', 
+									align : 'center',
+									title : '描述' 
+								},
+																{
+									field : 'discount', 
+									align : 'center',
+									title : '折扣' 
+								},
+																{
+									field : 'buyMonthPrice', 
+									align : 'center',
+									title : '月会员价格' 
+								},
+																{
+									field : 'buySeasonPrice', 
+									align : 'center',
+									title : '季会员价格' 
+								},
+																{
+									field : 'buyYearPrice', 
+									align : 'center',
+									title : '年会员价格' 
+								},
+																{
+									field : 'buyMonthDiscountPrice', 
+									align : 'center',
+									title : '月优惠价格' 
+								},
+																{
+									field : 'buySeasonDiscountPrice', 
+									align : 'center',
+									title : '季优惠价格' 
+								},
+																{
+									field : 'buyYearDiscountPrice', 
+									align : 'center',
+									title : '年优惠价格' 
+								},
+																{
+									field : 'buyDiscountStartDate', 
+									align : 'center',
+									title : '优惠开始时间' 
+								},
+																{
+									field : 'buyDiscountEndDate', 
+									align : 'center',
+									title : '优惠结束时间' 
+								},
+																{
+									field : 'maxDiscountAmount', 
+									align : 'center',
+									title : '单次最大优惠金额' 
+								},
+																{
+									field : 'enable', 
+									align : 'center',
+									title : '是否启用',
+									formatter : function(value, row, index) {
+										if (value == '0') {
+											var g = '未启用&nbsp;<button class="layui-btn layui-btn-sm'+s_g_h+'" type="button" onclick="operation(\''+ row.id + '\', 1)">启用</button>';
+											return g ;
+										} else if (value == '1') {
+											var g = '已启用&nbsp;<button class="layui-btn layui-btn-sm'+s_g_h+'" type="button" onclick="operation(\''+ row.id + '\', -1)">关闭</button>';
+											return g ;
+										}
+										return value;
+									}
+								},
+																{
+									field : 'userName', 
+									align : 'center',
+									title : '创建人' 
+								},
+																{
+									field : 'createdDate', 
+									align : 'center',
+									title : '创建时间' 
+								},
+																{
+									field : 'id', 
+									align : 'center',
+									title : '操作',
+									formatter : function(value, row, index) {
+										  return '<a  class="btn btn-primary btn-sm" href="#" mce_href="#" title="编辑"  onclick="edit('+ row.id +')"><i class="fa fa-edit "></i></a> ';
+										  
+									}
+								}
+								]
+					});
+}
+function reLoad() {
+	$('#exampleTable').bootstrapTable('refresh');
+}
+
+
+function showimg(url) {
+    layer.open({
+        type: 1,
+        title: false, //不显示标题
+        //skin: 'layui-layer-rim', //加上边框
+        area: ['640px', '435px'], //宽高
+        content: '<div style="padding:0px 0px;"><img src="'+ url + '"/></div>'
+    });
+
+}
+
+function add() {
+    // iframe层
+    layer.open({
+        type : 2,
+        title : '添加会员类型',
+        maxmin : true,
+        shadeClose : false, // 点击遮罩关闭层
+        area : [ '800px', '820px' ],
+        content : prefix + '/add'
+    });
+}
+
+function edit(id) {
+    layer.open({
+        type : 2,
+        title : '修改会员类型',
+        maxmin : true,
+        shadeClose : true, // 点击遮罩关闭层
+        area : [ '800px', '820px' ],
+        content : prefix + '/edit/' + id // iframe的url
+    });
+}
+
+function operation(accountno, operationType) {
+	if(operationType == -1){
+		layer.confirm('取消启用该会员类型？', {
+			btn : [ '确定', '取消' ]
+		}, function() {
+			$.ajax({
+				url : "/account/member/operation",
+				type : "post",
+				data : {
+					'accountno' : accountno,
+					'operationType' : "0"
+				},
+				success : function(r) {
+					if (r.code == 0) {
+						layer.msg(r.msg);
+						reLoad();
+					} else {
+						layer.msg(r.msg);
+					}
+				}
+			});
+		})
+	}
+	if(operationType == 1){
+		layer.confirm('启用该会员类型？', {
+			btn : [ '确定', '取消' ]
+		}, function() {
+			$.ajax({
+				url : "/account/member/operation",
+				type : "post",
+				data : {
+					'accountno' : accountno,
+					'operationType' : "1"
+				},
+				success : function(r) {
+					if (r.code == 0) {
+						layer.msg(r.msg);
+						reLoad();
+					} else {
+						layer.msg(r.msg);
+					}
+				}
+			});
+		})
+	}
+
+}
+
+
+

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.system.dao.StatisticsDao">	
+	<select id="GetTotalStatistics" resultType="com.slzr.system.vo.AmountNumVO">
+		SELECT SUM([TopupNum]) as TopupNum
+	      ,SUM([TopupAmount]) as TopupAmount
+	      ,SUM([DebitNum]) as DebitNum
+	      ,SUM([DebitAmount]) as DebitAmount
+	      ,SUM([RefundNum]) as RefundNum
+	      ,SUM([RefundAmount]) as RefundAmount
+	  FROM [dbo].[BAR_DailySummary_Base] 
+	  <where>
+	  	<if test="code != null and code != ''"> and MerchantCode=#{code} </if>
+	  </where>
+	</select>
+	
+	<select id="GetTodayStatistics" resultType="com.slzr.system.vo.AmountNumVO">
+		SELECT SUM([TopupNum]) as TopupNum
+	      ,SUM([TopupAmount]) as TopupAmount
+	      ,SUM([DebitNum]) as DebitNum
+	      ,SUM([DebitAmount]) as DebitAmount
+	      ,SUM([RefundNum]) as RefundNum
+	      ,SUM([RefundAmount]) as RefundAmount
+	  FROM [dbo].[BAR_DailySummary_Base] 
+	  where (DATEDIFF(d, [TxnDate], GETDATE()) = 0) 
+	  <if test="code != null and code != ''"> and MerchantCode=#{code} </if>
+	</select>
+	
+	<select id="GetWeekRegister" resultType="com.slzr.system.vo.DayRegisterVO">
+	SELECT Convert(varchar(10),createddate,121) as date,count(*) as DayRegister FROM [dbo].[BAR_Account] 
+	where createddate > DATEADD(day,-7,getdate()) 
+	<if test="code != null and code != ''"> and MerchantCode=#{code} </if>
+	 group by Convert(varchar(10),createddate,121)
+	</select>
+	
+	<select id="GetTodayRegister" resultType="int">
+		SELECT count(*) FROM [dbo].[BAR_Account]
+	  	where (DATEDIFF(d, [createddate], GETDATE()) = 0) 
+		<if test="code != null and code != ''"> and MerchantCode=#{code} </if>
+	</select>
+	
+	<select id="GetTotalRegister" resultType="int">
+		SELECT count(*) FROM [dbo].[BAR_Account]
+		<where>
+			<if test="code != null and code != ''"> and MerchantCode=#{code} </if>
+		</where>
+	</select>
+	
+	<select id="GetWeekDay" resultType="com.slzr.system.vo.WeekDayVO">
+		SELECT CONVERT(varchar(10), [TxnDate], 121) as date
+	      ,SUM([TopupNum]) as DayTopupNum
+	      ,SUM([TopupAmount]) as DayTopupAmount
+	      ,SUM([DebitNum]) as DayDebitNum
+	      ,SUM([DebitAmount]) as DayDebitAmount
+	      ,SUM([RefundNum]) as DayRefundNum
+	      ,SUM([RefundAmount]) as DayRefundAmount
+	  FROM [dbo].[BAR_DailySummary_Base] 
+	  where DATEDIFF(d, [TxnDate], GETDATE()) &lt; 7
+	  <if test="code != null and code != ''"> and MerchantCode=#{code}</if>
+	  GROUP BY CONVERT(varchar(10), [TxnDate], 121)
+	</select>
+	
+</mapper>

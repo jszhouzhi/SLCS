@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.slzr.account.dao.IcCardAuditDao">
+ 
+
+    <!-- 数据库中表名为:IC_Card_Audit的列名,as前是数据库的列明,as后是列的别名用于映射成实体类中的属性,需要注意的是别名必须与resultMap中的column别名一致 -->
+    <sql id="IC_Card_Audit_Column">
+        i.ID as ID
+        ,i.CreatedBy as CreatedBy
+        ,i.AuditDesc as AuditDesc
+        ,i.CertPhotoBackUrl as CertPhotoBackUrl
+        ,i.ConfirmPhotoUrl as ConfirmPhotoUrl
+        ,i.Gender as Gender
+        ,i.PersonPhotoUrl as PersonPhotoUrl
+        ,i.PersonPhotoBackUrl as PersonPhotoBackUrl
+        ,i.MobilePhone as MobilePhone
+         
+        ,i.CardExpireTime as CardExpireTime
+        ,i.CardNO as CardNO
+        ,i.UpdatedBy as UpdatedBy
+        ,i.CertPhotoUrl as CertPhotoUrl
+        ,i.CardTypeID as CardTypeID
+        ,i.State as State
+        ,i.UpdatedDate as UpdatedDate
+        ,i.CertNO as CertNO
+        ,i.TrueName as TrueName
+        ,i.CreatedDate as CreatedDate
+        ,i.SubCardTypeID as SubCardTypeID
+        ,i.Times as Times
+        ,i.BeforeCardExpireTime as BeforeCardExpireTime
+        ,i.MerchantCode as MerchantCode
+        
+    </sql>
+
+
+    
+    
+    
+    
+    <select id="getByid" resultType="com.slzr.account.domain.IcCardAuditDO">
+        select 
+            <include refid="IC_Card_Audit_Column" /> 
+        from IC_Card_Audit i
+        where i.ID = #{id}
+	</select>
+	
+	<select id="getBycardNo" resultType="com.slzr.account.domain.IcCardAuditDO">
+        select 
+            <include refid="IC_Card_Audit_Column" /> 
+        from IC_Card_Audit i
+        where i.cardNo = #{cardNo}
+	</select>
+
+	<select id="list" resultType="com.slzr.account.domain.IcCardAuditDO">
+				select top ${limit}  *  from (								
+		SELECT 
+		ROW_NUMBER() OVER(ORDER BY i.CreatedDate desc) AS Seq,    <include refid="IC_Card_Audit_Column" /> ,
+			t.CardTypeName as cardTypeName,
+			m.NickName as nickName,			
+			 case
+			 when i.state = 0 then '待审核'
+			 when i.state = 1 then '审核通过'  when i.state = -1 then '审核不通过' END AS stateName
+				
+			from IC_Card_Audit i
+			LEFT JOIN BAR_CardType t ON  i.CardTypeID = t.CardTypeID AND i.MerchantCode = t.MerchantCode
+			LEFT JOIN BAR_Member m ON  m.id = i.CreatedBy
+        <where>  
+		  		  
+  <if test="searchName != null and searchName != ''">(   i.CertNO LIKE	 '${searchName}%' OR i.MobilePhone LIKE	 '${searchName}%' OR i.TrueName LIKE	'${searchName}%')</if>
+  <if test="stateName != null and stateName != ''"> and i.State = #{stateName} </if>
+		  		</where>
+		  		) a
+		where seq BETWEEN ${offset+1} and ${limit+offset}
+		  		
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by a.CreatedDate DESC
+			</otherwise>
+        </choose>
+	</select>
+	
+ 	<select id="count" resultType="int">
+			select   count(*)
+			from IC_Card_Audit i
+			LEFT JOIN BAR_CardType t ON  i.CardTypeID = t.CardTypeID AND i.MerchantCode = t.MerchantCode
+			LEFT JOIN BAR_Member m ON  m.id = i.CreatedBy
+		 <where>  
+    <if test="searchName != null and searchName != ''">(   i.CertNO LIKE	 '${searchName}%' OR i.MobilePhone LIKE	 '${searchName}%' OR i.TrueName LIKE	'${searchName}%')</if>
+    <if test="stateName != null and stateName != ''"> and i.State = #{stateName} </if>
+		  		</where>
+	</select>
+	 
+ 
+	 
+	<update id="update" parameterType="com.slzr.account.domain.IcCardAuditDO">
+        update IC_Card_Audit
+        <set>
+            <if test="createdBy != null">
+                CreatedBy=#{createdBy},
+            </if>
+            <if test="auditDesc != null">
+                AuditDesc=#{auditDesc},
+            </if>
+            <if test="certPhotoBackUrl != null">
+                CertPhotoBackUrl=#{certPhotoBackUrl},
+            </if>
+            <if test="confirmPhotoUrl != null">
+                ConfirmPhotoUrl=#{confirmPhotoUrl},
+            </if>
+            <if test="gender != null">
+                Gender=#{gender},
+            </if>
+            <if test="personPhotoUrl != null">
+                PersonPhotoUrl=#{personPhotoUrl},
+            </if>
+            <if test="personPhotoBackUrl != null">
+                PersonPhotoBackUrl=#{personPhotoBackUrl},
+            </if>
+            <if test="mobilePhone != null">
+                MobilePhone=#{mobilePhone},
+            </if>
+  <!--           <if test="cardTypeCode != null">
+                CardTypeCode=#{cardTypeCode},
+            </if> -->
+            <if test="cardExpireTime != null">
+                CardExpireTime=#{cardExpireTime},
+            </if>
+            <if test="cardNO != null">
+                CardNO=#{cardNO},
+            </if>
+            <if test="updatedBy != null">
+                UpdatedBy=#{updatedBy},
+            </if>
+            <if test="certPhotoUrl != null">
+                CertPhotoUrl=#{certPhotoUrl},
+            </if>
+            <if test="cardTypeID != null">
+                CardTypeID=#{cardTypeID},
+            </if>
+            <if test="state != null">
+                State=#{state},
+            </if>
+            <if test="updatedDate != null">
+                UpdatedDate=#{updatedDate},
+            </if>
+            <if test="certNO != null">
+                CertNO=#{certNO},
+            </if>
+            <if test="trueName != null">
+                TrueName=#{trueName},
+            </if>
+            <if test="createdDate != null">
+                CreatedDate=#{createdDate},
+            </if>
+            
+            <if test="subCardTypeID != null">
+                SubCardTypeID=#{subCardTypeID},
+            </if>
+            
+            <if test="times != null">
+                Times=#{times},
+            </if>
+            
+            <if test="beforeCardExpireTime != null">
+                BeforeCardExpireTime=#{beforeCardExpireTime},
+            </if>
+            
+        </set>
+        where ID=#{id}
+	</update>
+	
+	
+	<select id="getFirst" resultType="com.slzr.account.domain.IcCardAuditDO">
+		select top 1 * from IC_Card_Audit where CardNO = #{cardNO} and id != #{id} order by CreatedDate desc 
+	</select>
+	
+ 
+
+</mapper>

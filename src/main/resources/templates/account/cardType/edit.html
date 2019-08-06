@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="signupForm">
+							<input id="id" name="id" th:value="${cardType.id}"  type="hidden">
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label">商户：</label>
+								<div class="col-sm-8">
+									<select class="form-control" lay-verify="required"
+										name="merchantcode" id="merchantcode">
+									<option value="">请选择</option>
+									<option th:each="merchant : ${merchantList}" th:value="${merchant.merchantCode}" th:text="${merchant.merchantName}" th:selected="${cardType.merchantcode==merchant.merchantCode}"></option>
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">卡类型编号：</label>
+								<div class="col-sm-8">
+									<input id="cardTypeID" name="cardTypeID" th:value="${cardType.cardTypeID}" class="form-control" type="text">
+								</div>
+							</div>
+							
+							
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">卡类型名称：</label>
+								<div class="col-sm-8">
+									<input id="cardtypename" name="cardtypename" th:value="${cardType.cardtypename}"  class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">描述：</label>
+								<div class="col-sm-8">
+									<input id="cardtypedesc" name="cardtypedesc" th:value="${cardType.cardtypedesc}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">有效天数：</label>
+								<div class="col-sm-8">
+									<input id="validdays" name="validdays" th:value="${cardType.validdays}" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">自动审计：</label>
+								<div class="col-sm-8">
+									<select class="form-control" lay-verify="required"
+										name="autoaudit" id="autoaudit">
+  									    <option value="true" th:selected="${cardType.autoaudit==true}">是</option>
+										<option value="false" th:selected="${cardType.autoaudit==false}">否</option>
+									</select>
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">审计有效日：</label>
+								<div class="col-sm-8">
+									<input id="auditvaliddays" name="auditvaliddays" th:value="${cardType.auditvaliddays}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">允许审计日：</label>
+								<div class="col-sm-8">
+									<input id="allowauditdays" name="allowauditdays" th:value="${cardType.allowauditdays}" class="form-control" type="text">
+								</div>
+							</div>
+							
+
+		 
+		 					<div class="form-group">	
+								<label class="col-sm-3 control-label">最低金额：</label>
+								<div class="col-sm-8">
+									<input id="minBalance" name="minBalance" th:value="${cardType.minBalance}"  class="form-control" type="text">
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label">次卡类型：</label>
+								<div class="col-sm-8">
+									<select class="form-control" lay-verify="required"
+										name="subCardTypeID" id="subCardTypeID">
+										<option value="">请选择</option>
+  									    <option value="1" th:selected="${cardType.subCardTypeID==1}">电子钱包</option>
+										<option value="2" th:selected="${cardType.subCardTypeID==2}">月票</option>
+										<option value="3" th:selected="${cardType.subCardTypeID==3}">季票</option>
+										<option value="4" th:selected="${cardType.subCardTypeID==4}">年票</option>
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">次数：</label>
+								<div class="col-sm-8">
+									<input id="times" name="times" th:value="${cardType.times}"  class="form-control" type="text">
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label">是否允许进行圈存：</label>
+								<div class="col-sm-8">
+									<select class="form-control" lay-verify="required"
+										name="enableTopup" id="enableTopup">
+  									    <option value="0" th:selected="${cardType.enableTopup==0}" >不允许</option>
+										<option value="1" th:selected="${cardType.enableTopup==1}">允许</option>
+									</select>
+								</div>
+							</div>							
+
+							<div class="form-group">
+								<div class="col-sm-8 col-sm-offset-3">
+									<button type="submit" class="btn btn-primary">提交</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+	</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="application/javascript" th:src="@{/js/appjs/account/cardType/edit.js}"></script>
+</body>
+</html>

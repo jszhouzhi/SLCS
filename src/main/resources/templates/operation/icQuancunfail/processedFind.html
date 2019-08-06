@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg commonquerypage">
+	<div class="wrapper wrapper-content ">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar clearfix">
+						<div class="columns pull-left">
+
+								<button   class="btn  btn-warning" onclick="excel()" type="button">
+									<i aria-hidden="true" class="fa fa-trash hidden"></i>导出
+								</button>
+
+						</div>
+						<div class="searchbox columns pull-left col-md-4 nopadding">
+							<input class="searchinput form-control" id="searchName" placeholder="请输入关键字进行搜索,如订单号" type="text">
+						</div>
+						<div class="querybtns columns pull-left">
+							<button class="btn btn-success btn-sm" onclick="reLoad()">查询</button>
+							<button id="btnreset" class="btn btn-success btn-sm">重置</button>
+						</div>
+						<span class="modechangebtn pull-right">高级查询 <i class="fa fa-chevron-down"></i></span>
+					</div>
+ 					<div class="query-inputs clearfix">
+						<div class="layui-form">
+							<div class="layui-form-item">
+<!-- 								<div class="layui-inline">
+									<label class="layui-form-label" style="width: 100px">过期未圈存</label>
+									<div class="layui-input-block">
+										<select name="setdate" lay-verify="required" style="width: 95%" id="setdate" lay-filter="setdate">
+											<option value="0">-</option>
+											<option value="1">超过1天</option>
+											<option value="3">超过3天</option>
+											<option value="7">超过7天</option>
+											<option value="15">超过15天</option>
+											<option value="30">超过30天</option>
+										</select>
+									</div>
+								</div> -->
+								
+						<div class="layui-inline">
+						    <label class="layui-form-label">开始日期</label>
+						    <div class="layui-input-block">
+						    	<input id="sdate" class="form-control" type="text" data-date-format="yyyy-mm-dd" th:value="${dwmq.StartDay}">
+						    </div>
+					    </div>
+					    
+					    <div class="layui-inline">
+						    <label class="layui-form-label">结束日期</label>
+						    <div class="layui-input-block">
+						    	<input id="edate" class="form-control" type="text" data-date-format="yyyy-mm-dd" th:value="${dwmq.EndDay}">
+						    </div>
+					    </div>
+								
+						<div class="layui-inline">
+							  <label class="layui-form-label">商户：</label>
+							  <div class="layui-input-block">
+								  <select class="form-control" id="merchantCode" name="merchantCode">
+									  <option value="">全部</option>
+									  <option th:each="merchant : ${merchantList}" th:value="${merchant.merchantCode}" th:text="${merchant.merchantName}"></option>
+								  </select>
+							  </div>
+						</div>
+						
+						<div class="layui-inline">
+				  			  <label class="layui-form-label">审核状态：</label>
+							  <div class="layui-input-block">
+								  <select class="form-control" id=rState name="rState">
+								   	  <option value="">全部</option>
+									  <option value="0">失败</option>
+									  <option value="1">成功</option>
+ 
+								  </select>
+							  </div> 
+ 
+						</div>
+						
+							</div>
+						</div>
+					</div>
+
+					<table id="exampleTable" data-mobile-responsive="true">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	</div>
+	<div th:include="include :: footer"></div>
+	<script type="application/javascript" th:src="@{/js/appjs/operation/icQuancunfail/processedFind.js}"></script>
+	
+		<script type="text/javascript">
+		$("#document").ready(function(){
+			$('#sdate,#edate').datetimepicker({
+		        format: 'yyyy-mm-dd',
+		        language:  'zh-CN',
+		        weekStart: 1,
+		        todayBtn:  1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 2,
+				minView: 2,
+				forceParse: 0
+		    });
+		});
+		
+        Number.prototype.toFixed=function (d) { 
+            var s=this+""; 
+            if(!d)d=0; 
+            if(s.indexOf(".")==-1)s+="."; 
+            s+=new Array(d+1).join("0"); 
+            if(new RegExp("^(-|\\+)?(\\d+(\\.\\d{0,"+(d+1)+"})?)\\d*$").test(s)){
+                var s="0"+RegExp.$2,pm=RegExp.$1,a=RegExp.$3.length,b=true;
+                if(a==d+2){
+                    a=s.match(/\d/g); 
+                    if(parseInt(a[a.length-1])>4){
+                        for(var i=a.length-2;i>=0;i--){
+                            a[i]=parseInt(a[i])+1;
+                            if(a[i]==10){
+                                a[i]=0;
+                                b=i!=1;
+                            }else break;
+                        }
+                    }
+                    s=a.join("").replace(new RegExp("(\\d+)(\\d{"+d+"})\\d$"),"$1.$2");
+
+                }if(b)s=s.substr(1); 
+                return (pm+s).replace(/\.$/,"");
+            }return this+"";
+
+        };
+	</script>
+</body>
+</html>

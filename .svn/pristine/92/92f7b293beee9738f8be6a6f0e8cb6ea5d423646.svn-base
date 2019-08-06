@@ -1,0 +1,32 @@
+(function(){
+	$("#document").ready(function(){
+		var inputbox=$(".commonquerypage").find(".query-inputs");
+		var inputsearch=$(".commonquerypage").find(".searchinput");
+		$(".commonquerypage").find(".modechangebtn").on("click",function(){
+			if(!$(this).hasClass("nothigh"))
+			{
+				$(this).html("基本查询 <i class=\"fa fa-chevron-up\"></i>");
+				$(this).addClass("nothigh");
+				inputbox.show();
+			}else
+			{
+				$(this).html("高级查询 <i class=\"fa fa-chevron-down\"></i>");
+				$(this).removeClass("nothigh");
+				inputbox.hide();
+			}
+		});
+		$(".commonquerypage").find("#btnreset").on("click",function(){
+			inputsearch.val("");
+			inputbox.find("input[type='text'],input[type='textarea']").each(function(){
+				$(this).val("");
+			});
+		});
+		layui.use('form', function(){});
+		layui.use('laydate', function(){
+		  var laydate = layui.laydate;
+		  laydate.render({
+		    elem: '.datepicker'
+		  });
+		});
+	});
+})();

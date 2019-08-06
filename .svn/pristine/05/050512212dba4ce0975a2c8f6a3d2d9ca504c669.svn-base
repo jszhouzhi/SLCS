@@ -1,0 +1,102 @@
+package com.slzr.ureport.domain;
+
+import java.math.BigDecimal;
+
+
+/**
+ * 充值统计
+ */
+public class AccountCountDo {
+
+    private Integer id;
+    //充值日期
+    private  String txnDate;
+    //充值方式
+    private String payMethod;
+    //充值地点
+    private String payAddress;
+    //充值笔数
+    private Integer topupNum;
+    //充值金额
+    private BigDecimal topupAmount;
+
+    private String userName;
+
+    //起始查询日
+    private String startDate;
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    //终止日
+    private  String endDate;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getTxnDate() {
+        return txnDate;
+    }
+
+    public void setTxnDate(String txnDate) {
+        this.txnDate = txnDate;
+    }
+
+    public String getPayMethod() {
+        return payMethod;
+    }
+
+    public void setPayMethod(String payMethod) {
+        this.payMethod = payMethod;
+    }
+
+    public String getPayAddress() {
+        return payAddress;
+    }
+
+    public void setPayAddress(String payAddress) {
+        this.payAddress = payAddress;
+    }
+
+    public Integer getTopupNum() {
+        return topupNum;
+    }
+
+    public void setTopupNum(Integer topupNum) {
+        this.topupNum = topupNum;
+    }
+
+    public BigDecimal getTopupAmount() {
+        return topupAmount;
+    }
+
+    public void setTopupAmount(BigDecimal topupAmount) {
+        this.topupAmount = topupAmount;
+    }
+}

@@ -1,0 +1,231 @@
+package com.slzr.operation.controller;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.util.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.slzr.account.domain.AccountCancelDO;
+import com.slzr.common.annotation.SystemControllerLog;
+import com.slzr.operation.domain.DebitTransDO;
+import com.slzr.set.domain.MerchDo;
+import com.slzr.set.service.MerchService;
+import com.slzr.system.domain.UserDO;
+import com.slzr.system.service.UserService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.utils.DWMQDateUtil;
+import com.slzr.common.utils.DWMQDateVO;
+import com.slzr.common.utils.DateUtils;
+import com.slzr.common.utils.ExcelExportTool;
+import com.slzr.common.utils.PageUtils;
+import com.slzr.common.utils.Query;
+import com.slzr.common.utils.R;
+import com.slzr.operation.domain.DailysummarySettleDO;
+import com.slzr.operation.domain.DailysummaryTopupDO;
+import com.slzr.operation.service.DailysummarySettleService;
+
+
+@Controller
+@RequestMapping("/operation/settle")
+public class DailysummarySettleController extends BaseController {
+	private String prefix = "operation/settle";
+	@Autowired
+	private DailysummarySettleService settleservice;
+
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private MerchService merchService;
+	
+	@GetMapping("/list")
+	@SystemControllerLog(description="0")
+	public String list(Model model) {
+		HashMap<String,Object> params=new HashMap<>();
+		UserDO userDO = userService.get(getId());
+		List<MerchDo> merchantList=null;
+		if(userDO.getMerchantCode()==""||userDO.getMerchantCode()==null){
+			merchantList=merchService.list(params);
+		}else{
+			params.put("merchantCode",userDO.getMerchantCode());
+			merchantList=merchService.list(params);
+		}
+		DWMQDateVO dwmq = null;
+		try {
+			dwmq = DWMQDateUtil.GetDWMQDateVO(DateUtils.format(Calendar.getInstance().getTime(), DateUtils.DATE_PATTERN));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		model.addAttribute("dwmq", dwmq);
+		model.addAttribute("merchantList",merchantList);
+		return prefix + "/list";
+	}
+	
+	@GetMapping("/detail/{id}")
+	public String detail(Model model,@PathVariable("id") String id) {
+		DailysummarySettleDO obj = settleservice.get(id);
+		model.addAttribute("model",obj);
+		model.addAttribute("settleMethodText",ConvertToSettleMethodText(obj.getSettleMethod()));
+		model.addAttribute("auditStatusText",ConvertToAuditStatusText(obj.getAuditStatus()));
+		return prefix + "/detail";
+	}
+	
+	@GetMapping("/check/{id}")
+	public String check(Model model,@PathVariable("id") String id) {
+		DailysummarySettleDO obj = settleservice.get(id);
+		model.addAttribute("model",obj);
+		return prefix + "/check";
+	}
+	
+	@GetMapping("/checkcw/{id}")
+	public String checkcw(Model model,@PathVariable("id") String id) {
+		DailysummarySettleDO obj = settleservice.get(id);
+		model.addAttribute("model",obj);
+		return prefix + "/checkcw";
+	}
+	
+	@ResponseBody
+	@GetMapping("api/list")
+	@RequiresPermissions("operation:settle:list")
+	public PageUtils list(@RequestParam Map<String, Object> params) {
+
+		if (!params.containsKey("merchantCode"))
+			params.put("merchantCode", getMerchantCode());
+		
+		Query query = new Query(params);
+		List<DailysummarySettleDO> list = settleservice.list(query);
+		int total = settleservice.count(query);
+		PageUtils pageUtil = new PageUtils(list, total);
+
+
+		return pageUtil;
+	}
+	
+	@ResponseBody
+	@SystemControllerLog(description="9")
+	@RequestMapping("api/check")
+	@RequiresPermissions("operation:settle:check")
+	public R apicheck(String id,int auditvalue){
+		if(auditvalue!=0&&auditvalue!=1)
+		{
+			return R.error("审核结果异常");
+		}
+		DailysummarySettleDO settledo = settleservice.get(id);
+		if(settledo.getAuditStatus()!=1)
+		{
+			settleservice.updateAudit(id, auditvalue, this.getId().intValue());
+		}else
+		{
+			return R.error("已经审核通过，不能重复审核");
+		}
+		return R.ok();
+	}
+	
+	@ResponseBody
+	@SystemControllerLog(description="9")
+	@RequestMapping("api/checkcw")
+	@RequiresPermissions("operation:settle:checkcw")
+	public R apicheckcw(String id,String remark,BigDecimal amount,Date transdate,String transno,int transstatus){
+		DailysummarySettleDO settledo = settleservice.get(id);
+		if(settledo.getTransferStatus()!=null && settledo.getTransferStatus()==1) 
+		{
+			return R.error("已经转账，不能重复操作");
+		}
+		if(settledo.getAuditStatus()==1)
+		{
+			settleservice.updateTransStatus(id, this.getId().intValue(), remark, amount, transdate, transno, transstatus);
+		}else
+		{
+			return R.error("未审核通过，不能转账");
+		}
+		return R.ok();
+	}
+	
+    @RequestMapping("/expexcel")
+	@SystemControllerLog(description="4")
+    public void expExceluser(ModelMap model,HttpServletRequest request,HttpServletResponse response,@RequestParam Map<String, Object> params){
+    	
+    	List<DailysummarySettleDO>  list = settleservice.list(params);
+    	LinkedHashMap<String, String> map = new LinkedHashMap<>();
+    	map.put("商户代码", "merchantCode");
+    	map.put("商户简称", "merchantName");
+    	map.put("充值金额", "topupAmount");
+    	map.put("充值笔数", "topupNum");
+    	map.put("消费金额", "debitAmount");
+    	map.put("消费笔数", "debitNum");
+    		    	
+    	map.put("退款金额", "refundAmount");
+    	map.put("退款笔数", "refundNum");
+    	map.put("退款服务费", "refundServiceFee");
+    	map.put("结算服务费", "serviceCharge");
+    	map.put("结算方式", "settleMethodName");
+    	map.put("结算费率", "settleRate");
+    	map.put("结算金额", "settleAmount");
+    	map.put("运营审核状态", "auditStatusName");
+    	map.put("运营审核人", "auditUserName");
+    	map.put("运营审核时间", "auditDateTime");
+    	map.put("转账状态", "transferStatusName");
+    	map.put("财务审核人", "confirmUserName");
+    	map.put("财务审核时间", "confirmDateTime");  
+    	
+    	DailysummarySettleDO item = new DailysummarySettleDO();
+    	item.setSettleMethodName("数据审核人：");
+    	item.setAuditStatusName("财务审核人:");
+    	
+    	list.add(list.size(), item);
+ 
+    	export(response, "商户结算报表",map,list);
+    }
+	
+	private String ConvertToSettleMethodText(String value)
+	{
+		switch(value)
+		{
+		   case "1":
+				return "充值金额";
+		   case "2":
+				return "消费金额";
+		    default:break;
+		}
+		return "未知";
+	}
+	private String ConvertToAuditStatusText(int value)
+	{
+		switch(value)
+		{
+		   case -1:
+				return "未审核";
+		   case 0:
+				return "审核不通过";
+		   case 1:
+				return "审核通过";
+		    default:break;
+		}
+		return "未知";
+	}
+	private String ConvertToTransStatusText(int value)
+	{
+		switch(value)
+		{
+		   case 0:
+				return "未转账";
+		   case 1:
+				return "已转账";
+		    default:break;
+		}
+		return "未知";
+	}
+}

@@ -1,0 +1,23 @@
+package com.slzr.ureport.service.impl;
+
+
+import com.slzr.ureport.dao.BCountDeptLineDao;
+import com.slzr.ureport.domain.BCountDo;
+import com.slzr.ureport.service.BCountDeptLineSerive;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class BCountDeptLineServiceImpl implements BCountDeptLineSerive {
+
+    @Autowired
+    private BCountDeptLineDao bCountDeptLineDao;
+
+    @Override
+    public List<BCountDo> list(Map<String, Object> parameters) {
+        return bCountDeptLineDao.list(parameters);
+    }
+}

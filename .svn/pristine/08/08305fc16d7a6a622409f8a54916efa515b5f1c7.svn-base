@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.TopuporderDao">
+
+	<select id="get" resultType="com.slzr.operation.domain.TopuporderDO">
+		select ID,UID,TerminalNO,OrderNO,CardNO,CardTypeID,Counter,Balance,TxnAmount,
+		TxnDateTime,OrderState,OrderDescribe,OrderBackDate,LoadState,LoadDescribe,LoadBackDate,
+		PayMethodId,PayTime,PayResult,PayResultMsg,TAC,ReviewID,ReviewTime,SummaryTime,
+		MAC from IC_TopupOrder where ID = #{value}
+	</select>
+
+<!-- 	<select id="list" resultType="com.slzr.operation.domain.TopuporderDO">
+		<if test="offset != null and limit != null">
+		select top ${limit}  *  from (
+		</if>
+		select 
+		ROW_NUMBER() OVER(ORDER BY LoadBackDate desc) AS Seq,
+		
+		 id,UID, CardNO,OrderNO,TxnAmount,Balance,LoadState,LoadDescribe,LoadBackDate,TerminalNO,PayTime
+		from IC_TopupOrder where 1=1
+		<if test="setdate == 0">and OrderState =4 and LoadState =-1 </if>
+		<if test="setdate == 1">and orderstate = 4 and (loadstate is null and payResult =1 and  datediff(d,payTime,getdate()) &gt;= 1 OR loadstate = -1)</if>
+		<if test="setdate == 3">and orderstate = 4 and (loadstate is null and payResult =1 and  datediff(d,payTime,getdate()) &gt;= 3 OR loadstate = -1)</if>
+		<if test="setdate == 7">and orderstate = 4 and (loadstate is null and payResult =1 and  datediff(d,payTime,getdate()) &gt;= 7 OR loadstate = -1)</if>
+		<if test="setdate == 15">and orderstate = 4 and (loadstate is null and payResult =1 and  datediff(d,payTime,getdate()) &gt;= 15 OR loadstate = -1)</if>
+		<if test="setdate == 30">and orderstate = 4 and (loadstate is null and payResult =1 and  datediff(d,payTime,getdate()) &gt;= 30 OR loadstate = -1)</if>
+
+		<if test="searchName != null and searchName != ''"> and OrderNO LIKE	 '${searchName}%' </if>
+		  		  <if test="cardno != null and cardno != ''"> and CardNO = #{cardno} </if>
+		<if test="offset != null and limit != null">
+				 ) a
+		where seq BETWEEN ${offset+1} and ${limit+offset}
+		</if>
+        order by LoadBackDate desc			
+        
+	 
+	</select> -->
+	<select id="list" resultType="com.slzr.operation.domain.TopuporderDO">
+		<if test="offset != null and limit != null">
+		select top ${limit}  *  from (
+		</if>
+		select 
+		ROW_NUMBER() OVER(ORDER BY LoadBackDate desc) AS Seq,
+		
+		 id,UID, CardNO,OrderNO,TxnAmount,Balance,LoadState,LoadDescribe,LoadBackDate,TerminalNO,PayTime
+		from IC_TopupOrder 
+		where orderstate = 4 and (loadstate is null and payResult =1 and  datediff(mi,payTime,getdate()) &gt;= 5 OR loadstate = -1)
+
+		<if test="searchName != null and searchName != ''"> and OrderNO LIKE	 '${searchName}%' </if>
+		  		 <!--  <if test="cardno != null and cardno != ''"> and CardNO = #{cardno} </if> -->
+		<if test="offset != null and limit != null">
+				 ) a
+		where seq BETWEEN ${offset+1} and ${limit+offset}
+		</if>
+        order by LoadBackDate desc			
+        
+	 
+	</select>
+	
+<!--  	<select id="count" resultType="int">
+		select count(*) from IC_TopupOrder where 1=1
+		<if test="setdate == 0">and OrderState =4 and LoadState =-1 </if>
+		<if test="setdate == 1">and orderstate = 4 and (loadstate is null and payResult =1 and  datediff(d,payTime,getdate()) &gt;= 1 OR loadstate = -1)</if>
+		<if test="setdate == 3">and orderstate = 4 and (loadstate is null and payResult =1 and  datediff(d,payTime,getdate()) &gt;= 3 OR loadstate = -1)</if>
+		<if test="setdate == 7">and orderstate = 4 and (loadstate is null and payResult =1 and  datediff(d,payTime,getdate()) &gt;= 7 OR loadstate = -1)</if>
+		<if test="setdate == 15">and orderstate = 4 and (loadstate is null and payResult =1 and  datediff(d,payTime,getdate()) &gt;= 15 OR loadstate = -1)</if>
+		<if test="setdate == 30">and orderstate = 4 and (loadstate is null and payResult =1 and  datediff(d,payTime,getdate()) &gt;= 30 OR loadstate = -1)</if>
+		
+		<if test="searchName != null and searchName != ''"> and OrderNO LIKE	 '${searchName}%' </if>
+	</select> -->
+	<select id="count" resultType="int">
+		select count(*) from IC_TopupOrder
+		where orderstate = 4 and (loadstate is null and payResult =1 and  datediff(mi,payTime,getdate()) &gt;= 5 OR loadstate = -1)
+		
+		<if test="searchName != null and searchName != ''"> and OrderNO LIKE	 '${searchName}%' </if>
+	</select>
+	 
+
+	 
+	<update id="update" parameterType="com.slzr.operation.domain.TopuporderDO">
+		update IC_TopupOrder 
+		<set>
+			<if test="uid != null">UID = #{uid}, </if>
+			<if test="terminalno != null">TerminalNO = #{terminalno}, </if>
+			<if test="orderno != null">OrderNO = #{orderno}, </if>
+			<if test="cardno != null">CardNO = #{cardno}, </if>
+			<if test="cardtypeid != null">CardTypeID = #{cardtypeid}, </if>
+			<if test="counter != null">Counter = #{counter}, </if>
+			<if test="balance != null">Balance = #{balance}, </if>
+			<if test="txnamount != null">TxnAmount = #{txnamount}, </if>
+			<if test="txndatetime != null">TxnDateTime = #{txndatetime}, </if>
+			<if test="orderstate != null">OrderState = #{orderstate}, </if>
+			<if test="orderdescribe != null">OrderDescribe = #{orderdescribe}, </if>
+			<if test="orderbackdate != null">OrderBackDate = #{orderbackdate}, </if>
+			<if test="loadstate != null">LoadState = #{loadstate}, </if>
+			<if test="loaddescribe != null">LoadDescribe = #{loaddescribe}, </if>
+			<if test="loadbackdate != null">LoadBackDate = #{loadbackdate}, </if>
+			<if test="paymethodid != null">PayMethodId = #{paymethodid}, </if>
+			<if test="paytime != null">PayTime = #{paytime}, </if>
+			<if test="payresult != null">PayResult = #{payresult}, </if>
+			<if test="payresultmsg != null">PayResultMsg = #{payresultmsg}, </if>
+			<if test="tac != null">TAC = #{tac}, </if>
+			<if test="reviewid != null">ReviewID = #{reviewid}, </if>
+			<if test="reviewtime != null">ReviewTime = #{reviewtime}, </if>
+			<if test="summarytime != null">SummaryTime = #{summarytime}, </if>
+			<if test="mac != null">MAC = #{mac}</if>
+		</set>
+		where ID = #{id}
+	</update>
+	
+
+
+</mapper>

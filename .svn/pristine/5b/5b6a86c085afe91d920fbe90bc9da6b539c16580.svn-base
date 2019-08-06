@@ -1,0 +1,98 @@
+package com.slzr.operation.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import com.slzr.common.annotation.Log;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import com.slzr.common.utils.PageUtils;
+import com.slzr.common.utils.Query;
+import com.slzr.common.utils.R;
+import com.slzr.operation.domain.GuestMessageDO;
+import com.slzr.operation.service.GuestMessageService;
+@Controller
+@RequestMapping("/operation/guestMessage")
+public class GuestMessageController {
+	@Autowired
+	private GuestMessageService GuestMessageService;
+	
+	@GetMapping()
+	@RequiresPermissions("operation:GuestMessage:GuestMessage")
+	String GuestMessage(){
+	    return "operation/guestMessage/guestMessage";
+	}
+	
+	/**
+	 * 查询列表 分页
+	 */
+	@ResponseBody
+	@GetMapping("/list")
+	@RequiresPermissions("operation:GuestMessage:GuestMessage")
+	public PageUtils list(@RequestParam Map<String, Object> params){		
+        Query query = new Query(params);
+		List<GuestMessageDO> GuestMessageList = GuestMessageService.list(query); //查询列表数据
+		GuestMessageDO a = GuestMessageList.get(0);
+		int total = GuestMessageService.count(query);//统计总数
+		PageUtils pageUtils = new PageUtils(GuestMessageList, total);
+		return pageUtils;
+	}
+	
+	@GetMapping("/add")
+	@RequiresPermissions("operation:GuestMessage:add")
+	String add(){
+	    return "operation/GuestMessage/add";
+	}
+
+	
+	/**
+	 * 保存
+	 */
+	@ResponseBody
+	@PostMapping("/save")
+	@RequiresPermissions("operation:GuestMessage:add")
+	public R save( GuestMessageDO GuestMessage){
+		if(GuestMessageService.save(GuestMessage)>0){
+			return R.ok();
+		}
+		return R.error();
+	}
+
+	
+	/**
+	 * 删除
+	 */
+	@PostMapping("/remove")
+	@ResponseBody
+	@RequiresPermissions("operation:GuestMessage:remove")
+	public R remove( Integer id){
+		if(GuestMessageService.remove(id)>0){
+		return R.ok();
+		}
+		return R.error();
+	}
+
+
+
+	@Log("编辑菜单")
+//	@RequiresPermissions("sys:menu:edit")
+	@GetMapping("/edit/{id}")
+	String edit(Model model, @PathVariable("id") Long id) {
+//		MenuDO mdo = GuestMessageService.get(id);
+//		Long pId = mdo.getParentId();
+//		model.addAttribute("pId", pId);
+//		if (pId == 0) {
+//			model.addAttribute("pName", "根目录");
+//		} else {
+//			model.addAttribute("pName", menuService.get(pId).getName());
+//		}
+//		model.addAttribute("menu", mdo);
+		return "operation/guestMessage/guestMessageReply";
+	}
+	
+
+}

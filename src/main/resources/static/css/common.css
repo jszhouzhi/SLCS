@@ -1,0 +1,16 @@
+.commonquerypage .searchbox{margin-left:10px;}
+.commonquerypage .querybtns{margin-left:10px;}
+.commonquerypage .modechangebtn{padding-top:18px;cursor:pointer;color:#ffffff;}
+.commonquerypage .modechangebtn2{padding-top:18px;cursor:pointer;color:#ffffff;}
+.commonquerypage .fixed-table-toolbar{background-color:#3f5060;padding:0 10px;}
+.commonquerypage .query-inputs{padding:25px 10px 10px 10px;border:1px solid #e7eaec;background-color:#ffffff;display:none;}
+.commonquerypage .query-inputs .layui-form-label{width:100px;}
+.commonquerypage .query-inputs .form-control,.commonquerypage .query-inputs .layui-input{width:210px;}
+.commonquerypage .query-inputs.show{display:block;}
+.commonquerypage .popover-title{color:#ffffff;background-color:#2f4050;}
+.commonquerypage .popover{border:1px solid #2f4050;}
+.commonquerypage .popover .popover-content{padding:3px;}
+.commonquerypage .th-inner{text-align:center!important;}
+.popdetailtable.layui-table{font-size:10px;}
+.popdetailtable.layui-table td,.popdetailtable.layui-table tr{padding:0px;}
+.popdetailtable.layui-table td{padding:0 2px;}

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.account.dao.AccountDao">
+
+	<sql id="accountFields">
+		ID,MerchantCode,UID,AccountType,AccountNO,MobilePhone,TrueName,Gender,CertNO,CardTypeCode,SubAccountState,SubAccountExpiredDate,
+		SubCardTypeCode,State,MaxTxnAmount,TopupCounter,DebitCounter,LastMakePayTicketTime,LastTopupAmount,
+		LastTopupTime,LastDebitAmount,LastDebitTime,TotalTopupAmount,TotalDebitAmount,Balance,Score,FreeBalance,
+		FreeTimes,AccountExpireTime,CertPhotoUrl,PersonPhotoUrl,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,Remark,CertMAC
+	</sql>
+	<select id="get" resultType="com.slzr.account.domain.AccountDO">
+		SELECT 
+		*
+		FROM BAR_Account 
+		WHERE ID = #{value}
+	</select>
+	
+	<select id="getbyAccountNO" resultType="com.slzr.account.domain.AccountDO">
+		SELECT 
+		*
+		FROM BAR_Account 
+		WHERE AccountNO = #{value}
+	</select>
+
+<!-- 	<select id="list" resultType="com.slzr.account.domain.AccountDO">
+		SELECT a.AccountNO,a.ID,a.MerchantCode,AccountTypeName.DataValue AS accountTypeName,StateName.DataValue AS stateName,
+					a.MobilePhone,a.CreatedDate,a.Balance,a.LastDebitTime,
+					a.LastDebitAmount,a.PersonPhotoUrl,a.CertPhotoUrl , a.FreeBalance,a.State
+		From (SELECT AccountNO,ID,AccountType,State,MobilePhone,CreatedDate,Balance,LastDebitTime,LastDebitAmount,
+							PersonPhotoUrl,CertPhotoUrl,MerchantCode, FreeBalance
+					FROM BAR_Account) AS a 
+					LEFT OUTER JOIN
+						(SELECT DataCode,DataValue
+							FROM SYS_Dictionary 
+							WHERE (DictCode='AccountType')) AS AccountTypeName ON a.AccountType = AccountTypeName.DataCode 
+					LEFT OUTER JOIN
+						(SELECT DataCode,DataValue
+							FROM SYS_Dictionary AS SYS_Dictionary_1
+							WHERE (DictCode='AccountState')) AS StateName ON a.State = StateName.DataCode
+		<where>  		  		  
+		  <if test="searchName != null and searchName != ''">(   a.AccountNO LIKE	 '${searchName}%' OR a.MobilePhone LIKE	 '${searchName}%')</if>
+		  <if test="merchantCode != null and merchantCode != ''"> and a.MerchantCode = #{merchantCode} </if>
+		  <if test="state != null and state != ''"> and a.State = #{state} </if>
+		</where>
+
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by CreatedDate desc
+			</otherwise>
+        </choose>
+        
+        <if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+
+	</select> -->
+	
+	<select id="list" resultType="com.slzr.account.domain.AccountDO">	
+	select top ${limit}  *  from (								
+		SELECT 
+		ROW_NUMBER() OVER(ORDER BY a.CreatedDate desc) AS Seq,
+		
+		a.AccountNO,a.ID,a.MerchantCode,
+		
+		
+		
+		ISNULL(t.CardTypeName,'普通卡') AS accountTypeName,				 
+		case when a.state  = 0 then '待审核' when a.state = 1 then '审核通过' when a.state = -3 then '注销'
+		when a.state = -2 then '账户异常' when a.state = -1 then '锁定' when a.state = -4 then '申请注销中' 
+		when a.state = -5 then '审核不通过' END AS stateName,
+		
+		case when a.SubAccountState  = 0 then '未申请'
+		 when a.SubAccountState = -1 then '待审核'
+		 when a.SubAccountState = 1 then '审核通过'  when a.SubAccountState = 2 then '审核不通过' END AS subAccountStateName,
+		
+				a.MobilePhone,a.CreatedDate,a.Balance,a.LastDebitTime,
+				a.LastDebitAmount,a.PersonPhotoUrl,a.CertPhotoUrl , a.FreeBalance,a.State
+		From BAR_Account a
+
+		LEFT JOIN BAR_CardType t ON  a.CardTypeCode = t.CardTypeID
+		<where>  		  		  
+		  <if test="searchName != null and searchName != ''">(   a.AccountNO LIKE	 '${searchName}%' OR a.MobilePhone LIKE	 '${searchName}%')</if>
+		  <if test="merchantCode != null and merchantCode != ''"> and a.MerchantCode = #{merchantCode} </if>
+		  <if test="state != null and state != ''"> and a.State = #{state} </if>
+		  <if test="deductions != null and deductions != ''"> and a.UnDebitAmount &gt; 0 </if>
+		</where>
+		) a
+		where seq BETWEEN ${offset+1} and ${limit+offset}
+		
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by CreatedDate desc
+			</otherwise>
+        </choose>
+ 
+
+	</select>
+	
+ 	<select id="count" resultType="int">
+		SELECT COUNT(*) FROM BAR_Account 
+		<where>  		  		  
+		   <if test="searchName != null and searchName != ''">(  AccountNO LIKE	 '${searchName}%' OR MobilePhone LIKE	 '${searchName}%')</if>
+		   <if test="merchantCode != null and merchantCode != ''"> and MerchantCode = #{merchantCode} </if>
+		   <if test="state != null and state != ''"> and State = #{state} </if>
+		   <if test="deductions != null and deductions != ''"> and UnDebitAmount &gt; 0 </if>
+		</where>
+	</select>
+
+
+	
+	<update id="updateAccountState" >
+		UPDATE BAR_Account 
+		SET State = #{operationType}
+		WHERE ID = #{id}
+	</update>
+	
+	
+		<update id="updateState" parameterType="com.slzr.account.domain.AccountDO">
+		update BAR_Account 
+		<set>
+			<if test="merchantcode != null">MerchantCode = #{merchantcode}, </if>
+			<if test="uid != null"> UID  = #{uid}, </if>
+			<if test="accounttype != null"> AccountType  = #{accounttype}, </if>
+			<if test="accountno != null"> AccountNO  = #{accountno}, </if>
+			<if test="mobilephone != null"> MobilePhone  = #{mobilephone}, </if>
+			<if test="truename != null"> TrueName  = #{truename}, </if>
+			<if test="gender != null"> Gender  = #{gender}, </if>
+			<if test="certno != null"> CertNO  = #{certno}, </if>
+			<if test="cardtypecode != null"> CardTypeCode  = #{cardtypecode}, </if>
+			<if test="subcardtypecode != null"> SubCardTypeCode  = #{subcardtypecode}, </if>
+			<if test="state != null"> State  = #{state}, </if>
+			<if test="maxtxnamount != null"> MaxTxnAmount  = #{maxtxnamount}, </if>
+			<if test="topupcounter != null"> TopupCounter  = #{topupcounter}, </if>
+			<if test="debitcounter != null"> DebitCounter  = #{debitcounter}, </if>
+			<if test="lastmakepaytickettime != null"> LastMakePayTicketTime  = #{lastmakepaytickettime}, </if>
+			<if test="lasttopupamount != null"> LastTopupAmount  = #{lasttopupamount}, </if>
+			<if test="lasttopuptime != null"> LastTopupTime  = #{lasttopuptime}, </if>
+			<if test="lastdebitamount != null"> LastDebitAmount  = #{lastdebitamount}, </if>
+			<if test="lastdebittime != null"> LastDebitTime  = #{lastdebittime}, </if>
+			<if test="totaltopupamount != null"> TotalTopupAmount  = #{totaltopupamount}, </if>
+			<if test="totaldebitamount != null"> TotalDebitAmount  = #{totaldebitamount}, </if>
+			<if test="balance != null"> Balance  = #{balance}, </if>
+			<if test="score != null"> Score  = #{score}, </if>
+			<if test="freebalance != null"> FreeBalance  = #{freebalance}, </if>
+			<if test="freetimes != null"> FreeTimes  = #{freetimes}, </if>
+			<if test="accountexpiretime != null"> AccountExpireTime  = #{accountexpiretime}, </if>
+			<if test="certphotourl != null"> CertPhotoUrl  = #{certphotourl}, </if>
+			<if test="personphotourl != null"> PersonPhotoUrl  = #{personphotourl}, </if>
+			<if test="createdby != null"> CreatedBy  = #{createdby}, </if>
+			<if test="createddate != null"> CreatedDate  = #{createddate}, </if>
+			<if test="updatedby != null"> UpdatedBy  = #{updatedby}, </if>
+			<if test="updateddate != null"> UpdatedDate  = #{updateddate}, </if>
+			<if test="remark != null"> Remark  = #{remark}, </if>
+			<if test="certmac != null"> CertMAC  = #{certmac}, </if>
+			<if test="auditDesc != null"> AuditDesc  = #{auditDesc}</if>
+ 	
+		</set>
+		where AccountNO = #{accountno}
+	</update>
+	
+	<update id="update" parameterType="com.slzr.account.domain.AccountDO">
+		update BAR_Account 
+		<set>
+			<if test="merchantcode != null">MerchantCode = #{merchantcode}, </if>
+			<if test="uid != null"> UID  = #{uid}, </if>
+			<if test="accounttype != null"> AccountType  = #{accounttype}, </if>
+			<if test="accountno != null"> AccountNO  = #{accountno}, </if>
+			<if test="mobilephone != null"> MobilePhone  = #{mobilephone}, </if>
+			<if test="truename != null"> TrueName  = #{truename}, </if>
+			<if test="gender != null"> Gender  = #{gender}, </if>
+			<if test="certno != null"> CertNO  = #{certno}, </if>
+			<if test="cardtypecode != null"> CardTypeCode  = #{cardtypecode}, </if>
+			<if test="subcardtypecode != null"> SubCardTypeCode  = #{subcardtypecode}, </if>
+			<if test="state != null"> State  = #{state}, </if>
+			<if test="maxtxnamount != null"> MaxTxnAmount  = #{maxtxnamount}, </if>
+			<if test="topupcounter != null"> TopupCounter  = #{topupcounter}, </if>
+			<if test="debitcounter != null"> DebitCounter  = #{debitcounter}, </if>
+			<if test="lastmakepaytickettime != null"> LastMakePayTicketTime  = #{lastmakepaytickettime}, </if>
+			<if test="lasttopupamount != null"> LastTopupAmount  = #{lasttopupamount}, </if>
+			<if test="lasttopuptime != null"> LastTopupTime  = #{lasttopuptime}, </if>
+			<if test="lastdebitamount != null"> LastDebitAmount  = #{lastdebitamount}, </if>
+			<if test="lastdebittime != null"> LastDebitTime  = #{lastdebittime}, </if>
+			<if test="totaltopupamount != null"> TotalTopupAmount  = #{totaltopupamount}, </if>
+			<if test="totaldebitamount != null"> TotalDebitAmount  = #{totaldebitamount}, </if>
+			<if test="balance != null"> Balance  = #{balance}, </if>
+			<if test="score != null"> Score  = #{score}, </if>
+			<if test="freebalance != null"> FreeBalance  = #{freebalance}, </if>
+			<if test="freetimes != null"> FreeTimes  = #{freetimes}, </if>
+			<if test="accountexpiretime != null"> AccountExpireTime  = #{accountexpiretime}, </if>
+			<if test="certphotourl != null"> CertPhotoUrl  = #{certphotourl}, </if>
+			<if test="personphotourl != null"> PersonPhotoUrl  = #{personphotourl}, </if>
+			<if test="createdby != null"> CreatedBy  = #{createdby}, </if>
+			<if test="createddate != null"> CreatedDate  = #{createddate}, </if>
+			<if test="updatedby != null"> UpdatedBy  = #{updatedby}, </if>
+			<if test="updateddate != null"> UpdatedDate  = #{updateddate}, </if>
+			<if test="remark != null"> Remark  = #{remark}, </if>
+			<if test="certmac != null"> CertMAC  = #{certmac}, </if>
+			<if test="auditDesc != null"> AuditDesc  = #{auditDesc},</if>
+			
+			<if test="subAccountState != null"> SubAccountState  = #{subAccountState},</if>
+			<if test="subAccountExpiredDate != null"> SubAccountExpiredDate  = #{subAccountExpiredDate}</if>
+
+			
+		</set>
+		where AccountNO = #{accountno}
+	</update>
+
+
+
+</mapper>

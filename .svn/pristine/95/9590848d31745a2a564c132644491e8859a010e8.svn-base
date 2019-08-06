@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg commonquerypage">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox">
+					<div class="ibox-body">
+						<div class="fixed-table-toolbar clearfix">
+							<div class="columns pull-left">
+								<button id="btnexport" class="btn  btn-warning" onclick="excel()" type="button">
+									<i aria-hidden="true" class="fa fa-trash hidden"></i>导出
+								</button>
+							</div>
+							&nbsp;
+							<div class="columns pull-left">
+								<button id="btnexport" class="btn  btn-warning" onclick="print()" type="button">
+									<i aria-hidden="true" class="fa fa-trash hidden"></i>打印预览
+								</button>
+							</div>
+							<div class="searchbox columns pull-left col-md-4 nopadding">
+								<input class="searchinput form-control" id="searchName" placeholder="" type="text">
+							</div>
+							<div class="querybtns columns pull-left">
+								<button class="btn btn-success btn-sm" onclick="reLoad()">查询</button>
+								<button id="btnreset" class="btn btn-success btn-sm">重置</button>
+							</div>
+							<span class="modechangebtn pull-right">高级查询 <i class="fa fa-chevron-down"></i></span>
+						</div>
+						<div class="query-inputs clearfix">
+						  <div class="layui-form">
+						  	  <div class="layui-form-item">
+						  	  	<div class="layui-inline">
+								    <label class="layui-form-label">开始日期</label>
+								    <div class="layui-input-block">
+								    	<input id="sdate" class="form-control" type="text" data-date-format="yyyy-mm-dd" th:value="${dwmq.StartDay}">
+								    </div>
+							    </div>
+							    
+							    						  	  	<div class="layui-inline">
+								    <label class="layui-form-label">结束日期</label>
+								    <div class="layui-input-block">
+								    	<input id="edate" class="form-control" type="text" data-date-format="yyyy-mm-dd" th:value="${dwmq.EndDay}">
+								    </div>
+							    </div>
+	 
+	 
+ 
+								  <div class="layui-inline">
+									  <label class="layui-form-label">商户：</label>
+									  <div class="layui-input-block">
+										  <select name="refundresult" lay-verify="required" id="merchantCode" name="merchantCode">
+											  <option value="">全部</option>
+											  <option th:each="merchant : ${merchantList}" th:value="${merchant.merchantCode}" th:text="${merchant.merchantName}"></option>
+										  </select>
+									  </div>
+								  </div>
+								  
+							  </div>
+						  </div>
+						</div>
+						<table id="exampleTable" data-mobile-responsive="true">
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		 
+		<div>
+			<script type="text/javascript">
+				var s_check_h = 'hidden';
+				var s_do_h = 'hidden';
+			</script>
+		</div>
+		<div shiro:hasPermission="operation:topup:check">
+			<script type="text/javascript">
+				s_check_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="operation:topup:do">
+			<script type="text/javascript">
+				s_do_h = '';
+			</script>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<!-- <script type="text/javascript" src="/js/appjs/operation/dailySummaryBase/list.js"></script> -->
+	<script type="application/javascript" th:src="@{/js/appjs/operation/dailySummaryBase/list.js}"></script>
+	
+	<script type="text/javascript">
+		$("#document").ready(function(){
+			$('#sdate,#edate').datetimepicker({
+		        format: 'yyyy-mm-dd',
+		        language:  'zh-CN',
+		        weekStart: 1,
+		        todayBtn:  1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 2,
+				minView: 2,
+				forceParse: 0
+		    });
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.TopupTransDao">
+
+	<sql id="thisColumns">
+        BAR_TopupTransaction.ID as ID
+        ,BAR_TopupTransaction.PayResultMsg as PayResultMsg
+        ,BAR_TopupTransaction.AccountNO as AccountNO
+        ,BAR_TopupTransaction.OrderNO as OrderNO
+        ,BAR_TopupTransaction.TxnAmount as TxnAmount
+        ,BAR_TopupTransaction.SettleDateTime as SettleDateTime
+        ,BAR_TopupTransaction.PayClientID as PayClientID
+        ,BAR_TopupTransaction.PayMethodId as PayMethodId
+        ,BAR_TopupTransaction.UID as UID
+        ,BAR_TopupTransaction.TxnDateTime as TxnDateTime
+        ,BAR_TopupTransaction.Counter as Counter
+        ,BAR_TopupTransaction.SummaryDateTime as SummaryDateTime
+        ,BAR_TopupTransaction.TAC as TAC
+        ,BAR_TopupTransaction.RefundDateTime as RefundDateTime
+        ,BAR_TopupTransaction.PayTime as PayTime
+        ,BAR_TopupTransaction.PayResult as PayResult
+        ,BAR_TopupTransaction.Balance as Balance
+        ,BAR_TopupTransaction.FreeAmount as FreeAmount
+
+    </sql>
+	<select id="get" resultType="com.slzr.operation.domain.TopupTransDO">
+		select 
+		<include refid="thisColumns" /> 
+		from BAR_TopupTransaction where ID = #{id}
+	</select>
+
+	<select id="list" resultType="com.slzr.operation.domain.TopupTransDO">
+		select 
+		<include refid="thisColumns" /> 
+		from BAR_TopupTransaction
+        <where>
+            <if test="searchvalue != null and  searchvalue!= ''"> and (BAR_TopupTransaction.OrderNO like '${searchvalue}%' or BAR_TopupTransaction.AccountNO like '${searchvalue}%')</if>
+            <if test="sdate != null and  sdate!= ''"> and BAR_TopupTransaction.TxnDateTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="edate != null and  edate!= ''"> and BAR_TopupTransaction.TxnDateTime &lt;= '${edate} 23:59:59'</if>
+            <if test="topuptype != null and  topuptype!= ''"> and BAR_TopupTransaction.PayMethodId=#{topuptype}</if>
+            <if test="topupstatus != null and  topupstatus!= ''"> and BAR_TopupTransaction.PayResult=#{topupstatus}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by TxnDateTime desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from BAR_TopupTransaction
+        <where>
+            <if test="searchvalue != null and  searchvalue!= ''"> and (BAR_TopupTransaction.OrderNO like '${searchvalue}%' or BAR_TopupTransaction.AccountNO like '${searchvalue}%')</if>
+            <if test="sdate != null and  sdate!= ''"> and BAR_TopupTransaction.TxnDateTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="edate != null and  edate!= ''"> and BAR_TopupTransaction.TxnDateTime &lt;= '${edate} 23:59:59'</if>
+            <if test="topuptype != null and  topuptype!= ''"> and BAR_TopupTransaction.PayMethodId=#{topuptype}</if>
+            <if test="topupstatus != null and  topupstatus!= ''"> and BAR_TopupTransaction.PayResult=#{topupstatus}</if>
+        </where>
+	</select>
+
+</mapper>

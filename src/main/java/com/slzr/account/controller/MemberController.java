@@ -1,0 +1,142 @@
+package com.slzr.account.controller;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.slzr.account.domain.VipMemberPlanDO;
+import com.slzr.account.service.VipMemberPlanService;
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.utils.PageUtils;
+import com.slzr.common.utils.Query;
+import com.slzr.common.utils.R;
+import com.slzr.set.domain.MerchDo;
+import com.slzr.set.service.MerchService;
+
+@Controller
+@RequestMapping("/account/member")
+public class MemberController extends BaseController {
+
+	@Autowired
+	private VipMemberPlanService vipMemberPlanService;
+	@Autowired
+	private MerchService merchService;
+
+	@GetMapping()
+	@RequiresPermissions("account:member:type")
+	public String member() {
+		return "account/member/member";
+	}
+
+	@ResponseBody
+	@GetMapping("/list")
+	@RequiresPermissions("account:member:type")
+	public PageUtils list(@RequestParam Map<String, Object> params) {
+		// 查询列表数据
+		params.put("companyCode", getMerchantCode());
+		Query query = new Query(params);
+		List<VipMemberPlanDO> cardTypeList = vipMemberPlanService.list(query);
+		int total = vipMemberPlanService.count(query);
+		PageUtils pageUtils = new PageUtils(cardTypeList, total);
+		return pageUtils;
+	}
+
+	@PostMapping("/operation")
+	@ResponseBody
+	public R operation(Long accountno, String operationType) {
+		try {
+			VipMemberPlanDO vipMemberPlanDO = new VipMemberPlanDO();
+
+			vipMemberPlanDO.setId(accountno);
+			vipMemberPlanDO.setEnable(operationType);
+			vipMemberPlanDO.setUpdatedBy(getId());
+			vipMemberPlanDO.setUpdatedDate(new Date());
+
+			if (vipMemberPlanService.update(vipMemberPlanDO) > 0) {
+				return R.ok();
+			} else {
+				return R.error();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return R.error("出错");
+		}
+	}
+
+	@GetMapping("/edit/{id}")
+	String edit(Model model, @PathVariable("id") Long id) {
+		VipMemberPlanDO vipMemberPlan = vipMemberPlanService.get(id);
+
+		MerchDo merchDo = merchService.getServiceFee(vipMemberPlan.getCompanyCode());
+
+		model.addAttribute("merchantName", merchDo.getMerchantName());
+		model.addAttribute("vipMemberPlan", vipMemberPlan);
+
+		return "account/member/edit";
+	}
+
+	@PostMapping("/update")
+	@ResponseBody
+	public R update(VipMemberPlanDO vipMemberPlanDO) {
+		vipMemberPlanDO.setUpdatedBy(getId());
+		vipMemberPlanDO.setUpdatedDate(new Date());
+
+		if (vipMemberPlanService.update(vipMemberPlanDO) > 0) {
+			return R.ok();
+		}
+		return R.error();
+	}
+
+	@PostMapping("/save")
+	@ResponseBody
+	public R save(VipMemberPlanDO vipMemberPlanDO) {
+
+		vipMemberPlanDO.setCreatedBy(getId());
+		vipMemberPlanDO.setCreatedDate(new Date());
+
+		if (vipMemberPlanService.save(vipMemberPlanDO) > 0) {
+			return R.ok();
+		}
+		return R.error();
+	}
+
+	@GetMapping("/add")
+	public String add(ModelMap model) {
+		
+		MerchDo merchDo = null;
+		if(getMerchantCode()!=null){
+			 merchDo = merchService.getServiceFee(getMerchantCode());
+		}
+		if (merchDo == null) {
+			List<MerchDo> merchantList =merchService.list(null);
+			model.addAttribute("merchantList", merchantList);
+		} else {
+			model.put("merchantCode", merchDo.getMerchantCode());
+			model.put("merchantName", merchDo.getMerchantName());
+		}
+
+		return "account/member/add";
+	}
+
+	@PostMapping("/existence")
+	@ResponseBody
+	boolean existence(@RequestParam Map<String, Object> params) {
+		if (!params.containsKey("companyCode"))
+			params.put("companyCode", getMerchantCode());
+		
+		return !vipMemberPlanService.exit(params);
+	}
+
+}

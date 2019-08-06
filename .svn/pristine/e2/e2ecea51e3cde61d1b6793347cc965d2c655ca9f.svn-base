@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>欢迎页</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+	<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+</head>
+<body>
+<div id="wrap">
+	<div id="shjc" class="clearfix form-inline">
+		<div class="form-group col-md-3">
+			<label> 商户： </label>
+			<select class="form-control" onclick="change(this)" id="merchslct">
+				<option value="">全部</option>
+				<option th:value="${comcode.Code}" th:each="comcode:${companycodes}" th:text="${comcode.ShortName}"></option>
+			</select>
+		</div>
+	</div>
+	<div id="tj" class="swatches highlight clearfix">
+		<h5>统计</h5>
+        <div class="item clearfix">
+            <div class="color-swatch btn-danger">
+                <i class="fa fa-users"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totalregisternum}"></div>
+                <div class="nm">总用户数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-info">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totaltopupnum}"></div>
+                <div class="nm">充值总笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-warning">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totaltopupamount}"></div>
+                <div class="nm">充值总金额</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-success">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totalrefundnum}"></div>
+                <div class="nm">退款总笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-primary">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totalrefundamount}"></div>
+                <div class="nm">退款总金额</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-warning">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totaldebitnum}"></div>
+                <div class="nm">消费总笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-info">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totaldebitamount}"></div>
+                <div class="nm">消费总金额</div>
+            </div>
+        </div>
+	</div>
+	<div id="chart1" class="col-md-6"></div>
+	<div id="jrtj" class="swatches highlight clearfix yellow col-md-6">
+		<h5>今日统计</h5>
+        <div class="item clearfix">
+            <div class="color-swatch btn-info">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todaytopupnum}"></div>
+                <div class="n" th:if="${todaytopupnum}==null">0</div>
+                <div class="nm">今日充值笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-primary">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todaytopupamount}"></div>
+                <div class="n" th:if="${todaytopupamount}==null">0</div>
+                <div class="nm">今日充值金额</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-primary">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todaydebitnum}"></div>
+                <div class="n" th:if="${todaydebitnum}==null">0</div>
+                <div class="nm">今日消费笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-warning">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todaydebitamount}"></div>
+                <div class="n" th:if="${todaydebitamount}==null">0</div>
+                <div class="nm">今日消费金额</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-warning">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todayrefundnum}"></div>
+                <div class="n" th:if="${todayrefundnum}==null">0</div>
+                <div class="nm">今日退款笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-info">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todayrefundamount}"></div>
+                <div class="n" th:if="${todayrefundamount}==null">0</div>
+                <div class="nm">今日退款金额</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-danger">
+                <i class="fa fa-users"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todayregisternum}"></div>
+                <div class="n" th:if="${todayregisternum}==null">0</div>
+                <div class="nm">今日注册数</div>
+            </div>
+        </div>
+	</div>
+	</div>
+	<div id="weeks" style="display:none;" th:utext="${weeks}"></div>
+	<script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/echarts.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+</body>
+</html>

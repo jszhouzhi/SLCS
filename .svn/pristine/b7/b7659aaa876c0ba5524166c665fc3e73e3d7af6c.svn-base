@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div style="padding:0 20px 20px 20px;">
+	<form class="form-horizontal m-t" id="signupForm">
+	<table cellspacing="0" cellpadding="0" border="0" class="layui-table" style="width:80%;">
+		<tbody>
+		<thead style="background-color: #e4b9c0;">
+		<tr>
+			<th colspan="4">运营参数信息</th>
+		</tr>
+		</thead>
+		<tr>
+			<td align="right" width="230">城市代码：<span class="text_red " style="color: red" >*</span>&nbsp</td>
+			<td><input id="CityCode" name="CityCode" class="form-control" th:value="${setting.CityCode}" type="text"></td>
+			<td align="right" width="230">行业代码：</label><span class="text_red " style="color: red" >*</span>&nbsp</td>
+			<td><input id="TradeCode" name="TradeCode" class="form-control" th:value="${setting.TradeCode}" type="text"></td>
+		</tr>
+		<tr>
+			<td align="right">机构代码：<span class="text_red " style="color: red" >*</span>&nbsp</td>
+			<td><input id="CompanyCode" name="CompanyCode" class="form-control"  th:value="${setting.CompanyCode}" type="text"></td>
+			<td align="right">联系人：</td>
+			<td><input id="Contacter" name="Contacter" class="form-control" th:value="${setting.Contacter}"  type="text"></td>
+		</tr>
+		<tr>
+			<td align="right">是否实名注册：</td>
+			<td> <input  type="radio" th:checked="${setting.RegMode==true}" name="RegMode" value="true"  />是</label>   <!--th:field="*{user.status}"-->
+				 <input  type="radio" th:checked="${setting.RegMode==false}" name="RegMode" value="false"  />否</label> </td>
+			<td align="right">联系电话：</td>
+			<td><input id="ContactPhone" name="ContactPhone" class="form-control" th:value="${setting.ContactPhone}"  type="text"></td>
+		</tr>
+		<tr>
+			<td align="right">最小充值金额：<span class="text_red " style="color: red" >*</span>&nbsp</td>
+			<td> <input id="MinTopupAmount" name="MinTopupAmount" class="form-control" th:value="${setting.MinTopupAmount}"  type="text"></td>
+			<td align="right">账号最低余额：<span class="text_red " style="color: red" >*</span>&nbsp</td>
+			<td><input id="MinBalance" name="MinBalance" class="form-control" th:value="${setting.MinBalance}"  type="text"></td>
+		</tr>
+		<tr>
+			<td align="right">单次最大消费金额：<span class="text_red " style="color: red" >*</span>&nbsp</td>
+			<td><input id="MaxDebitAmount" name="MaxDebitAmount" class="form-control" th:value="${setting.MaxDebitAmount}"  type="text"></td>
+
+			<td align="right">秘钥生成周期：<span class="text_red " style="color: red" >*</span>&nbsp</td>
+			<td><select  class="form-control"  id="KeyMakePeriod" name="KeyMakePeriod">
+				<option th:each="option : ${options}" th:value="${option}" th:selected="${setting.KeyMakePeriod==option}" th:text="${option}+'天'"></option>
+			</select></td>
+		</tr>
+		<tr>
+			<td align="right">数据存放路径：<span class="text_red " style="color: red" >*</span>&nbsp</td>
+			<td> <input id="DataSavePath" name="DataSavePath" class="form-control" th:value="${setting.DataSavePath}"  type="text"></td>
+			<td align="right">文件上传目录：<span class="text_red " style="color: red" >*</span>&nbsp</td>
+			<td><input id="FileUploadPath" name="FileUploadPath" class="form-control" th:value="${setting.FileUploadPath}" type="text"></td>
+		</tr>
+		
+		<tr>
+			<td align="right">是否启用免密代扣：</td>
+			<td> <input  type="radio" th:checked="${setting.EnablePapPay==false}" name="EnablePapPay" value="false"  />否</label> 
+				 <input  type="radio" th:checked="${setting.EnablePapPay==true}" name="EnablePapPay" value="true"  />是</label>   <!--th:field="*{user.status}"-->
+			</td>
+				 			
+			<td align="right">代扣模板ID：</td>
+			<td><input id="WxPlanId" name="WxPlanId" class="form-control" th:value="${setting.WxPlanId}" type="text"></td>
+		</tr>
+		
+		<thead style="background-color: #e4b9c0;">
+		<tr>
+			<th colspan="4">微信公众号配置</th>
+		</tr>
+		</thead>
+		<tr>
+			<td align="right">微信公众号appid：</td>
+			<td> <input id="AppId" name="AppId" class="form-control" th:value="${setting.AppId}"  type="text"></td>
+			<td align="right">微信公众号密钥：</td>
+			<td><input id="SecretKey" name="SecretKey" class="form-control"  th:value="${setting.SecretKey}" type="text"></td>
+		</tr>
+		<tr>
+			<td align="right">微信支付商户密钥：</td>
+			<td> <input id="MchKey" name="MchKey" class="form-control" th:value="${setting.MchKey}"  type="text"></td>
+			<td align="right">微信公众号平台Token：</td>
+			<td><input id="WxToken" name="WxToken" class="form-control" th:value="${setting.WxToken}"  type="text"></td>
+		</tr>
+		<tr>
+			<td align="right">微信公众号平台AES密钥：</td>
+			<td> <input id="WxAESKey" name="WxAESKey" class="form-control" th:value="${setting.WxAESKey}"  type="text"></td>
+			<td align="right">微信公众号平台商户Id：</td>
+			<td><input id="MchId" name="MchId" class="form-control" th:value="${setting.MchId}"  type="text"></td>
+		</tr>
+		<tr>
+			<td align="right">微信公众号平台证书路径：</td>
+			<td> <input id="CertPath" name="CertPath" class="form-control"  th:value="${setting.CertPath}" type="text"></td>
+
+		</tr>
+		
+		<thead style="background-color: #e4b9c0;">
+		<tr>
+			<th colspan="4">微信小程序配置</th>
+		</tr>
+		</thead>
+		<tr>
+			<td align="right">小程序Token：</td>
+			<td> <input id="WeAppToken" name="WeAppToken" class="form-control" th:value="${setting.WeAppToken}"  type="text"></td>
+			<td align="right">小程序AESKey：</td>
+			<td><input id="WeAppEncodingAESKey" name="WeAppEncodingAESKey" class="form-control"  th:value="${setting.WeAppEncodingAESKey}" type="text"></td>
+		</tr>
+		<tr>
+			<td align="right">小程序AppId：</td>
+			<td> <input id="WeAppAppId" name="WeAppAppId" class="form-control" th:value="${setting.WeAppAppId}"  type="text"></td>
+			<td align="right">小程序密钥：</td>
+			<td><input id="WeAppAppSecret" name="WeAppAppSecret" class="form-control" th:value="${setting.WeAppAppSecret}"  type="text"></td>
+		</tr>
+
+		<thead style="background-color: #e4b9c0;">
+		<tr>
+			<th colspan="4">模板消息配置</th>
+		</tr>
+		</thead>
+		<tr>
+			<td align="right">模板消息ID：</td>
+			<td> <input id="TemplateMsgId" name="TemplateMsgId" class="form-control"  th:value="${setting.TemplateMsgId}" type="text"></td>
+			<td align="right">每日统计消息ID：</td>
+			<td> <input id="DailyReportTemplateMsgId " name="DailyReportTemplateMsgId " class="form-control"  th:value="${setting.DailyReportTemplateMsgId}" type="text"></td>
+		</tr>
+		<tr>
+			<td align="right">注册模板消息ID：</td>
+			<td><input id="ApplyTemplateMsgId" name="ApplyTemplateMsgId" class="form-control"  th:value="${setting.ApplyTemplateMsgId}" type="text"></td>
+			<td align="right">充值模板消息ID：</td>
+			<td><input id="TopupTemplateMsgId" name="TopupTemplateMsgId" class="form-control" th:value="${setting.TopupTemplateMsgId}"  type="text"></td>
+		</tr>
+		<tr>
+			<td align="right">注销审核消息Id：</td>
+			<td> <input id="CancelAuditTemplateMsgId" name="CancelAuditTemplateMsgId" class="form-control" th:value="${setting.CancelAuditTemplateMsgId}"  type="text"></td>
+			<td align="right">消费模板消息ID：</td>
+			<td> <input id="DebitTemplateMsgId" name="DebitTemplateMsgId" class="form-control"  th:value="${setting.DebitTemplateMsgId}" type="text"></td>
+		</tr>
+
+		<thead style="background-color: #e4b9c0;">
+		<tr>
+			<th colspan="4">微信开放平台配置</th>
+		</tr>
+		</thead>
+		<tr>
+			<td align="right">微信开放平台AppId：</td>
+			<td> <input id="OpenAppId" name="OpenAppId" class="form-control" th:value="${setting.OpenAppId}"  type="text"></td>
+			<td align="right">微信开放平台密钥：</td>
+			<td><input id="OpenSecretKey" name="OpenSecretKey" class="form-control" th:value="${setting.OpenSecretKey}"  type="text"></td>
+		</tr>
+		<tr>
+			<td align="right">微信开放平台商户Id：</td>
+			<td> <input id="OpenMchId" name="OpenMchId" class="form-control"  th:value="${setting.OpenMchId}" type="text"></td>
+			<td align="right">微信开放平台商户密钥：</td>
+			<td><input id="OpenMchKey" name="OpenMchKey" class="form-control" th:value="${setting.OpenMchKey}"  type="text"></td>
+		</tr>
+		<tr>
+			<td align="right">微信公众号开放平台证书路径：</td>
+			<td> <input id="OpenCertPath" name="OpenCertPath" class="form-control" th:value="${setting.OpenCertPath}"  type="text"></td>
+		</tr>
+		<thead style="background-color: #e4b9c0;">
+		<tr>
+			<th colspan="4">支付宝配置</th>
+		</tr>
+		</thead>
+		<tr>
+			<td align="right">支付宝支付AppId：</td>
+			<td> <input id="AliPayAppId" name="AliPayAppId" class="form-control" th:value="${setting.AliPayAppId}" type="text"></td>
+			<td align="right">支付宝支付应用私钥：</td>
+			<td><input id="AliPayAppPrivateKey" name="AliPayAppPrivateKey" class="form-control" th:value="${setting.AliPayAppPrivateKey}" type="text"></td>
+		</tr>
+		<tr>
+			<td align="right">支付宝支付公钥：</td>
+			<td> <input id="AliPayPublicKey" name="AliPayPublicKey" class="form-control" th:value="${setting.AliPayPublicKey}" type="text"></td>
+			<td align="right">支付宝支付证书路径：</td>
+			<td><input id="AliPayCertPath" name="AliPayCertPath" class="form-control" th:value="${setting.AliPayCertPath}" type="text"></td>
+		</tr>
+		<thead style="background-color: #e4b9c0;">
+		<tr>
+			<th colspan="4">短信平台配置</th>
+		</tr>
+		</thead>
+		<tr>
+			<td align="right">短信平台访问Key：</td>
+			<td> <input id="SMSAccessKeyId" name="SMSAccessKeyId" class="form-control" th:value="${setting.SMSAccessKeyId}"  type="text"></td>
+			<td align="right">短信平台访问KeySecret：</td>
+			<td><input id="SMSAccessKeySecret" name="SMSAccessKeySecret" class="form-control" th:value="${setting.SMSAccessKeySecret}" type="text"></td>
+		</tr>
+		<tr>
+			<td align="right">短信平台签名：</td>
+			<td> <input id="SMSSignName" name="SMSSignName" class="form-control" th:value="${setting.SMSSignName}" type="text"></td>
+			<td align="right">短信平台模板代码：</td>
+			<td><input id="SMSTemplateCode" name="SMSTemplateCode" class="form-control" th:value="${setting.SMSTemplateCode}" type="text"></td>
+		</tr>
+		<thead style="background-color: #e4b9c0;">
+		<tr>
+			<th colspan="4">极光推送配置</th>
+		</tr>
+		</thead>
+		<tr>
+			<td align="right">极光推送AppId：</td>
+			<td> <input id="JPushAppId" name="JPushAppId" class="form-control" th:value="${setting.JPushAppId}"  type="text"></td>
+			<td align="right">极光推送密钥：</td>
+			<td><input id="JpushSecretKey" name="JpushSecretKey" class="form-control" th:value="${setting.JpushSecretKey}" type="text"></td>
+		</tr>
+		<thead style="background-color: #e4b9c0;">
+		<tr>
+			<th colspan="4">注销消息配置</th>
+		</tr>
+		</thead>
+		<tr>
+			<td align="right">消息服务器连接：</td>
+			<td> <input id="MQConnStr" name="MQConnStr" class="form-control" th:value="${setting.MQConnStr}" type="text"></td>
+			<td align="right">关注公众号推送的欢迎信息：</td>
+			<td> <input id="WelComeInfo" name="WelComeInfo" class="form-control" th:value="${setting.WelComeInfo}" type="text"></td>
+		</tr>
+		<tr>
+			<td align="right">接口APPId：</td>
+			<td> <input id="ApiAppId" name="ApiAppId" class="form-control" th:value="${setting.ApiAppId}" type="text"></td>
+			<td align="right">接口app密钥：</td>
+			<td> <input id="ApiAppKey" name="ApiAppKey" class="form-control" th:value="${setting.ApiAppKey}" type="text"></td>
+		</tr>
+		<tr>
+			<td align="right">应用类型：</td>
+			<td> <input id="AppType" name="AppType" class="form-control" th:value="${setting.AppType}" type="text"></td>
+			<td align="right">启用IC卡扫码充值：</td>
+			<td> <input id="EnableICPrePay" name="EnableICPrePay" class="form-control" th:value="${setting.EnableICPrePay}" type="text"></td>
+		</tr>
+		<tr>
+			<td align="right">注销退款消息Id：</td>
+			<td><input id="CancelRefundTemplateMsgId" name="CancelRefundTemplateMsgId" class="form-control" th:value="${setting.SMSAccessKeySecret}" type="text"></td>
+		</tr>
+		<tr>
+			<td colspan="4"><button type="submit" class="btn btn-primary">提交</button></td>
+		</tr>
+		</tbody>
+	</table>
+	</form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/js/appjs/set/operate/operate.js">
+</script>
+</body>
+</html>

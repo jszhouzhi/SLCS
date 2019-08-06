@@ -1,0 +1,351 @@
+package com.slzr.operation.domain;
+
+public class ICTopupTransactionDO {
+
+    public String operatorNO;
+    public String cardAppNO;
+    public String cardTypeID;
+    public String balance;
+    public String terminalTxnNO;
+    public String amount;
+    public String txnType;
+    public String merchNO;
+    public String txnDateTime;
+    public String tAC;
+    public String orderNO;
+    public String terminalNO;
+    public String cardNO;
+    public String cardCTC;
+    public String beforeBalance;
+    public String summaryTime;
+
+    public String oterminalNO;
+    public String ocounter;
+    public String obalance;
+    public String otxnAmount;
+    public String oorderState;
+    public String oorderBackDate;
+    public String oloadState;
+    public String oloadDescribe;
+    public String oloadBackDate;
+    public String opayMethodId;
+    public String opayTime;
+    public String opayResult;
+    public String opayResultMsg;
+    public String otAC;
+    public String oreviewID;
+    public String oreviewTime;
+    public String osummaryTime;
+    public String omAC;
+    public String otxnDateTime;
+    public String orderDescribe;
+
+
+    public String sUserName;
+    public String bNickName;
+
+
+    public String getsUserName() {
+        return sUserName;
+    }
+
+    public void setsUserName(String sUserName) {
+        this.sUserName = sUserName;
+    }
+
+    public String getbNickName() {
+        return bNickName;
+    }
+
+    public void setbNickName(String bNickName) {
+        this.bNickName = bNickName;
+    }
+
+    public String getOterminalNO() {
+        return oterminalNO;
+    }
+
+    public void setOterminalNO(String oterminalNO) {
+        this.oterminalNO = oterminalNO;
+    }
+
+    public String getOcounter() {
+        return ocounter;
+    }
+
+    public void setOcounter(String ocounter) {
+        this.ocounter = ocounter;
+    }
+
+    public String getObalance() {
+        return obalance;
+    }
+
+    public void setObalance(String obalance) {
+        this.obalance = obalance;
+    }
+
+    public String getOtxnAmount() {
+        return otxnAmount;
+    }
+
+    public void setOtxnAmount(String otxnAmount) {
+        this.otxnAmount = otxnAmount;
+    }
+
+    public String getOorderState() {
+        return oorderState;
+    }
+
+    public void setOorderState(String oorderState) {
+        this.oorderState = oorderState;
+    }
+
+    public String getOorderBackDate() {
+        return oorderBackDate;
+    }
+
+    public void setOorderBackDate(String oorderBackDate) {
+        this.oorderBackDate = oorderBackDate;
+    }
+
+    public String getOloadState() {
+        return oloadState;
+    }
+
+    public void setOloadState(String oloadState) {
+        this.oloadState = oloadState;
+    }
+
+    public String getOloadDescribe() {
+        return oloadDescribe;
+    }
+
+    public void setOloadDescribe(String oloadDescribe) {
+        this.oloadDescribe = oloadDescribe;
+    }
+
+    public String getOloadBackDate() {
+        return oloadBackDate;
+    }
+
+    public void setOloadBackDate(String oloadBackDate) {
+        this.oloadBackDate = oloadBackDate;
+    }
+
+    public String getOpayMethodId() {
+        return opayMethodId;
+    }
+
+    public void setOpayMethodId(String opayMethodId) {
+        this.opayMethodId = opayMethodId;
+    }
+
+    public String getOpayTime() {
+        return opayTime;
+    }
+
+    public void setOpayTime(String opayTime) {
+        this.opayTime = opayTime;
+    }
+
+    public String getOpayResult() {
+        return opayResult;
+    }
+
+    public void setOpayResult(String opayResult) {
+        this.opayResult = opayResult;
+    }
+
+    public String getOpayResultMsg() {
+        return opayResultMsg;
+    }
+
+    public void setOpayResultMsg(String opayResultMsg) {
+        this.opayResultMsg = opayResultMsg;
+    }
+
+    public String getOtAC() {
+        return otAC;
+    }
+
+    public void setOtAC(String otAC) {
+        this.otAC = otAC;
+    }
+
+    public String getOreviewID() {
+        return oreviewID;
+    }
+
+    public void setOreviewID(String oreviewID) {
+        this.oreviewID = oreviewID;
+    }
+
+    public String getOreviewTime() {
+        return oreviewTime;
+    }
+
+    public void setOreviewTime(String oreviewTime) {
+        this.oreviewTime = oreviewTime;
+    }
+
+    public String getOsummaryTime() {
+        return osummaryTime;
+    }
+
+    public void setOsummaryTime(String osummaryTime) {
+        this.osummaryTime = osummaryTime;
+    }
+
+    public String getOmAC() {
+        return omAC;
+    }
+
+    public void setOmAC(String omAC) {
+        this.omAC = omAC;
+    }
+
+    public String getOtxnDateTime() {
+        return otxnDateTime;
+    }
+
+    public void setOtxnDateTime(String otxnDateTime) {
+        this.otxnDateTime = otxnDateTime;
+    }
+
+    public String getOrderDescribe() {
+        return orderDescribe;
+    }
+
+    public void setOrderDescribe(String orderDescribe) {
+        this.orderDescribe = orderDescribe;
+    }
+
+    public String getOperatorNO() {
+        return operatorNO;
+    }
+
+    public void setOperatorNO(String operatorNO) {
+        this.operatorNO = operatorNO;
+    }
+
+    public String getCardAppNO() {
+        return cardAppNO;
+    }
+
+    public void setCardAppNO(String cardAppNO) {
+        this.cardAppNO = cardAppNO;
+    }
+
+    public String getCardTypeID() {
+        return cardTypeID;
+    }
+
+    public void setCardTypeID(String cardTypeID) {
+        this.cardTypeID = cardTypeID;
+    }
+
+    public String getBalance() {
+        return balance;
+    }
+
+    public void setBalance(String balance) {
+        this.balance = balance;
+    }
+
+    public String getTerminalTxnNO() {
+        return terminalTxnNO;
+    }
+
+    public void setTerminalTxnNO(String terminalTxnNO) {
+        this.terminalTxnNO = terminalTxnNO;
+    }
+
+    public String getAmount() {
+        return amount;
+    }
+
+    public void setAmount(String amount) {
+        this.amount = amount;
+    }
+
+    public String getTxnType() {
+        return txnType;
+    }
+
+    public void setTxnType(String txnType) {
+        this.txnType = txnType;
+    }
+
+    public String getMerchNO() {
+        return merchNO;
+    }
+
+    public void setMerchNO(String merchNO) {
+        this.merchNO = merchNO;
+    }
+
+    public String getTxnDateTime() {
+        return txnDateTime;
+    }
+
+    public void setTxnDateTime(String txnDateTime) {
+        this.txnDateTime = txnDateTime;
+    }
+
+    public String gettAC() {
+        return tAC;
+    }
+
+    public void settAC(String tAC) {
+        this.tAC = tAC;
+    }
+
+    public String getOrderNO() {
+        return orderNO;
+    }
+
+    public void setOrderNO(String orderNO) {
+        this.orderNO = orderNO;
+    }
+
+    public String getTerminalNO() {
+        return terminalNO;
+    }
+
+    public void setTerminalNO(String terminalNO) {
+        this.terminalNO = terminalNO;
+    }
+
+    public String getCardNO() {
+        return cardNO;
+    }
+
+    public void setCardNO(String cardNO) {
+        this.cardNO = cardNO;
+    }
+
+    public String getCardCTC() {
+        return cardCTC;
+    }
+
+    public void setCardCTC(String cardCTC) {
+        this.cardCTC = cardCTC;
+    }
+
+    public String getBeforeBalance() {
+        return beforeBalance;
+    }
+
+    public void setBeforeBalance(String beforeBalance) {
+        this.beforeBalance = beforeBalance;
+    }
+
+    public String getSummaryTime() {
+        return summaryTime;
+    }
+
+    public void setSummaryTime(String summaryTime) {
+        this.summaryTime = summaryTime;
+    }
+}

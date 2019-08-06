@@ -1,0 +1,11 @@
+package com.slzr.common.dao;
+
+import com.slzr.common.domain.LogDO;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface LogDao {
+    int createLog(LogDO log);
+
+    int updateLog(LogDO log);
+}

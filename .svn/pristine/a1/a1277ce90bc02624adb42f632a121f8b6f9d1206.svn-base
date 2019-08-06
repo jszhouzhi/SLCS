@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="signupForm">
+						<input id="id" name="id" th:value="${branch.id}"  type="hidden">
+						
+							<div class="form-group" th:if=" ${isAdmin} == y">
+								<label class="col-sm-3 control-label">商户：</label>
+								<div class="col-sm-8">
+									<select class="form-control" lay-verify="required"
+										name="merchantCode" id="merchantCode">
+									<option value="">请选择</option>
+									<option th:each="merchant : ${merchantList}" th:value="${merchant.merchantCode}" th:text="${merchant.merchantName}" th:selected="${branch.merchantCode==merchant.merchantCode}"></option>
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">线路代码：</label>
+								<div class="col-sm-8">
+									<input id="branchCode" name="branchCode" th:value="${branch.branchCode}" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">线路名称：</label>
+								<div class="col-sm-8">
+									<input id="branchName" name="branchName" th:value="${branch.branchName}" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">地址：</label>
+								<div class="col-sm-8">
+									<input id="address" name="address" th:value="${branch.address}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">经度：</label>
+								<div class="col-sm-8">
+									<input id="lat" name="lat" th:value="${branch.lat}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">纬度：</label>
+								<div class="col-sm-8">
+									<input id="lng" name="lng" th:value="${branch.lng}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">状态：</label>
+								<div class="col-sm-8">
+									<select class="form-control" lay-verify="required"
+										name="state" id="state">										 
+  									    <option value="1" th:selected="${branch.state=='1'}">1</option>
+										<option value="2" th:selected="${branch.state=='2'}">2</option>
+										<option value="3" th:selected="${branch.state=='3'}">3</option>
+										 
+									</select>
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">备注：</label>
+								<div class="col-sm-8">
+									<input id="remark" name="remark" th:value="${branch.remark}" class="form-control" type="text">
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<div class="col-sm-8 col-sm-offset-3">
+									<button type="submit"  class="btn btn-primary">提交</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+	</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="application/javascript" th:src="@{/js/appjs/operation/optBranch/edit.js}"></script>
+	 
+</body>
+</html>

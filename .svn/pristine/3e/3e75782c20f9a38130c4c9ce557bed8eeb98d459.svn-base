@@ -1,0 +1,166 @@
+
+var prefix = "/account/icCardAudit"
+$(function() {
+	load();
+	//good test morning
+});
+$('#exampleTable').on('load-success.bs.table', function (e, data) {
+    if (data.total && !data.rows.length) {
+        $('#exampleTable').bootstrapTable('selectPage').bootstrapTable('refresh');
+    }
+});
+function load() {
+	$('#exampleTable')
+			.bootstrapTable(
+					{
+						method : 'get', // 服务器数据的请求方式 get or post
+						url : prefix + "/list", // 服务器数据的加载地址
+					//	showRefresh : true,
+					//	showToggle : true,
+					//	showColumns : true,
+						iconSize : 'outline',
+						toolbar : '#exampleToolbar',
+						striped : true, // 设置为true会有隔行变色效果
+						dataType : "json", // 服务器返回的数据类型
+						pagination : true, // 设置为true会在底部显示分页条
+						// queryParamsType : "limit",
+						// //设置为limit则会发送符合RESTFull格式的参数
+						singleSelect : false, // 设置为true将禁止多选
+						// contentType : "application/x-www-form-urlencoded",
+						// //发送到服务器的数据编码类型
+						pageSize : 10, // 如果设置了分页，每页数据条数
+						pageNumber : 1, // 如果设置了分布，首页页码
+						//search : true, // 是否显示搜索框
+						showColumns : false, // 是否显示内容下拉框（选择显示的列）
+						sidePagination : "server", // 设置在哪里进行分页，可选值为"client" 或者 "server"
+						queryParams : function(params) {
+							return {
+								//说明：传入后台的参数包括offset开始索引，limit步长，sort排序列，order：desc或者,以及所有列的键值对
+								limit: params.limit,
+								offset:params.offset,
+								searchName:$('#searchName').val(),
+                                stateName:$('#stateName').val()
+							};
+						},
+						// //请求服务器数据时，你可以通过重写参数的方式添加一些额外的参数，例如 toolbar 中的参数 如果
+						// queryParamsType = 'limit' ,返回参数必须包含
+						// limit, offset, search, sort, order 否则, 需要包含:
+						// pageSize, pageNumber, searchText, sortName,
+						// sortOrder.
+						// 返回false将会终止请求
+						columns : [
+								{
+									field : 'cardNO', 
+									align : 'center',
+									title : 'IC卡号' 
+								},
+																{
+									field : 'mobilePhone', 
+									align : 'center',
+									title : '电话号码' 
+								},
+																{
+									field : 'trueName', 
+									align : 'center',
+									title : '真实姓名' 
+								},
+																{
+									field : 'gender', 
+									align : 'center',
+									title : '性别' 
+								},
+																{
+									field : 'certNO', 
+									align : 'center',
+									title : '身份证号' 
+								},
+																{
+									field : 'cardTypeName', 									
+									title : '卡类型',
+									align : 'center',
+								},
+                            								  {
+									field : 'auditDesc',
+									title : '审核描述',
+									align:'center',
+                           		 },
+																{
+									field : 'cardExpireTime', 
+									title : '卡到期时间',
+									align : 'center',
+								},
+																{
+									field : 'nickName', 
+									title : '创建人微信',
+									align:'center',
+								},
+								
+								{
+									field : 'createdDate', 
+									title : '创建时间',
+									align:'center',
+								},
+								
+							/*	{
+									field : 'updatedBy', 
+									title : '审核人',
+									align:'center',
+								},*/
+								
+								{
+									field : 'updatedDate', 
+									title : '审核时间',
+									align:'center',
+								},
+
+								{
+									title : '操作',
+									field : 'stateName',
+									align : 'center',
+									formatter : function(value, row, index) {		
+										if (value == '待审核') {
+											var s = '<button class="layui-btn layui-btn-sm'+s_edit_h+'" type="button" onclick="edit(\''+ row.id	
+											+ '\',11)">审核</button> ';	
+											return s;
+										} else if (value == '审核不通过') {
+											return '<span class="label label-danger">审核不通过</span>';
+										}else if(value=='审核通过'){
+											return '<span class="label label-success">审核通过</span>';
+										} 
+									}
+								}								
+								]
+					});
+}
+function reLoad() {
+	$('#exampleTable').bootstrapTable('refresh');
+}
+
+
+function edit(id) {
+	/*	layer.open({
+			type : 2,
+			title : '编辑',
+			maxmin : true,
+			shadeClose : false, // 点击遮罩关闭层
+			area : [ '800px', '620px' ],
+			content : prefix + '/edit/' + id // iframe的url
+		});*/
+		 var perContent = layer.open({
+	         type:2,
+	         title: '人工审核',
+	         content : prefix + '/edit/' + id,
+	         area: ['700px', '250px'],
+	         maxmin: false,            //最大化按钮
+	         anim:3,                    //动画
+	         shade: [0.8, '#393D49'],//遮罩层
+	         end: function(){
+	             
+	         }
+	     });
+		 layer.full(perContent);
+	}
+ 
+
+
+

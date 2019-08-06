@@ -1,0 +1,24 @@
+package com.slzr.ureport.service.impl;
+
+
+import com.slzr.ureport.dao.BCountBusDriverDao;
+import com.slzr.ureport.domain.BCountDo;
+import com.slzr.ureport.service.BCountBusDriverService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+
+@Service
+public class BCountBusDriverServiceImpl implements BCountBusDriverService{
+
+    @Autowired
+    private BCountBusDriverDao bCountBusDriverDao;
+
+    public List<BCountDo> list(Map<String, Object> parameters) {
+
+        return bCountBusDriverDao.list(parameters);
+    }
+}

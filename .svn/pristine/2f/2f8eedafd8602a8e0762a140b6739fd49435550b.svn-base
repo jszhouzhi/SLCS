@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.DailysummaryBaseDao">
+
+    <sql id="BAR_DailySummary_Base_Column">
+        BAR_DailySummary_Base.ID as ID
+        ,BAR_DailySummary_Base.PayMethodId as payMethodId
+           ,BAR_DailySummary_Base.TopupAmount*(1-0.001) AS enterAmount
+        ,BAR_DailySummary_Base.SharePay AS sharePay
+        ,BAR_DailySummary_Base.TopupFreeAmount as topupFreeAmount
+        ,BAR_DailySummary_Base.DelayPaidAmount as delayPaidAmount
+        ,BAR_DailySummary_Base.DelayPaidNum as delayPaidNum
+        ,BAR_DailySummary_Base.DebitNum as debitNum
+        ,BAR_DailySummary_Base.AccountFreeBalance as accountFreeBalance
+        ,BAR_DailySummary_Base.UnPaidNum as unPaidNum
+        ,BAR_DailySummary_Base.TotalTopupAmount as totalTopupAmount
+        ,BAR_DailySummary_Base.QRRefundNum as qRRefundNum
+        ,BAR_DailySummary_Base.TopupFreeNum as topupFreeNum
+        ,BAR_DailySummary_Base.AccountCancelNum as accountCancelNum
+        ,BAR_DailySummary_Base.DebitFreeNum as debitFreeNum
+        ,BAR_DailySummary_Base.UnPaidAmount as unPaidAmount
+        ,BAR_DailySummary_Base.AccountBalance as accountBalance
+        ,convert(varchar(10),BAR_DailySummary_Base.SummaryDateTime,121) as summaryDateTime
+        ,BAR_DailySummary_Base.AccountApplyNum as accountApplyNum
+        ,BAR_DailySummary_Base.DebitFreeAmount as debitFreeAmount
+       ,BAR_DailySummary_Base.TopupAmount AS settlementAmount
+        ,BAR_DailySummary_Base.TopupAmount as topupAmount
+        ,BAR_DailySummary_Base.TotalTopupFreeAmount as totalTopupFreeAmount
+        ,ISNULL(BAR_DailySummary_Base.ICRefundNum,0) as iCRefundNum
+        ,BAR_DailySummary_Base.TxnDate as txnDate
+        ,BAR_DailySummary_Base.TotalDebitFreeAmount as totalDebitFreeAmount
+        ,BAR_DailySummary_Base.RefundAmount as refundAmount
+        ,BAR_DailySummary_Base.TopupNum as topupNum
+        ,BAR_DailySummary_Base.QRRefundAmount as qRRefundAmount
+        ,ISNULL(BAR_DailySummary_Base.ICRefundAmount,0) as iCRefundAmount
+        ,BAR_DailySummary_Base.RefundNum as refundNum
+        ,BAR_DailySummary_Base.TotalDebitAmount as totalDebitAmount
+        ,BAR_DailySummary_Base.MerchantCode as merchantCode
+        ,BAR_DailySummary_Base.DebitAmount as debitAmount
+        ,ISNULL(BAR_DailySummary_Base.RefundServiceFee,0) as refundServiceFee
+    </sql>
+ 
+
+	<select id="list" resultType="com.slzr.operation.domain.DailysummaryBaseDO">
+		select MAX(t.ID) ID, payMethodId,case when payMethodId = 1 then '支付宝' when payMethodId = 0 then '微信' when payMethodId is null then '微信' end AS payMethodName,
+		 
+		case when sharePay = 1 then '平台账户' when sharePay = 0 then '非平台账户' end AS sharePay,
+		case when SUM(enterAmount)&lt;0 then 0 else SUM (enterAmount) end enterAmount,
+		SUM(t.topupFreeAmount) topupFreeAmount, SUM(t.delayPaidAmount) delayPaidAmount, SUM(t.delayPaidNum) delayPaidNum, 
+		SUM(t.debitNum) debitNum, 
+		SUM(t.accountFreeBalance) accountFreeBalance, SUM(t.unPaidNum) unPaidNum, SUM(t.totalTopupAmount) totalTopupAmount, 
+		SUM(t.qRRefundNum) qRRefundNum, SUM(t.topupFreeNum) topupFreeNum, SUM(t.accountCancelNum) accountCancelNum,
+		SUM(t.debitFreeNum) debitFreeNum,SUM(t.unPaidAmount) unPaidAmount,SUM(t.accountBalance) accountBalance,
+		MAX(t.summaryDateTime) summaryDateTime, SUM(t.accountApplyNum) accountApplyNum,SUM(t.debitFreeAmount) debitFreeAmount,
+		 CASE WHEN SUM (t.settlementAmount) &lt; 0 THEN 0 ELSE SUM (t.settlementAmount) END settlementAmount,
+		case when SUM (t.topupAmount)&lt;0 then 0 else SUM (t.topupAmount) end topupAmount,SUM(t.totalTopupFreeAmount) totalTopupFreeAmount,
+		SUM(t.iCRefundNum) iCRefundNum,t.txnDate ,SUM(t.totalDebitFreeAmount) totalDebitFreeAmount,SUM(t.refundAmount) refundAmount,
+		SUM(t.topupNum) topupNum,SUM(t.qRRefundAmount) qRRefundAmount,
+		SUM(t.iCRefundAmount) iCRefundAmount,SUM(t.refundNum) refundNum,SUM(t.totalDebitAmount) totalDebitAmount,t.merchantCode ,
+		SUM(t.debitAmount) debitAmount,SUM(t.refundServiceFee) refundServiceFee, MAX(t.shortName) shortName
+		 from (
+		select 
+		<include refid="BAR_DailySummary_Base_Column" /> ,		
+		isnull(m.ShortName,m.MerchantName) as shortName
+ 		from BAR_DailySummary_Base
+ 		left join BAR_Merchant m on  m.MerchantCode = BAR_DailySummary_Base.MerchantCode
+        <where>
+            <if test="sdate != null and  sdate!= ''"> and TxnDate &gt;= '${sdate}'</if>
+             <if test="edate != null and  edate!= ''"> and TxnDate &lt;= '${edate}'</if>
+            <!-- <if test="edate != null and  edate!= ''"> and BAR_DailySummary_Topup.SummaryDateTime &lt;= '${edate} 23:59:59'</if> -->
+            <if test="merchantCode != null and  merchantCode!= ''"> and BAR_DailySummary_Base.MerchantCode = '${merchantCode}'</if>
+            <if test="sharePay != null and  sharePay!= ''"> and BAR_DailySummary_Base.SharePay = '${sharePay}'</if>
+        </where>
+        union all
+		 select 
+		IC_DailySummary_Topup.ID as ID ,
+		IC_DailySummary_Topup.PayMethodId as payMethodId,
+		   (IC_DailySummary_Topup.PayAmount - IC_DailySummary_Topup.RefundAmount - IC_DailySummary_Topup.OldRefundAmount)*(1-0.001) AS enterAmount,
+		IC_DailySummary_Topup.SharePay AS sharePay,
+		0 as topupFreeAmount ,
+		0 as delayPaidAmount ,
+		0 as delayPaidNum ,
+		0 as debitNum ,
+		0 as accountFreeBalance ,
+		0 as unPaidNum ,
+		0 as totalTopupAmount ,
+		0 as qRRefundNum ,
+		0 as topupFreeNum ,
+		0 as accountCancelNum ,
+		0 as debitFreeNum ,
+		0 as unPaidAmount ,
+		0 as accountBalance ,
+		IC_DailySummary_Topup.SummaryDateTime as summaryDateTime ,
+		0 as accountApplyNum ,
+		0 as debitFreeAmount ,
+		 <!-- IC_DailySummary_Topup.PayAmount - IC_DailySummary_Topup.RefundAmount - IC_DailySummary_Topup.OldRefundAmount AS topupAmount, -->
+		IC_DailySummary_Topup.PayAmount - IC_DailySummary_Topup.RefundAmount - IC_DailySummary_Topup.OldRefundAmount AS settlementAmount,
+		IC_DailySummary_Topup.PayAmount AS topupAmount,
+		0 as totalTopupFreeAmount ,
+		IC_DailySummary_Topup.RefundNum +IC_DailySummary_Topup.OldRefundNum as iCRefundNum ,
+		IC_DailySummary_Topup.OrderDate as txnDate ,
+		0 as totalDebitFreeAmount ,
+		<!-- 0 as refundAmount , -->
+		<!-- IC_DailySummary_Topup.RefundAmount AS refundAmount, -->
+		IC_DailySummary_Topup.RefundAmount+IC_DailySummary_Topup.OldRefundAmount AS refundAmount,
+		IC_DailySummary_Topup.PayNum as topupNum ,
+		0 as qRRefundAmount ,
+		IC_DailySummary_Topup.RefundAmount + IC_DailySummary_Topup.OldRefundAmount as iCRefundAmount ,
+		<!-- 0 as refundNum , -->
+		IC_DailySummary_Topup.RefundNum +IC_DailySummary_Topup.OldRefundNum AS refundNum,
+		0 as totalDebitAmount ,
+		IC_DailySummary_Topup.CompanyCode as merchantCode ,
+		0 as debitAmount ,
+		0 as refundServiceFee ,
+		m.ShortName as shortName
+		from IC_DailySummary_Topup 
+		left join BAR_Merchant m on m.MerchantCode = IC_DailySummary_Topup.CompanyCode
+		 <where>
+		 	<if test="sdate != null and  sdate!= ''"> and IC_DailySummary_Topup.OrderDate &gt;= '${sdate}'</if>
+            <if test="edate != null and  edate!= ''"> and IC_DailySummary_Topup.OrderDate &lt;= '${edate}'</if>
+            <if test="merchantCode != null and  merchantCode!= ''"> and IC_DailySummary_Topup.CompanyCode = '${merchantCode}'</if>
+            <if test="sharePay != null and  sharePay!= ''"> and IC_DailySummary_Topup.SharePay = '${sharePay}'</if>
+         </where>
+		 ) t
+        GROUP BY t.txnDate, t.merchantCode, t.payMethodId,t.sharePay
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by t.TxnDate desc
+			</otherwise>
+        </choose>
+        
+        <if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if> 
+	</select>
+	
+ 	<select id="count" resultType="int">
+        SELECT count(*) from (
+		SELECT * from (
+		 select BAR_DailySummary_Base.TxnDate as txnDate ,
+			BAR_DailySummary_Base.MerchantCode as merchantCode ,
+			BAR_DailySummary_Base.PayMethodId as payMethodId,
+			BAR_DailySummary_Base.SharePay AS sharePay 
+		 from BAR_DailySummary_Base left join BAR_Merchant m on m.MerchantCode = BAR_DailySummary_Base.MerchantCode 
+			<where>
+	            <if test="sdate != null and  sdate!= ''"> and TxnDate &gt;= '${sdate}'</if>
+	            <if test="edate != null and  edate!= ''"> and TxnDate &lt;= '${edate}'</if>
+	            <if test="merchantCode != null and  merchantCode!= ''"> and m.MerchantCode = '${merchantCode}'</if>
+	            <if test="sharePay != null and  sharePay!= ''"> and BAR_DailySummary_Base.SharePay = '${sharePay}'</if>
+	        </where>
+			union all 
+			select  
+			 IC_DailySummary_Topup.OrderDate as txnDate ,
+			 IC_DailySummary_Topup.CompanyCode as merchantCode ,
+			 IC_DailySummary_Topup.PayMethodId as payMethodId,
+			 IC_DailySummary_Topup.SharePay AS sharePay
+		  from IC_DailySummary_Topup left join BAR_Merchant m on m.MerchantCode = IC_DailySummary_Topup.CompanyCode 
+		 	<where>
+	            <if test="sdate != null and  sdate!= ''"> and IC_DailySummary_Topup.OrderDate &gt;= '${sdate}'</if>
+	            <if test="edate != null and  edate!= ''"> and IC_DailySummary_Topup.OrderDate &lt;= '${edate}'</if>
+	            <if test="merchantCode != null and  merchantCode!= ''"> and IC_DailySummary_Topup.CompanyCode = '${merchantCode}'</if>
+	            <if test="sharePay != null and  sharePay!= ''"> and IC_DailySummary_Topup.SharePay = '${sharePay}'</if>
+        	</where>
+		 ) t 
+		GROUP BY t.txnDate, t.merchantCode, t.payMethodId,t.sharePay ) tt
+        
+        
+        
+	</select>
+	
+
+
+
+</mapper>

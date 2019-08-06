@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.ureport.dao.IcTransferCountDao">
+
+	<select id="list" resultType="com.slzr.ureport.domain.IcTransferCountDo">
+		select
+		DATEPART(YEAR, Summarydatetime) AS year,
+		<choose>
+			<when test="datetype == 'Day'">
+				Summarydatetime AS summarydatetime,
+			</when>
+			<when test="datetype == 'Week'">
+				DATEPART(Week,Summarydatetime) AS summarydatetime,
+			</when>
+			<when test="datetype == 'Month'">
+				DATEPART(Month,Summarydatetime) AS summarydatetime,
+			</when>
+			<otherwise>
+				DATEPART(Quarter,Summarydatetime) AS summarydatetime,
+			</otherwise>
+		</choose>
+		CASE d.CardTypeID WHEN  3 THEN '学生卡' WHEN 2 THEN '老人卡' WHEN 1 THEN '成人卡'  END  CardTypeID,
+		SUM(d.PayNum) PayNum,SUM(d.PayAmount) PayAmount,SUM(d.UnTopupNum) UnTopupNum,SUM(d.UnTopupAmount) UnTopupAmount,
+		SUM(d.OldTopupOKNum) OldTopupOKNum,SUM(d.OldTopupOKAmount) OldTopupOKAmount,SUM(d.RefundNum) RefundNum,SUM(d.RefundAmount) RefundAmount,
+		SUM(d.OldRefundNum) OldRefundNum,SUM(d.OldRefundAmount) OldRefundAmount
+		from IC_DailySummary_Topup d
+
+		<where>
+			<if test="startDate != null and startDate != '' and endDate!='' and endDate!=null "> and d.SummaryDateTime BETWEEN #{startDate}  AND  #{endDate}</if>
+		</where>
+		<choose>
+			<when test="datetype == 'Day'">
+				GROUP BY DATEPART(YEAR, Summarydatetime), Summarydatetime,
+				d.CardTypeID
+			</when>
+			<when test="datetype == 'Week'">
+				GROUP BY DATEPART(YEAR, Summarydatetime), DATEPART(Week,Summarydatetime),
+				d.CardTypeID
+			</when>
+			<when test="datetype == 'Month'">
+				GROUP BY  DATEPART(YEAR, Summarydatetime), DATEPART(Month,Summarydatetime),
+				d.CardTypeID
+			</when>
+			<otherwise>
+				GROUP BY DATEPART(YEAR, Summarydatetime), DATEPART(Quarter,Summarydatetime),
+				d.CardTypeID
+			</otherwise>
+		</choose>
+		<choose>
+			<when test="datetype == 'Day'">
+				order by DATEPART(YEAR, Summarydatetime), Summarydatetime DESC
+			</when>
+			<when test="datetype == 'Week'">
+				order by DATEPART(YEAR, Summarydatetime), DATEPART(Week,Summarydatetime) DESC
+			</when>
+			<when test="datetype == 'Month'">
+				order by DATEPART(YEAR, Summarydatetime), DATEPART(Month,Summarydatetime) DESC
+			</when>
+			<otherwise>
+				order by DATEPART(YEAR, Summarydatetime), DATEPART(Quarter,Summarydatetime) desc
+			</otherwise>
+		</choose>
+	</select>
+</mapper>

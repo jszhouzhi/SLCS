@@ -1,0 +1,149 @@
+package com.slzr.operation.domain;
+
+public class ICTopupTransactionDO {
+
+    public String operatorNO;
+    public String cardAppNO;
+    public String cardTypeID;
+    public String balance;
+    public String terminalTxnNO;
+    public String amount;
+    public String txnType;
+    public String merchNO;
+    public String txnDateTime;
+    public String tAC;
+    public String orderNO;
+    public String terminalNO;
+    public String cardNO;
+    public String cardCTC;
+    public String beforeBalance;
+    public String summaryTime;
+
+    public String getOperatorNO() {
+        return operatorNO;
+    }
+
+    public void setOperatorNO(String operatorNO) {
+        this.operatorNO = operatorNO;
+    }
+
+    public String getCardAppNO() {
+        return cardAppNO;
+    }
+
+    public void setCardAppNO(String cardAppNO) {
+        this.cardAppNO = cardAppNO;
+    }
+
+    public String getCardTypeID() {
+        return cardTypeID;
+    }
+
+    public void setCardTypeID(String cardTypeID) {
+        this.cardTypeID = cardTypeID;
+    }
+
+    public String getBalance() {
+        return balance;
+    }
+
+    public void setBalance(String balance) {
+        this.balance = balance;
+    }
+
+    public String getTerminalTxnNO() {
+        return terminalTxnNO;
+    }
+
+    public void setTerminalTxnNO(String terminalTxnNO) {
+        this.terminalTxnNO = terminalTxnNO;
+    }
+
+    public String getAmount() {
+        return amount;
+    }
+
+    public void setAmount(String amount) {
+        this.amount = amount;
+    }
+
+    public String getTxnType() {
+        return txnType;
+    }
+
+    public void setTxnType(String txnType) {
+        this.txnType = txnType;
+    }
+
+    public String getMerchNO() {
+        return merchNO;
+    }
+
+    public void setMerchNO(String merchNO) {
+        this.merchNO = merchNO;
+    }
+
+    public String getTxnDateTime() {
+        return txnDateTime;
+    }
+
+    public void setTxnDateTime(String txnDateTime) {
+        this.txnDateTime = txnDateTime;
+    }
+
+    public String gettAC() {
+        return tAC;
+    }
+
+    public void settAC(String tAC) {
+        this.tAC = tAC;
+    }
+
+    public String getOrderNO() {
+        return orderNO;
+    }
+
+    public void setOrderNO(String orderNO) {
+        this.orderNO = orderNO;
+    }
+
+    public String getTerminalNO() {
+        return terminalNO;
+    }
+
+    public void setTerminalNO(String terminalNO) {
+        this.terminalNO = terminalNO;
+    }
+
+    public String getCardNO() {
+        return cardNO;
+    }
+
+    public void setCardNO(String cardNO) {
+        this.cardNO = cardNO;
+    }
+
+    public String getCardCTC() {
+        return cardCTC;
+    }
+
+    public void setCardCTC(String cardCTC) {
+        this.cardCTC = cardCTC;
+    }
+
+    public String getBeforeBalance() {
+        return beforeBalance;
+    }
+
+    public void setBeforeBalance(String beforeBalance) {
+        this.beforeBalance = beforeBalance;
+    }
+
+    public String getSummaryTime() {
+        return summaryTime;
+    }
+
+    public void setSummaryTime(String summaryTime) {
+        this.summaryTime = summaryTime;
+    }
+}

@@ -1,0 +1,64 @@
+package com.slzr.ureport.bean;
+
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.utils.TimeConverUtils;
+import com.slzr.ureport.domain.ACountDo;
+import com.slzr.ureport.domain.BCountDo;
+import com.slzr.ureport.service.ACountService;
+import com.slzr.ureport.service.BCountService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+public class ACountBean extends BaseController{
+
+	@Autowired
+	private ACountService qCountService;
+
+    public List<ACountDo> loadReportCar(String dsName,String datasetName,Map<String,Object> parameters){ //车辆   	
+        
+    	List<ACountDo> aCountDoList = qCountService.ACountCarlist(parameters);       
+    	for (int i = 0; i < aCountDoList.size(); i++) {
+    		aCountDoList.get(i).setUserName(getUsername());
+    		aCountDoList.get(i).setStartDate(parameters.get("startDate")+"");
+    		aCountDoList.get(i).setEndDate(parameters.get("endDate")+"");
+		}
+        return aCountDoList;
+    }
+    
+    public List<ACountDo> loadReportDept(String dsName,String datasetName,Map<String,Object> parameters){ //部门
+        
+    	List<ACountDo> aCountDoList = qCountService.ACountDeptlist(parameters);       
+    	for (int i = 0; i < aCountDoList.size(); i++) {
+    		aCountDoList.get(i).setUserName(getUsername());
+    		aCountDoList.get(i).setStartDate(parameters.get("startDate")+"");
+    		aCountDoList.get(i).setEndDate(parameters.get("endDate")+"");
+		}
+        return aCountDoList;
+    }
+    
+    public List<ACountDo> loadReportDriver(String dsName,String datasetName,Map<String,Object> parameters){ //司机
+    	
+    	List<ACountDo> aCountDoList = qCountService.ACountDriverlist(parameters);       
+    	for (int i = 0; i < aCountDoList.size(); i++) {
+    		aCountDoList.get(i).setUserName(getUsername());
+    		aCountDoList.get(i).setStartDate(parameters.get("startDate")+"");
+    		aCountDoList.get(i).setEndDate(parameters.get("endDate")+"");
+		}
+        return aCountDoList;
+    }
+    
+    public List<ACountDo> loadReportLine(String dsName,String datasetName,Map<String,Object> parameters){  //线路
+    	
+    	List<ACountDo> aCountDoList = qCountService.ACountLine(parameters);       
+    	for (int i = 0; i < aCountDoList.size(); i++) {
+    		aCountDoList.get(i).setUserName(getUsername());
+    		aCountDoList.get(i).setStartDate(parameters.get("startDate")+"");
+    		aCountDoList.get(i).setEndDate(parameters.get("endDate")+"");
+		}
+        return aCountDoList;
+    }
+}

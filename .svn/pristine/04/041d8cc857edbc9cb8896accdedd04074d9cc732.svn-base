@@ -1,0 +1,53 @@
+package com.slzr.operation.service.Impl;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.slzr.operation.dao.DailysummaryTopupDao;
+import com.slzr.operation.domain.DailysummaryTopup;
+import com.slzr.operation.service.DailysummaryTopupService;
+@Service
+public class DailysummaryTopupServiceImpl implements DailysummaryTopupService{
+    @Autowired
+    private DailysummaryTopupDao barDailysummaryTopupDao;
+    @Override
+    public DailysummaryTopup selectBarDailysummaryTopupByObj(DailysummaryTopup obj){
+        return barDailysummaryTopupDao.selectBarDailysummaryTopupByObj(obj);
+    }
+    @Override
+    public DailysummaryTopup selectBarDailysummaryTopupById(Object id){
+        return barDailysummaryTopupDao.selectBarDailysummaryTopupById(id);
+    }
+    @Override
+    public int insertBarDailysummaryTopup(DailysummaryTopup value){
+        return barDailysummaryTopupDao.insertBarDailysummaryTopup(value);
+    }
+    @Override
+    public int insertNonEmptyBarDailysummaryTopup(DailysummaryTopup value){
+        return barDailysummaryTopupDao.insertNonEmptyBarDailysummaryTopup(value);
+    }
+    @Override
+    public int insertBarDailysummaryTopupByBatch(List<DailysummaryTopup> value){
+        return barDailysummaryTopupDao.insertBarDailysummaryTopupByBatch(value);
+    }
+    @Override
+    public int deleteBarDailysummaryTopupById(Object id){
+        return barDailysummaryTopupDao.deleteBarDailysummaryTopupById(id);
+    }
+    @Override
+    public int updateBarDailysummaryTopupById(DailysummaryTopup enti){
+        return barDailysummaryTopupDao.updateBarDailysummaryTopupById(enti);
+    }
+    @Override
+    public int updateNonEmptyBarDailysummaryTopupById(DailysummaryTopup enti){
+        return barDailysummaryTopupDao.updateNonEmptyBarDailysummaryTopupById(enti);
+    }
+    public DailysummaryTopupDao getBarDailysummaryTopupDao() {
+        return this.barDailysummaryTopupDao;
+    }
+
+    public void setBarDailysummaryTopupDao(DailysummaryTopupDao barDailysummaryTopupDao) {
+        this.barDailysummaryTopupDao = barDailysummaryTopupDao;
+    }
+
+}

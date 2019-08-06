@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.set.dao.CompanyDao">
+
+	<select id="list" resultType="com.slzr.set.domain.CompanyDo">
+	
+		<if test="offset != null and limit != null">
+			select top ${limit}  *  from (	
+		</if>
+	
+		SELECT 
+		<if test="offset != null and limit != null">
+			ROW_NUMBER() OVER(ORDER BY id desc) AS Seq,
+		</if>
+		
+		id,code,cityCode,name,shortName,pinYin,cityName,cityPinYin FROM BAR_Company
+		<where>
+			<if test="keyWord != null and keyWord != ''">(   code LIKE	 '${keyWord}%' OR cityCode LIKE	 '${keyWord}%' OR shortName LIKE '${keyWord}%' ) </if>
+			<if test="merchantCode != null and merchantCode != ''"> AND merchantCode = #{merchantCode} </if>
+			<if test="code != null and code != ''"> AND code = #{code} </if>
+		</where>
+		
+		<if test="offset != null and limit != null">
+			) a where seq BETWEEN ${offset+1} and ${limit+offset}
+		</if>
+		
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by id desc
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="count" resultType="int">
+		SELECT  count(*) FROM BAR_Company
+		<where>
+			<if test="keyWord != null and keyWord != ''">(   code LIKE	 '${keyWord}%' OR cityCode LIKE	 '${keyWord}%' OR shortName LIKE '${keyWord}%' ) </if>
+			<if test="merchantCode != null and merchantCode != ''"> AND merchantCode = #{merchantCode} </if>
+		</where>
+	</select>
+
+	<update id="remove" parameterType="java.lang.Long">
+		UPDATE  BAR_Merchant
+		<set>
+			enableStatus='2'
+		</set>
+		WHERE  id=#{id}
+	</update>
+
+
+	<insert id="save" parameterType="com.slzr.set.domain.CompanyDo" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO BAR_Company (
+			code,
+			cityCode,
+			name,
+			shortName,
+			tradeCode,
+			pinYin,
+			cityName,
+			cityPinYin,
+			<!-- sysSetting, -->
+			parentID,
+			apiUrl,
+			qrTimeOut,
+			shareWxPay,
+			shareAliPay
+		)
+		values
+		(
+		#{code},
+		#{cityCode},
+		#{name},
+		#{shortName},
+		#{tradeCode},
+		#{pinYin},
+		#{cityName},
+		#{cityPinYin},
+		<!-- #{sysSetting}, -->
+		#{parentID},
+		#{apiUrl},
+		#{qrTimeOut},
+		#{shareWxPay},
+		#{shareAliPay}
+		)
+	</insert>
+
+
+	<select id="get" resultType="com.slzr.set.domain.CompanyDo">
+	SELECT id,code,cityCode,name,shortName,pinYin,cityName,cityPinYin,sysSetting,apiUrl,qrTimeOut,shareWxPay,shareAliPay FROM BAR_Company where id = #{id}
+	</select>
+
+	<update id="update" parameterType="com.slzr.set.domain.CompanyDo">
+		update BAR_Company
+		<set>
+			<if test="code != null and code != ''">code = #{code}, </if>
+			<if test="cityCode != null and cityCode != ''">cityCode = #{cityCode}, </if>
+			<if test="name != null and name != ''">name = #{name}, </if>
+			<if test="shortName != null and shortName != ''">shortName = #{shortName}, </if>
+			<if test="tradeCode != null and tradeCode != ''">tradeCode = #{tradeCode}, </if>
+			<if test="pinYin != null and pinYin != ''">pinYin = #{pinYin}, </if>
+			<if test="cityName != null and cityName != ''">cityName = #{cityName}, </if>
+			<if test="cityPinYin != null and cityPinYin != ''">cityPinYin = #{cityPinYin}, </if>
+			<if test="sysSetting != null and sysSetting != ''">sysSetting = #{sysSetting}, </if>
+			<if test="apiUrl != null and apiUrl != ''">apiUrl = #{apiUrl}, </if>
+			<if test="qrTimeOut != null and qrTimeOut != ''">qrTimeOut = #{qrTimeOut}, </if>
+			<if test="shareWxPay != null and shareWxPay != ''">shareWxPay = #{shareWxPay}, </if>
+			<if test="shareAliPay != null and shareAliPay != ''">shareAliPay = #{shareAliPay} </if>
+		</set>
+		where id = #{id}
+	</update>
+</mapper>

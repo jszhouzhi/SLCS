@@ -1,0 +1,206 @@
+package com.slzr.operation.controller;
+
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.utils.*;
+import com.slzr.operation.domain.DailysummaryTopupDO;
+import com.slzr.operation.domain.ICTopupOrderDO;
+import com.slzr.operation.service.DailysummaryTopupService;
+import com.slzr.operation.service.ICTopupOrderService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+
+// IC 卡充值明细
+@Controller
+@RequestMapping("/operation/ictopuporder")
+public class ICTopupOrderController extends BaseController{
+	private String prefix = "operation/ictopuporder";
+//	@Autowired
+//	private DailysummaryTopupService topupservice;
+
+	@Autowired
+	private ICTopupOrderService iCTopupOrderService;
+	
+	@GetMapping("/list")
+	public String list() {
+		return prefix + "/list";
+	}
+	
+	@GetMapping("/edit/{id}")
+	public String edit(@PathVariable("id") String id) {
+		return prefix + "/edit";
+	}
+	
+	@GetMapping("/check/{id}")
+	public String check(Model model,@PathVariable("id") String id) {
+		model.addAttribute("id",id);
+		return prefix + "/check";
+	}
+	
+	@ResponseBody
+	@GetMapping("api/list")
+	@RequiresPermissions("operation:topup:list")
+	public PageUtils list(@RequestParam Map<String, Object> params) {
+		//查询列表数据
+        Query query = new Query(params);
+		List<ICTopupOrderDO> list = iCTopupOrderService.list(query);
+		int total = iCTopupOrderService.count(query);
+		PageUtils pageUtils = new PageUtils(list, total);
+		return pageUtils;
+	}
+
+
+
+
+
+    @RequestMapping("/expexcel")
+    public void expExceluser(ModelMap model,HttpServletRequest request,HttpServletResponse response,@RequestParam Map<String, Object> params){
+    	
+  	  	String fileName = "IC卡充值明细报表.xls";
+
+  	  	String[] title = new String[]{"订单号","IC卡流水号","卡余额","订单金额","订单时间","订单状态","订单状态描述","订单更新时间","圈存状态","圈存时间","支付方式ID","支付时间","支付结果","记录MAC"};
+  	  	
+  	    List<ICTopupOrderDO> list = null;
+  	    
+		try {
+			list = iCTopupOrderService.list(params);
+	    	List<Object[]> data = new ArrayList<Object[]>();
+	    	for(int i=0; i<list.size();i++){
+		        Object[] str = new Object[title.length];
+		        //订单号
+		        if(null!=list.get(i).getOrderNO() && !list.get(i).getOrderNO().equals("")){
+		        	str[0] = list.get(i).getOrderNO();
+		        }else{
+		        	str[0] = "";
+		        }
+		        //IC卡流水号
+		        if(null!=list.get(i).getCardNO() && !list.get(i).getCardNO().equals("")){
+		        	str[1] = list.get(i).getCardNO();
+		        }else{
+		        	str[1] = "";
+		        }
+		        //卡余额
+		        if(null!=list.get(i).getBalance()){
+		        	str[2] = list.get(i).getBalance();
+		        }else{
+		        	str[2] = "";
+		        }
+		        //订单金额
+		        if(null!=list.get(i).getTxnAmount()){
+		        	str[3] = list.get(i).getTxnAmount();
+		        }else{
+		        	str[3] = "";
+		        }
+		        //订单时间
+		        if(null!=list.get(i).getTxnDateTime()){
+		        	str[4] = list.get(i).getTxnDateTime();
+		        }else{
+		        	str[4] = "";
+		        }
+		        //订单状态
+		        if(null!=list.get(i).getOrderState()){
+		        	str[5] = list.get(i).getOrderState();
+		        }else{
+		        	str[5] = "";
+		        }
+		        //订单状态描述
+		        if(null!=list.get(i).getOrderDescribe()){
+		        	str[6] = list.get(i).getOrderDescribe();
+		        }else{
+		        	str[6] = "";
+		        }
+		        //订单更新时间
+		        if(null!=list.get(i).getOrderState()){
+		        	str[7] = list.get(i).getOrderState();
+		        }else{
+		        	str[7] = "";
+		        }
+		        //圈存状态
+		        if(null!=list.get(i).getLoadState()){
+		        	str[8] = list.get(i).getLoadState();
+		        }else{
+		        	str[8] = "";
+		        }
+		        //圈存时间
+		        if(null!=list.get(i).getLoadDescribe()){
+		        	str[9] = list.get(i).getLoadDescribe();
+		        }else{
+		        	str[9] = "";
+		        }
+		        //支付方式ID
+		        if(null!=list.get(i).getPayMethodId()){
+		        	str[10] = list.get(i).getPayMethodId();
+		        }else{
+		        	str[10] = "";
+		        }
+		        //支付时间
+		        if(null!=list.get(i).getPayTime()){
+		        	str[11] = list.get(i).getPayTime();
+		        }else{
+		        	str[11] = "";
+		        }
+
+				//支付结果
+				if(null!=list.get(i).getPayResult()){
+					str[12] = list.get(i).getPayResult();
+				}else{
+					str[12] = "";
+				}
+
+				//记录MAC
+				if(null!=list.get(i).getmAC()){
+					str[13] = list.get(i).getmAC();
+				}else{
+					str[13] = "";
+				}
+		        data.add(str);
+	    	}
+	    	String sheetName = "expExcel";
+			byte[] b = fileName.getBytes("UTF-8"); 
+		    String formatFileName = new String(b,"ISO-8859-1");		      	 
+		    response.setContentType("application/ms-excel");
+		    response.setHeader("Content-disposition", "attachment;filename="+formatFileName);
+		    ExcelExportTool.exportExcel(formatFileName, sheetName, title, data, response);
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 }finally{
+			 list=null;
+		 }
+    }
+	private String ConvertToAuditStatusText(int value)
+	{
+		switch(value)
+		{
+		   case -1:
+				return "未审核";
+		   case 0:
+				return "审核不通过";
+		   case 1:
+				return "审核通过";
+		    default:break;
+		}
+		return "未知";
+	}
+	private String ConvertToPayMethodText(int value)
+	{
+		switch(value)
+		{
+		   case 0:
+				return "微信";
+		   case 1:
+				return "支付宝";
+		    default:break;
+		}
+		return "未知";
+	}
+}

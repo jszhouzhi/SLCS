@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.ArticleDao">
+
+	<sql id="thisColumns">
+        BAR_Article.ID as ID
+        ,BAR_Article.UpdateDate as UpdateDate
+        ,BAR_Article.PhotoPath as PhotoPath
+        ,BAR_Article.Contents as Contents
+        ,BAR_Article.CreatedBy as CreatedBy
+        ,BAR_Article.MerchantCode as MerchantCode
+        ,BAR_Article.Abstracts as Abstracts
+        ,BAR_Article.CreatedDate as CreatedDate
+        ,BAR_Article.Title as Title
+        ,BAR_Article.ViewNum as ViewNum
+        ,BAR_Article.ArticleType as ArticleType
+        ,BAR_Article.UpdateBy as UpdateBy
+    </sql>
+	<select id="get" resultType="com.slzr.operation.domain.ArticleDO">
+		select 
+		<include refid="thisColumns" /> 
+		from BAR_Article where ID = #{id}
+	</select>
+
+	<select id="list" resultType="com.slzr.operation.domain.ArticleDO">
+		select 
+		<include refid="thisColumns" /> 
+		from BAR_Article
+        <where>
+            <if test="updateBy != null "> and BAR_Article.UpdateBy = #{updateBy}</if>
+            <if test="articleType != null "> and BAR_Article.ArticleType = #{articleType}</if>
+            <if test="viewNum != null "> and BAR_Article.ViewNum = #{viewNum}</if>
+            <if test="title != null "> and BAR_Article.Title = #{title}</if>
+            <if test="createdDate != null "> and BAR_Article.CreatedDate = #{createdDate}</if>
+            <if test="abstracts != null "> and BAR_Article.Abstracts = #{abstracts}</if>
+            <if test="merchantCode != null "> and BAR_Article.MerchantCode = #{merchantCode}</if>
+            <if test="createdBy != null "> and BAR_Article.CreatedBy = #{createdBy}</if>
+            <if test="contents != null "> and BAR_Article.Contents = #{contents}</if>
+            <if test="photoPath != null "> and BAR_Article.PhotoPath = #{photoPath}</if>
+            <if test="updateDate != null "> and BAR_Article.UpdateDate = #{updateDate}</if>
+            <if test="iD != null "> and BAR_Article.ID = #{iD}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by CreatedDate desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from BAR_Article
+        <where>
+            <if test="updateBy != null "> and BAR_Article.UpdateBy = #{updateBy}</if>
+            <if test="articleType != null "> and BAR_Article.ArticleType = #{articleType}</if>
+            <if test="viewNum != null "> and BAR_Article.ViewNum = #{viewNum}</if>
+            <if test="title != null "> and BAR_Article.Title = #{title}</if>
+            <if test="createdDate != null "> and BAR_Article.CreatedDate = #{createdDate}</if>
+            <if test="abstracts != null "> and BAR_Article.Abstracts = #{abstracts}</if>
+            <if test="merchantCode != null "> and BAR_Article.MerchantCode = #{merchantCode}</if>
+            <if test="createdBy != null "> and BAR_Article.CreatedBy = #{createdBy}</if>
+            <if test="contents != null "> and BAR_Article.Contents = #{contents}</if>
+            <if test="photoPath != null "> and BAR_Article.PhotoPath = #{photoPath}</if>
+            <if test="updateDate != null "> and BAR_Article.UpdateDate = #{updateDate}</if>
+            <if test="iD != null "> and BAR_Article.ID = #{iD}</if>
+        </where>
+	</select>
+
+</mapper>

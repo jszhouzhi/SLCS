@@ -1,0 +1,19 @@
+package com.slzr.account.dao;
+
+import com.slzr.account.domain.AccountCancelDO;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Mapper;
+
+
+@Mapper
+public interface AccountCancelDao {
+
+	
+	List<AccountCancelDO> list(Map<String,Object> map);
+	
+	int count(Map<String,Object> map);
+
+}

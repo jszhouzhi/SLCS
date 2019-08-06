@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.slzr.set.dao.OperateDao">
+    <!-- OperateDo的resultMap,column是给数据库列起的别名,它对应property类的属性-->
+    <resultMap id="result_OperateDo_Map" type="com.slzr.set.domain.OperateDo">
+        <result column="UpdatedBy" property="updatedBy" />
+        <result column="CreatedBy" property="createdBy" />
+        <result column="UpdatedDate" property="updatedDate" />
+        <result column="Setting" property="setting" />
+        <result column="CreatedDate" property="createdDate" />
+        <result column="ID" property="id" />
+        <result column="Remark" property="remark" />
+    </resultMap>
+
+    <!-- 数据库中表名为:BAR_SysSetting的列名,as前是数据库的列明,as后是列的别名用于映射成实体类中的属性,需要注意的是别名必须与resultMap中的column别名一致 -->
+    <sql id="BAR_SysSetting_Column">
+        BAR_SysSetting.UpdatedBy as UpdatedBy
+        ,BAR_SysSetting.CreatedBy as CreatedBy
+        ,BAR_SysSetting.UpdatedDate as UpdatedDate
+        ,BAR_SysSetting.Setting as Setting
+        ,BAR_SysSetting.CreatedDate as CreatedDate
+        ,BAR_SysSetting.ID as id
+        ,BAR_SysSetting.Remark as Remark
+    </sql>
+
+    <!--获得类名为:OperateDo对应的数据库表的数据总行数 -->
+    <select id="getOperateDoRowCount" resultType="java.lang.Long">
+        select count(*) from BAR_SysSetting
+    </select>
+    <!-- 获得类名为:OperateDo对应数据库中表的数据集合 -->
+    <select id="selectOperateDo" resultMap="result_OperateDo_Map">
+        select * from
+        (
+            select 
+            <include refid="BAR_SysSetting_Column" /> 
+            from BAR_SysSetting
+
+        ) result 
+    </select> 
+
+    <!-- 将OperateDo插入到对应数据库的表中,包括属性值为null的数据-->
+
+    <insert id="insertOperateDo" parameterType="com.slzr.set.domain.OperateDo">
+        insert into BAR_SysSetting(UpdatedBy,CreatedBy,UpdatedDate,Setting,CreatedDate,ID,Remark) 
+        values(#{updatedBy},#{createdBy},#{updatedDate},#{setting},#{createdDate},#{id},#{remark})
+    </insert>
+
+    <!-- 将OperateDo中属性值不为null的数据,插入到对应数据库的表中-->
+    <insert id="insertNonEmptyOperateDo" parameterType="com.slzr.set.domain.OperateDo">
+        insert into BAR_SysSetting
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="updatedBy != null">UpdatedBy,</if>
+            <if test="createdBy != null">CreatedBy,</if>
+            <if test="updatedDate != null">UpdatedDate,</if>
+            <if test="setting != null">Setting,</if>
+            <if test="createdDate != null">CreatedDate,</if>
+            <if test="iD != null">id,</if>
+            <if test="remark != null">Remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="updatedBy != null"> #{updatedBy},</if>
+            <if test="createdBy != null"> #{createdBy},</if>
+            <if test="updatedDate != null"> #{updatedDate},</if>
+            <if test="setting != null"> #{setting},</if>
+            <if test="createdDate != null"> #{createdDate},</if>
+            <if test="iD != null"> #{id},</if>
+            <if test="remark != null"> #{remark},</if>
+        </trim>
+    </insert>
+
+    <!-- 将OperateDo批量插入到对应数据库的表中-->
+    <insert id="insertOperateDoByBatch" parameterType="ArrayList">
+        insert into BAR_SysSetting(UpdatedBy,CreatedBy,UpdatedDate,Setting,CreatedDate,ID,Remark) 
+        <foreach collection="list" item="item" index="index" separator=" union all " >
+            select #{item.updatedBy},#{item.createdBy},#{item.updatedDate},#{item.setting},#{item.createdDate},#{item.id},#{item.remark}
+        </foreach>
+    </insert>
+
+    <!-- 通过ApiDo的id将ApiDo的数据更新到数据库中对应的表,包括值null的数据-->
+    <update id="updateOperateDoById" parameterType="com.slzr.set.domain.OperateDo">
+        update BAR_SysSetting set
+        UpdatedBy=#{updatedBy,jdbcType=INTEGER}
+        ,createdBy=#{createdBy,jdbcType=INTEGER}
+        ,updatedDate=#{updatedDate,jdbcType=TIMESTAMP}
+        ,setting=#{setting,jdbcType=VARCHAR}
+        ,createdDate=#{createdDate,jdbcType=TIMESTAMP}
+        ,remark=#{remark,jdbcType=VARCHAR}
+    </update>
+
+</mapper>

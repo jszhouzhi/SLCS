@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.GuestMessageDao">
+
+
+
+	<select id="list" resultType="com.slzr.operation.domain.GuestMessageDO">
+		select g.MsgTypeID,a.TrueName,a.MobilePhone,a.Gender,g.MsgContent,g.SubmitDateTime,g.AttachPhotoUrl,g.LastReplyUID,
+		g.LastReplyDateTime,g.IsResolved from BAR_GuestMessage g LEFT JOIN BAR_Account a ON  g.UID = a.UID
+
+        <where>  
+		  		  <if test="mobilephone != null and mobilephone != ''"> and MobilePhone = #{mobilephone} </if>
+		  		  <if test="truename != null and truename != ''"> and TrueName = #{truename} </if>
+
+		  		  <if test="isresolved != null and isresolved != ''"> and IsResolved = #{isresolved} </if>
+		 </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by g.SubmitDateTime desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from BAR_GuestMessage
+		 <where>  
+		  		  <if test="id != null and id != ''"> and ID = #{id} </if>
+		  		  <if test="msgtypeid != null and msgtypeid != ''"> and MsgTypeID = #{msgtypeid} </if>
+		  		  <if test="uid != null and uid != ''"> and UID = #{uid} </if>
+		  		  <if test="mobilephone != null and mobilephone != ''"> and MobilePhone = #{mobilephone} </if>
+		  		  <if test="truename != null and truename != ''"> and TrueName = #{truename} </if>
+		  		  <if test="gender != null and gender != ''"> and Gender = #{gender} </if>
+		  		  <if test="msgcontent != null and msgcontent != ''"> and MsgContent = #{msgcontent} </if>
+		  		  <if test="attachphotourl != null and attachphotourl != ''"> and AttachPhotoUrl = #{attachphotourl} </if>
+		  		  <if test="submitdatetime != null and submitdatetime != ''"> and SubmitDateTime = #{submitdatetime} </if>
+		  		  <if test="lastreplyuid != null and lastreplyuid != ''"> and LastReplyUID = #{lastreplyuid} </if>
+		  		  <if test="lastreplydatetime != null and lastreplydatetime != ''"> and LastReplyDateTime = #{lastreplydatetime} </if>
+		  		  <if test="isresolved != null and isresolved != ''"> and IsResolved = #{isresolved} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.slzr.operation.domain.GuestMessageDO">
+		insert into BAR_GuestMessage
+		(
+			`ID`, 
+			`MsgTypeID`, 
+			`UID`, 
+			`MobilePhone`, 
+			`TrueName`, 
+			`Gender`, 
+			`MsgContent`, 
+			`AttachPhotoUrl`, 
+			`SubmitDateTime`, 
+			`LastReplyUID`, 
+			`LastReplyDateTime`, 
+			`IsResolved`
+		)
+		values
+		(
+			#{id,jdbcType=INTEGER}, 
+			#{msgtypeid,jdbcType=INTEGER}, 
+			#{uid,jdbcType=INTEGER}, 
+			#{mobilephone,jdbcType=VARCHAR}, 
+			#{truename,jdbcType=VARCHAR}, 
+			#{gender,jdbcType=VARCHAR}, 
+			#{msgcontent,jdbcType=VARCHAR}, 
+			#{attachphotourl,jdbcType=VARCHAR}, 
+			#{submitdatetime,jdbcType=TIMESTAMP}, 
+			#{lastreplyuid,jdbcType=INTEGER}, 
+			#{lastreplydatetime,jdbcType=TIMESTAMP}, 
+			#{isresolved,jdbcType=INTEGER}
+		)
+	</insert>
+	 
+
+	
+	<delete id="remove">
+		delete from BAR_GuestMessage where ID = #{value}
+	</delete>
+	
+
+
+</mapper>

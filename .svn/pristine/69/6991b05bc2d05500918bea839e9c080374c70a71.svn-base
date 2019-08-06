@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.ureport.dao.BCountDeptLineDao">
+
+<!--	<sql id="thisColumns">
+		 BAR_DailySummary_Debit.ID as id
+		,BAR_DailySummary_Debit.TxnDate as txnDate
+		,BAR_DailySummary_Debit.DebitNum as ConsumptionPerson
+		,BAR_DailySummary_Debit.DebitAmount as ConsumptionAmount
+		,OPT_Department.DeptName as deptName
+		,OPT_Line.LineName as lineName
+		,OPT_Bus.BusNO as busNO
+
+	</sql>-->
+	<select id="list" resultType="com.slzr.ureport.domain.BCountDo">
+		select
+		debit.TxnDate txnDate,
+		/*aa.DeptName,
+		aa.LineName,*/
+		aa.DeptName deptName,
+		SUM (debit.DebitNum) consumptionPerson,
+		SUM (debit.DebitAmount) consumptionAmount
+		from BAR_DailySummary_Debit debit
+		LEFT JOIN (
+		SELECT
+		de.DeptName,
+		li.LineCode,
+		li.LineName,
+		dr.DriverName
+		FROM
+		OPT_Bus bu
+		LEFT JOIN OPT_Driver dr ON bu.LineID = dr.LineID
+		LEFT JOIN OPT_Line li ON bu.DeptID = li.DeptID
+		LEFT JOIN OPT_Department de ON bu.DeptID = de.ID
+		) aa ON debit.BusLineNO = aa.LineCode
+		<where>
+			<if test="deptName != null and deptName != ''"> and DeptName = #{deptName} </if>
+			<if test="lineName != null and lineName != ''"> and LineName = #{lineName} </if>
+			<if test="startDate != null and startDate != '' and endDate!='' and endDate!=null "> and TxnDate BETWEEN #{startDate}  AND  #{endDate}</if>
+		</where>
+				GROUP by deptName ,TxnDate
+				ORDER BY TxnDate
+	</select>
+</mapper>

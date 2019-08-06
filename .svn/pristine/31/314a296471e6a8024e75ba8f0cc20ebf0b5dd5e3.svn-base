@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg commonquerypage">
+
+	<div class="row">            
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>个人信息资料</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+     
+                        </div>
+                    </div>
+                    <div>
+                        <div class="ibox-content no-padding border-left-right">
+                            <!-- <img alt="image" class="img-responsive" src="img/profile_big.jpg"> -->
+                        </div>
+                        <div class="ibox-content profile-content">
+                            <h4><strong>性别：</strong><span class="" th:text="${account.gender}"></span></h4>
+                            
+                            <h4><strong>姓名：</strong><span class="" th:text="${account.truename}"></span></h4>
+                            
+                            <h4><strong>身份证号：</strong><span class="" th:text="${account.certno}"></span></h4>
+ 
+ 							<h4><strong>电话：</strong><span class="" th:text="${account.mobilephone}"></span></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+	</div>
+
+	<div class="row">
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>证件正面照</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+ 
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="carousel slide" id="carousel1">
+                            <div class="carousel-inner">
+                                <div class="item active">
+                                    <img id="upimg" th:if="${account.certphotourl}!=null and ${account.certphotourl}!='' " th:src="${account.certphotourl}"  />
+									<img id="upimg" th:if="${account.certphotourl}==null" src="/img/null.jpg"  />
+									<img id="upimg" th:if="${account.certphotourl}==''" src="/img/null.jpg"  />
+                                </div>
+
+                            </div>
+                       
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>证件反面照</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+     
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="carousel slide" id="carousel1">
+                            <div class="carousel-inner">
+                                <div class="item active">
+                                    <img id="upimg" th:if="${account.certPhotoBackUrl}!=null and ${account.certPhotoBackUrl}!=''" th:src="${account.certPhotoBackUrl}"  />
+									<img id="upimg" th:if="${account.certPhotoBackUrl}==null" src="/img/null.jpg"  />
+									<img id="upimg" th:if="${account.certPhotoBackUrl}==''" src="/img/null.jpg"  />
+                                </div>
+                                
+                            </div>
+                      
+                        </div>
+                    </div>
+                </div>
+            </div>
+	</div>
+	
+	
+	<div class="row">
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>个人证明材料1</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+ 
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="carousel slide" id="carousel1">
+                            <div class="carousel-inner">
+                                <div class="item active">
+                                    <img id="upimg" th:if="${account.personphotourl}!=null and ${account.personphotourl}!=''" th:src="${account.personphotourl}"  />
+									<img id="upimg" th:if="${account.personphotourl}==null" src="/img/null.jpg"  />
+									<img id="upimg" th:if="${account.personphotourl}==''" src="/img/null.jpg"  />
+                                </div>
+
+                            </div>
+                       
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>个人证明材料2</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+     
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="carousel slide" id="carousel1">
+                            <div class="carousel-inner">
+                                <div class="item active">
+                                    <img id="upimg" th:if="${account.personPhotoBackUrl}!=null and ${account.personPhotoBackUrl}!=''" th:src="${account.personPhotoBackUrl}"  />
+									<img id="upimg" th:if="${account.personPhotoBackUrl}==null" src="/img/null.jpg"  />
+									<img id="upimg" th:if="${account.personPhotoBackUrl}==''" src="/img/null.jpg"  />
+                                </div>
+                                
+                            </div>
+                      
+                        </div>
+                    </div>
+                </div>
+            </div>
+	</div>
+	
+	<div class="row">
+           
+            <div class="col-sm-6" >
+                <div class="ibox float-e-margins" >
+                    <div class="ibox-title">
+                        <h5>手持身份证照片</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+     
+                        </div>
+                    </div>
+                    <div class="ibox-content" id="l">
+                        <div class="carousel slide" id="carousel1">
+                            <div class="carousel-inner">
+                                <div class="item active">
+<!--                                     <img id="upimg" th:if="${account.confirmPhotoUrl}!=null" th:src="${account.confirmPhotoUrl}" width="100" height="100"/>
+									<img id="upimg" th:if="${account.confirmPhotoUrl}==null" src="/img/null.jpg" width="100" height="100"/> -->
+									
+									<img id="upimg" th:if="${account.confirmPhotoUrl}!=null and ${account.confirmPhotoUrl}!=''" th:src="${account.confirmPhotoUrl}"/>
+									<img id="upimg" th:if="${account.confirmPhotoUrl}==null" src="/img/null.jpg"/>
+									<img id="upimg" th:if="${account.confirmPhotoUrl}==''" src="/img/null.jpg"/>
+                                </div>
+                                
+                            </div>
+                      
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-sm-6" >
+                <div class="ibox float-e-margins" >
+  					
+  					
+  					
+  					<div class="ibox-title">
+                        <label class="col-sm-3 control-label">审核描述信息：</label>					
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+     
+                        </div>
+                    </div>
+                    <div class="ibox-content" id="r">
+                        <div class="carousel slide" id="carousel1">
+                            <div class="carousel-inner">
+                                <div class="item active">
+ 									<textarea name="desc" id="desc" placeholder=" " class="layui-textarea"></textarea>
+                                </div>
+                                
+                            </div>
+                      
+                        </div>
+                        	            <div class=" " style="float: left;margin-left: 30px;margin-top: 30px;">
+	             	<button type="button" class="layui-btn"  th:onclick="'javascript:dealOperation('+${account.id}+',1)' ">审核通过</button>
+	            </div>
+	            
+	            <div class=" " style="float: left;margin-left: 30px;margin-top: 30px;">
+	             	<button type="button" class="layui-btn"  th:onclick="'javascript:dealOperation('+${account.id}+',2)' ">审核不通过</button>
+	            </div>
+                    </div>
+  					
+  					
+                </div>
+            </div>
+	</div>
+	
+
+	
+	<div class="row"   >
+		 
+	            
+
+	           
+	</div>
+	
+	<div th:include="include :: footer"></div>
+ 
+	<script type="application/javascript" th:src="@{/js/appjs/account/account/deal.js}"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+java -cp ..\slzr-qrpay-package.jar;..\resources com.slzr.SlzrWebApplication

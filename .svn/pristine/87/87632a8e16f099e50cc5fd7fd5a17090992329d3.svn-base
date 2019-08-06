@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.common.dao.DictDao">
+
+	<select id="get" resultType="com.slzr.common.domain.DictDO">
+		select
+		ID,Name,Value,Type,DescriPtion,Sort,ParentId,CreateBy,CreateDate,UpdateBy,UpdateDate,Remarks,DelFlag
+		from SYS_Dict where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.slzr.common.domain.DictDO">
+		select
+		ID,Name,Value,Type,DescriPtion,Sort,ParentId,CreateBy,CreateDate,UpdateBy,UpdateDate,Remarks,DelFlag
+		from SYS_Dict
+		<where>
+			<if test="id != null and id != ''"> and ID = #{id} </if>
+			<if test="name != null and name != ''"> and Name = #{name} </if>
+			<if test="value != null and value != ''"> and Value = #{value} </if>
+			<if test="type != null and type != ''"> and Type = #{type} </if>
+			<if test="description != null and description != ''"> and DescriPtion = #{description} </if>
+			<if test="sort != null and sort != ''"> and Sort = #{sort} </if>
+			<if test="parentId != null and parentId != ''"> and ParentId = #{parentId} </if>
+			<if test="createBy != null and createBy != ''"> and CreateBy = #{createBy} </if>
+			<if test="createDate != null and createDate != ''"> and CreateDate = #{createDate} </if>
+			<if test="updateBy != null and updateBy != ''"> and UpdateBy = #{updateBy} </if>
+			<if test="updateDate != null and updateDate != ''"> and UpdateDate = #{updateDate} </if>
+			<if test="remarks != null and remarks != ''"> and Remarks = #{remarks} </if>
+			<if test="delFlag != null and delFlag != ''"> and DelFlag = #{delFlag} </if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by ID desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+
+	<select id="count" resultType="int">
+		select count(*) from SYS_Dict
+		<where>
+			<if test="id != null and id != ''"> and ID = #{id} </if>
+			<if test="name != null and name != ''"> and Name = #{name} </if>
+			<if test="value != null and value != ''"> and Value = #{value} </if>
+			<if test="type != null and type != ''"> and Type = #{type} </if>
+			<if test="description != null and description != ''"> and DescriPtion = #{description} </if>
+			<if test="sort != null and sort != ''"> and Sort = #{sort} </if>
+			<if test="parentId != null and parentId != ''"> and ParentId = #{parentId} </if>
+			<if test="createBy != null and createBy != ''"> and CreateBy = #{createBy} </if>
+			<if test="createDate != null and createDate != ''"> and CreateDate = #{createDate} </if>
+			<if test="updateBy != null and updateBy != ''"> and UpdateBy = #{updateBy} </if>
+			<if test="updateDate != null and updateDate != ''"> and UpdateDate = #{updateDate} </if>
+			<if test="remarks != null and remarks != ''"> and Remarks = #{remarks} </if>
+			<if test="delFlag != null and delFlag != ''"> and DelFlag = #{delFlag} </if>
+		</where>
+	</select>
+
+	<insert id="save" parameterType="com.slzr.common.domain.DictDO"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into SYS_Dict
+		(
+		Name,
+		Value,
+		Type,
+		DescriPtion,
+		Sort,
+		ParentId,
+		CreateBy,
+		CreateDate,
+		UpdateBy,
+		UpdateDate,
+		Remarks,
+		DelFlag
+		)
+		values
+		(
+		#{name,jdbcType=VARCHAR},
+		#{value,jdbcType=VARCHAR},
+		#{type,jdbcType=VARCHAR},
+		#{description,jdbcType=VARCHAR},
+		#{sort,jdbcType=DECIMAL},
+		#{parentId,jdbcType=BIGINT},
+		#{createBy,jdbcType=INTEGER},
+		#{createDate,jdbcType=TIMESTAMP},
+		#{updateBy,jdbcType=BIGINT},
+		#{updateDate,jdbcType=TIMESTAMP},
+		#{remarks,jdbcType=VARCHAR},
+		#{delFlag,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.slzr.common.domain.DictDO">
+		update SYS_Dict
+		<set>
+			<if test="name != null">Name = #{name}, </if>
+			<if test="value != null">Value = #{value}, </if>
+			<if test="type != null">Type = #{type}, </if>
+			<if test="description != null">DescriPtion = #{description}, </if>
+			<if test="sort != null">Sort = #{sort}, </if>
+			<if test="parentId != null">ParentId = #{parentId}, </if>
+			<if test="createBy != null">CreateBy = #{createBy}, </if>
+			<if test="createDate != null">CreateDate = #{createDate}, </if>
+			<if test="updateBy != null">UpdateBy = #{updateBy}, </if>
+			<if test="updateDate != null">UpdateDate = #{updateDate}, </if>
+			<if test="remarks != null">Remarks = #{remarks}, </if>
+			<if test="delFlag != null">DelFlag = #{delFlag}</if>
+		</set>
+		where ID = #{id}
+	</update>
+
+	<delete id="remove">
+		delete from SYS_Dict where ID = #{value}
+	</delete>
+
+	<delete id="batchRemove">
+		delete from SYS_Dict where ID in
+		<foreach item="id" collection="array" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="listType" resultType="com.slzr.common.domain.DictDO">
+		select distinct Type , description from SYS_Dict
+	</select>
+
+</mapper>

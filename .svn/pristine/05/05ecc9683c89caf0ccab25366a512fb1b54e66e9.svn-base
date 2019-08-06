@@ -1,0 +1,184 @@
+package com.slzr.operation.domain;
+
+import java.io.Serializable;
+
+public class OPTDepartmentDO implements Serializable{
+	private static final long serialVersionUID = 1L;
+    public int iD;
+
+    public String merchantCode;
+    public int deptCode;
+    public String deptName;
+    public int parentId;
+    public String deptTypeCode;
+    public String header;
+    public String createdBy;
+    public String createdDate;
+    public String updatedBy;
+    public String updatedDate;
+    public String remark;
+
+   
+    
+	public int getiD() {
+		return iD;
+	}
+
+
+
+	public void setiD(int iD) {
+		this.iD = iD;
+	}
+
+
+
+	public String getMerchantCode() {
+		return merchantCode;
+	}
+
+
+
+	public void setMerchantCode(String merchantCode) {
+		this.merchantCode = merchantCode;
+	}
+
+
+
+	public int getDeptCode() {
+		return deptCode;
+	}
+
+
+
+	public void setDeptCode(int deptCode) {
+		this.deptCode = deptCode;
+	}
+
+
+
+	public String getDeptName() {
+		return deptName;
+	}
+
+
+
+	public void setDeptName(String deptName) {
+		this.deptName = deptName;
+	}
+
+
+
+	public int getParentId() {
+		return parentId;
+	}
+
+
+
+	public void setParentId(int parentId) {
+		this.parentId = parentId;
+	}
+
+
+
+	public String getDeptTypeCode() {
+		return deptTypeCode;
+	}
+
+
+
+	public void setDeptTypeCode(String deptTypeCode) {
+		this.deptTypeCode = deptTypeCode;
+	}
+
+
+
+	public String getHeader() {
+		return header;
+	}
+
+
+
+	public void setHeader(String header) {
+		this.header = header;
+	}
+
+
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+
+
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+
+
+
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+
+
+	public String getRemark() {
+		return remark;
+	}
+
+
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "OPTDepartmentDO{" +
+				"iD=" + iD +
+				", merchantCode=" + merchantCode +
+				", deptCode=" + deptCode +
+				", deptName='" + deptName + '\'' +
+				", parentId=" + parentId +
+				", deptTypeCode=" + deptTypeCode +
+				", header=" + header +
+				", createdBy=" + createdBy +
+				", createdDate=" + createdDate +
+				", updatedBy=" + updatedBy +
+				", updatedDate=" + updatedDate +
+				", remark=" + remark +
+				'}';
+	}
+}

@@ -1,0 +1,13 @@
+package com.slzr.operation.service;
+
+import com.slzr.operation.domain.DailysummaryTopupDO;
+
+import java.util.List;
+import java.util.Map;
+
+public interface GuestMessageService {
+
+	List<DailysummaryTopupDO> list(Map<String, Object> map);
+	
+	int count(Map<String, Object> map);
+}

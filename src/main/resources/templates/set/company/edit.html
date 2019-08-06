@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<form class="form-horizontal m-t" id="signupForm">
+						<input id="id" name="id" th:value="${company.id}" type="hidden">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">机构代码：</label>
+							<div class="col-sm-8">
+								<input id="code" name="code" class="form-control" th:value="${company.code}" type="text" readonly>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">城市代码：</label>
+							<div class="col-sm-8">
+								<input id="cityCode" name="cityCode" class="form-control" type="text" th:value="${company.cityCode}">
+							</div><span class="text_red " style="color: red" >*</span>&nbsp
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">机构名称：</label>
+							<div class="col-sm-8">
+								<input id="name" name="name" class="form-control" type="text" th:value="${company.name}">
+							</div><span class="text_red " style="color: red" >*</span>&nbsp
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">机构简称：</label>
+							<div class="col-sm-8">
+								<input id="shortName" name="shortName" class="form-control" type="text" th:value="${company.shortName}">
+							</div><span class="text_red " style="color: red" >*</span>&nbsp
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label" >机构拼音：</label>
+							<div class="col-sm-8">
+								<input id="pinYin" name="pinYin" class="form-control" type="text" th:value="${company.pinYin}">
+							</div><span class="text_red " style="color: red" >*</span>&nbsp
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label" >城市名称：</label>
+							<div class="col-sm-8">
+								<input id="cityName" name="cityName" class="form-control" type="text" th:value="${company.cityName}">
+							</div><span class="text_red " style="color: red" >*</span>&nbsp
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" >城市拼音：</label>
+							<div class="col-sm-8">
+								<input id="cityPinYin" name="cityPinYin" class="form-control" type="text" th:value="${company.cityPinYin}">
+							</div><span class="text_red " style="color: red" >*</span>&nbsp
+						</div>
+
+<!-- 						<div class="form-group">
+							<label class="col-sm-3 control-label">运营参数：</label>
+							<div class="col-sm-8">
+								<textarea  class="layui-textarea" id="sysSetting" name="sysSetting" th:value="${company.sysSetting}"></textarea>
+							</div>
+						</div> -->
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label">API路径：</label>
+							<div class="col-sm-8">
+								<input id="apiUrl" name="apiUrl" class="form-control" type="text" th:value="${company.apiUrl}">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label">二维码超时时间：</label>
+							<div class="col-sm-8">
+								<input id="qrTimeOut" name="qrTimeOut" class="form-control" type="text" th:value="${company.qrTimeOut}">
+							</div><span class="text_red " style="color: red" >*</span>&nbsp
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">共享微信支付：</label>
+							<div class="col-sm-8">
+								<input  type="radio" th:checked="${company.shareWxPay=='1'}" name="shareWxPay" value="1"  />是</label>   <!--th:field="*{user.status}"-->
+								<input  type="radio" th:checked="${company.shareWxPay=='0'}" name="shareWxPay" value="0"  />否</label>
+							</div><span class="text_red " style="color: red" >*</span>&nbsp
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label">共享支付宝支付：</label>
+							<div class="col-sm-8">
+								<input  type="radio" th:checked="${company.shareAliPay=='1'}" name="shareAliPay" value="1"  />是</label>   <!--th:field="*{user.status}"-->
+								<input  type="radio" th:checked="${company.shareAliPay=='0'}" name="shareAliPay" value="0"  />否</label>
+							</div><span class="text_red " style="color: red" >*</span>&nbsp
+						</div>
+						
+						<div class="form-group text-center">
+							<div class="col-sm-8 col-sm-offset-3">
+								<button type="submit" class="btn btn-primary">提交</button>
+								<button type="button" class="btn btn-warning" onclick="parent.layer.close(parent.layer.getFrameIndex(window.name))">关闭</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/js/appjs/set/company/edit.js">
+	</script>
+</body>
+</html>

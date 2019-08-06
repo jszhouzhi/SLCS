@@ -1,0 +1,60 @@
+
+$("#document").ready(function(){
+	init();
+});
+function init(){
+    $.ajax({
+        cache : true,
+        type : "GET",
+        url : "/report/utils/dwmq",
+        data : {
+        },
+        async : false,
+        error : function(request) {
+            parent.layer.alert("Connection error");
+        },
+        success : function(data) {
+        	initselect("#sweek,#eweek",data.wValues);
+        	$("#sweek").val(data.startW);
+        	$("#eweek").val(data.endW);
+        	initselect("#smonth,#emonth",data.mValues);
+        	$("#smonth").val(data.startM);
+        	$("#emonth").val(data.endM);
+        	initselect("#squarter,#equarter",data.qValues);
+        	$("#squarter").val(data.startQ);
+        	$("#equarter").val(data.endQ);
+        	$("#sdate").val(data.startDay);
+        	$("#edate").val(data.endDay);
+        	display("day");
+        }
+    });
+}
+function initselect(select,data){
+	$.each(data,function(i,item){
+    	$(select).append("<option>"+item+"</option>");
+	});
+}
+function display(which){
+	which="."+which;
+	$(".day,.week,.month,.quarter").addClass("hidden");
+	$(which).removeClass("hidden");
+}
+function datetypeChange(o){
+	var v=$(o).val();
+	switch(v)
+	{
+		case "D":
+			  display("day");
+			  break;
+		case "W":
+			  display("week");
+			  break;
+		case "M":
+			  display("month");
+			  break;
+		case "Q":
+			  display("quarter");
+			  break;
+		default:break;
+	}
+}

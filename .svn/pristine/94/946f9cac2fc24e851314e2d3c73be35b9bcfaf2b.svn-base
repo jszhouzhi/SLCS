@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.account.dao.VipMemberPlanDao">
+
+	<select id="get" resultType="com.slzr.account.domain.VipMemberPlanDO">
+		SELECT 
+		*
+		FROM AD_VipMemberPlan 
+		WHERE ID = #{id}
+	</select>
+	
+	<select id="exit" resultType="com.slzr.account.domain.VipMemberPlanDO">
+		SELECT 
+		*
+		FROM AD_VipMemberPlan t
+		WHERE t.Name = #{name} AND t.CompanyCode = #{companyCode}
+	</select>
+	
+	<select id="list" resultType="com.slzr.account.domain.VipMemberPlanDO">	
+		<if test="offset != null and limit != null">
+			select top ${limit}  *  from (	
+		</if>							
+		SELECT ROW_NUMBER() OVER(ORDER BY t.CreatedDate desc) AS Seq, 
+		u.userName, t.* FROM AD_VipMemberPlan t LEFT JOIN SYS_User u on t.createdBy = u.id
+		<where>  		  		  
+		   <if test="enable != null and enable != ''">AND t.Enable = #{enable} </if>
+		   <if test="companyCode != null and companyCode != ''">AND t.CompanyCode = #{companyCode} </if>
+		   <if test="searchName != null and searchName != ''">
+		   	AND (   t.Name LIKE	 '${searchName}%' OR t.Describe LIKE '${searchName}%')
+		   </if>
+		</where>
+		
+		<if test="offset != null and limit != null">
+			) b
+			where seq BETWEEN ${offset + 1} and ${limit + offset}
+		</if>
+		
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by CreatedDate desc
+			</otherwise>
+        </choose>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		SELECT COUNT(*) FROM AD_VipMemberPlan 
+		<where>  		  		  
+		   <if test="enable != null and enable != ''">Enable = #{enable} </if>
+		</where>
+	</select>
+	
+	<update id="update" parameterType="com.slzr.account.domain.VipMemberPlanDO">
+		update AD_VipMemberPlan 
+		<set>
+			<if test="companyCode != null">CompanyCode = #{companyCode}, </if>
+			<if test="typeID != null"> TypeID  = #{typeID}, </if>
+			<if test="name != null"> Name  = #{name}, </if>
+			<if test="describe != null"> Describe  = #{describe}, </if>
+			<if test="discount != null"> discount  = #{discount}, </if>
+			<if test="buyMonthPrice != null"> BuyMonthPrice  = #{buyMonthPrice}, </if>
+			<if test="buySeasonPrice != null"> BuySeasonPrice  = #{buySeasonPrice}, </if>
+			<if test="buyYearPrice != null"> BuyYearPrice  = #{buyYearPrice}, </if>
+			<if test="buyMonthDiscountPrice != null"> BuyMonthDiscountPrice  = #{buyMonthDiscountPrice}, </if>
+			<if test="buySeasonDiscountPrice != null"> BuySeasonDiscountPrice  = #{buySeasonDiscountPrice}, </if>
+			<if test="buyYearDiscountPrice != null"> BuyYearDiscountPrice  = #{buyYearDiscountPrice}, </if>
+			<if test="buyDiscountStartDate != null"> BuyDiscountStartDate  = #{buyDiscountStartDate}, </if>
+			<if test="buyDiscountEndDate != null"> BuyDiscountEndDate  = #{buyDiscountEndDate}, </if>
+			<if test="maxDiscountAmount != null"> MaxDiscountAmount  = #{maxDiscountAmount}, </if>
+			<if test="enable != null"> Enable  = #{enable}, </if>
+			<if test="updatedBy != null"> UpdatedBy  = #{updatedBy}, </if>
+			<if test="updatedDate != null"> UpdatedDate  = #{updatedDate}, </if>
+		</set>
+		where ID = #{id}
+	</update>
+
+	<insert id="insert" parameterType="com.slzr.account.domain.VipMemberPlanDO">
+		insert into AD_VipMemberPlan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="companyCode != null">CompanyCode , </if>
+			<if test="typeID != null"> TypeID  , </if>
+			<if test="name != null"> Name , </if>
+			<if test="describe != null"> Describe , </if>
+			<if test="discount != null"> discount , </if>
+			<if test="buyMonthPrice != null"> BuyMonthPrice , </if>
+			<if test="buySeasonPrice != null"> BuySeasonPrice , </if>
+			<if test="buyYearPrice != null"> BuyYearPrice , </if>
+			<if test="buyMonthDiscountPrice != null"> BuyMonthDiscountPrice , </if>
+			<if test="buySeasonDiscountPrice != null"> BuySeasonDiscountPrice , </if>
+			<if test="buyYearDiscountPrice != null"> BuyYearDiscountPrice , </if>
+			<if test="buyDiscountStartDate != null"> BuyDiscountStartDate , </if>
+			<if test="buyDiscountEndDate != null"> BuyDiscountEndDate , </if>
+			<if test="maxDiscountAmount != null"> MaxDiscountAmount , </if>
+			<if test="enable != null"> Enable , </if>
+			<if test="createdBy != null"> CreatedBy , </if>
+			<if test="createdDate != null"> CreatedDate , </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="companyCode != null"> #{companyCode}, </if>
+			<if test="typeID != null"> #{typeID}, </if>
+			<if test="name != null">  #{name}, </if>
+			<if test="describe != null">  #{describe}, </if>
+			<if test="discount != null">  #{discount}, </if>
+			<if test="buyMonthPrice != null">  #{buyMonthPrice}, </if>
+			<if test="buySeasonPrice != null">  #{buySeasonPrice}, </if>
+			<if test="buyYearPrice != null"> #{buyYearPrice}, </if>
+			<if test="buyMonthDiscountPrice != null"> #{buyMonthDiscountPrice}, </if>
+			<if test="buySeasonDiscountPrice != null">  #{buySeasonDiscountPrice}, </if>
+			<if test="buyYearDiscountPrice != null">  #{buyYearDiscountPrice}, </if>
+			<if test="buyDiscountStartDate != null">  #{buyDiscountStartDate}, </if>
+			<if test="buyDiscountEndDate != null"> #{buyDiscountEndDate}, </if>
+			<if test="maxDiscountAmount != null"> #{maxDiscountAmount}, </if>
+			<if test="enable != null">#{enable}, </if>
+			<if test="createdBy != null">  #{createdBy}, </if>
+			<if test="createdDate != null">  #{createdDate}, </if>
+        </trim>
+	</insert>
+
+</mapper>

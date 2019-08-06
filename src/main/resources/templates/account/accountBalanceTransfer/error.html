@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg commonquerypage">
+
+
+ 
+<div th:include="include :: footer"></div>
+
+<script th:inline="javascript">
+
+	$(function() {
+		 
+		layer.confirm('用户已撤销申请!', {
+			  btn: ['确定'] //按钮
+			}, function(){
+				var index = parent.layer.getFrameIndex(window.name);
+				parent.layer.close(index);	
+				window.parent.location.reload();
+			});
+
+
+	});
+</script> 
+
+</body>
+</html>

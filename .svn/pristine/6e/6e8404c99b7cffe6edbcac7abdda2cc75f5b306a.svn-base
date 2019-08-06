@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg commonquerypage">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox">
+					<div class="ibox-body">
+						<div class="fixed-table-toolbar clearfix">
+							<div class="querybtns columns pull-left">
+								<button class="btn btn-success btn-sm">查询</button>
+								<button id="btnreset" class="btn btn-success btn-sm">重置</button>
+							</div>
+						</div>
+						<div class="query-inputs clearfix show">
+						  <div class="layui-form">
+						  	  <div class="layui-form-item">
+						  	  	<div class="layui-inline">
+								    <label class="layui-form-label">开始日期</label>
+								    <div class="layui-input-block">
+								    	<input id="sdate" class="form-control" type="text" data-date-format="yyyy-mm-dd">
+								    </div>
+							    </div>
+						  	  	<div class="layui-inline">
+								    <label class="layui-form-label">结束日期</label>
+								    <div class="layui-input-block">
+								    	<input id="edate" class="form-control" type="text" data-date-format="yyyy-mm-dd">
+								    </div>
+							    </div>
+							  </div>
+						  	  <div class="layui-form-item">
+						  	  	<div class="layui-inline">
+								    <label class="layui-form-label">类型</label>
+								    <div class="layui-input-block">
+								      <select name="arttype" id="arttype">
+								        <option value=""></option>
+								        <option value="1">条件1</option>
+								        <option value="2">条件2</option>
+										<option value="3">条件3</option>
+									  </select>
+								    </div>
+						  	  	</div>
+							  </div>
+						  </div>
+						</div>
+						<iframe name="myiframe" id="myrame" frameborder="0" src="/ureport/preview?_u=file:IC_TopupTransaction.ureport.xml" width="100%" height="760" scrolling="yes"></iframe>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script type="text/javascript">
+		$("#document").ready(function(){
+			$('#sdate,#edate').datetimepicker({
+		        format: 'yyyy-mm-dd',
+		        language:  'zh-CN',
+		        weekStart: 1,
+		        todayBtn:  1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 2,
+				minView: 2,
+				forceParse: 0
+		    });
+		});
+	</script>
+</body>
+</html>

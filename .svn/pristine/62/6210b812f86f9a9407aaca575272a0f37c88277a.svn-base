@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg commonquerypage">
+	<div class="wrapper wrapper-content ">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar">
+							<div class="columns pull-left">
+								<button   class="btn  btn-warning" onclick="excel()" type="button">
+									<i aria-hidden="true" class="fa fa-trash hidden"></i>导出
+								</button>
+							</div>
+							
+							<div class="searchbox columns pull-left col-md-4 nopadding">
+								<input class="searchinput form-control" id="searchName" placeholder="请输入关键字进行搜索,如订单号" type="text">
+							</div>
+							<div class="querybtns columns pull-left">
+								<button class="btn btn-success btn-sm" onclick="reLoad()">查询</button>
+								<button id="btnreset" class="btn btn-success btn-sm">重置</button>
+							</div>
+					</div>
+					<table id="exampleTable" data-mobile-responsive="true">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+		<div>
+			<script type="text/javascript">
+	            var s_g_h = 'hidden';
+
+			</script>
+		</div>
+		<div shiro:hasPermission="account:account:loss">
+			<script type="text/javascript">
+			s_g_h = '';
+			</script>
+		</div>
+
+	</div>
+	<div th:include="include :: footer"></div>
+	<script type="text/javascript" src="/js/appjs/operation/icQuancunfail/list.js"></script>
+</body>
+</html>

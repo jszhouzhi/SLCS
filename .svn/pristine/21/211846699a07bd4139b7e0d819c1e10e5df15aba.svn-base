@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.system.dao.StatisticsDao">	
+	<select id="GetTotalStatistics" resultType="com.slzr.system.vo.AmountNumVO">	
+		declare @TopupNum int=0;
+		declare @TopupAmount decimal(10,2)=0;
+		declare @DebitNum int=0;
+		declare @DebitAmount decimal(10,2)=0;
+		declare @RefundNum int=0;
+		declare @RefundAmount decimal(10,2)=0;
+		
+		declare @icTransferenceNum int = 0;
+		declare @icTransferenceAmount decimal (10, 2) = 0;
+			
+		declare @icTopupNum int = 0;	
+		declare @icTopupAmount decimal (10, 2) = 0;
+		
+		declare @icRefundNum int = 0;
+		declare @icRefundAmount decimal (10, 2) = 0;
+	
+		
+		select @TopupNum = SUM([TopupNum])  
+	      ,@TopupAmount = SUM([TopupAmount])  
+	      ,@DebitNum = SUM([DebitNum] + [DelayPaidNum] + [UnPaidNum])  
+	      ,@DebitAmount = SUM([DebitAmount] + [DelayPaidAmount] + [UnPaidAmount])  
+	      ,@RefundNum = COALESCE(SUM([RefundNum]),0)+COALESCE(SUM([QRRefundNum]),0)+COALESCE(SUM([ICRefundNum]),0)  
+	      ,@RefundAmount = COALESCE(SUM([RefundAmount]),0)+COALESCE(SUM([QRRefundAmount]),0)+COALESCE(SUM([ICRefundAmount]),0) 
+	  FROM [dbo].[BAR_DailySummary_Base] 
+	  <where>
+	  	<if test="code != null and code != ''"> and MerchantCode=#{code} </if>
+	  </where>
+	  
+	  	select @icTransferenceNum=count(*),@icTransferenceAmount=COALESCE(SUM([TxnAmount]),0) from [dbo].[IC_TopupOrder] where [loadState]=1		 
+		<if test="code != null and code != ''"> and CompanyCode = #{code} </if>
+		
+		select @icTopupNum=count(*),@icTopupAmount=COALESCE(SUM([TxnAmount]),0) from [dbo].[IC_TopupOrder] where  [payResult]=1		 
+		<if test="code != null and code != ''"> and CompanyCode = #{code} </if>
+		
+		select @icRefundNum=count(*),@icRefundAmount=COALESCE(SUM([RefundAmount]),0) from [dbo].[IC_WX_Refund] as ictb
+		right join [dbo].[IC_TopupOrder] as ic_order on ic_order.[OrderNO]=ictb.[OrderNO] where [RefundResult]=1		 
+		<if test="code != null and code != ''"> and ic_order.[CompanyCode]=#{code} </if>
+				
+		select @TopupNum  as TopupNum,@TopupAmount as TopupAmount,@DebitNum as DebitNum,@DebitAmount as DebitAmount,@RefundNum as RefundNum,
+		@RefundAmount as RefundAmount,@icTransferenceNum AS icTransferenceNum ,@icTransferenceAmount AS icTransferenceAmount ,@icTopupNum AS icTopupNum ,
+		@icTopupAmount AS icTopupAmount ,@icRefundNum AS icRefundNum ,@icRefundAmount AS icRefundAmount
+	  
+	</select>
+	
+	
+	
+	
+	<select id="GetTodayStatistics" resultType="com.slzr.system.vo.AmountNumVO">
+
+		declare @TopupNum int=0;
+		declare @TopupAmount decimal(10,2)=0;
+		declare @DebitNum int=0;
+		declare @DebitAmount decimal(10,2)=0;
+		declare @RefundNum int=0;
+		declare @RefundAmount decimal(10,2)=0;
+		
+		declare @icTransferenceNum int = 0;
+		declare @icTransferenceAmount decimal (10, 2) = 0;
+			
+		declare @icTopupNum int = 0;	
+		declare @icTopupAmount decimal (10, 2) = 0;
+		
+		declare @icRefundNum int = 0;
+		declare @icRefundAmount decimal (10, 2) = 0;		
+		
+		select @TopupNum=count(*),@TopupAmount=COALESCE(SUM([TxnAmount]),0) from [dbo].[BAR_TopupTransaction]
+		left join [dbo].[BAR_Account] as accounttb on accounttb.[AccountNO]=[dbo].[BAR_TopupTransaction].[AccountNO]
+		<!-- where (DATEDIFF(d, [TxnDateTime], GETDATE()) = 0) --> 
+		where TxnDateTime BETWEEN CONVERT(varchar(100), GETDATE(), 23) +' 00:00:00' AND CONVERT(varchar(100), GETDATE(), 23) +' 23:59:59'
+		and [PayResult]=1
+		<if test="code != null and code != ''"> and accounttb.[MerchantCode]=#{code} </if>
+		select @DebitNum=count(*),@DebitAmount=COALESCE(SUM([TxnAmount]),0) from [dbo].[BAR_DebitTransaction] 
+		left join [dbo].[BAR_Merchant] merchant on [dbo].[BAR_DebitTransaction].[MerchantCode]=merchant.[MapMerchantCode]
+		<!--  where (DATEDIFF(d, [TxnDateTime], GETDATE()) = 0) and ([DebitFrom] is null or [DebitFrom]=0) -->
+		where TxnDateTime BETWEEN CONVERT(varchar(100), GETDATE(), 23) +' 00:00:00' AND CONVERT(varchar(100), GETDATE(), 23) +' 23:59:59'
+		<if test="code != null and code != ''"> and merchant.[MerchantCode]=#{code} </if>
+		select @RefundNum =
+		(select count(*) as cancelcount from BAR_Account_Cancel as canceltb 
+		<!-- where (DATEDIFF(d, [RefundTime], GETDATE()) = 0 -->
+		where RefundTime BETWEEN CONVERT(varchar(100), GETDATE(), 23) +' 00:00:00' AND CONVERT(varchar(100), GETDATE(), 23) +' 23:59:59'
+		<if test="code != null and code != ''"> and canceltb.[MerchantCode]=#{code} </if>
+		)<!-- ) -->
+		+
+		(select count(*) as barcount from BAR_WX_Refund as bartb 
+		left join [dbo].[BAR_TopupTransaction] as transtb on transtb.[OrderNO]=bartb.[RefundOrderNO]
+		left join [dbo].[BAR_Account] as accounttb on accounttb.[AccountNO]=transtb.[AccountNO]
+		<!-- where (DATEDIFF(d, [RefundTime], GETDATE()) = 0 -->
+		where RefundTime BETWEEN CONVERT(varchar(100), GETDATE(), 23) +' 00:00:00' AND CONVERT(varchar(100), GETDATE(), 23) +' 23:59:59'
+		<if test="code != null and code != ''"> and accounttb.[MerchantCode]=#{code} </if>
+		)<!-- ) -->
+<!-- 		+
+		(select count(*) as iccount from IC_WX_Refund as ictb 
+		right join [dbo].[IC_TopupOrder] as ic_order on ic_order.[OrderNO]=ictb.[OrderNO]
+		where (DATEDIFF(d, [RefundTime], GETDATE()) = 0
+		<if test="code != null and code != ''"> and ic_order.[CompanyCode]=#{code} </if>
+		)) -->;
+		
+		select @RefundAmount =
+		(select COALESCE(SUM([Balance]),0) as cancelcount from BAR_Account_Cancel as canceltb 
+		<!-- where (DATEDIFF(d, [RefundTime], GETDATE()) = 0 -->
+		where RefundTime BETWEEN CONVERT(varchar(100), GETDATE(), 23) +' 00:00:00' AND CONVERT(varchar(100), GETDATE(), 23) +' 23:59:59'
+		<if test="code != null and code != ''"> and canceltb.[MerchantCode]=#{code} </if>
+		)<!-- ) -->
+		+
+		(select COALESCE(SUM([RefundAmount]),0) as barcount from BAR_WX_Refund as bartb 
+		left join [dbo].[BAR_TopupTransaction] as transtb on transtb.[OrderNO]=bartb.[RefundOrderNO]
+		left join [dbo].[BAR_Account] as accounttb on accounttb.[AccountNO]=transtb.[AccountNO]
+		<!-- where (DATEDIFF(d, [RefundTime], GETDATE()) = 0 -->
+		where RefundTime BETWEEN CONVERT(varchar(100), GETDATE(), 23) +' 00:00:00' AND CONVERT(varchar(100), GETDATE(), 23) +' 23:59:59'
+		<if test="code != null and code != ''"> and accounttb.[MerchantCode]=#{code} </if>
+		)<!-- ) -->
+<!-- 		+
+		(select COALESCE(SUM([RefundAmount]),0) as iccount from IC_WX_Refund as ictb 
+		right join [dbo].[IC_TopupOrder] as ic_order on ic_order.[OrderNO]=ictb.[OrderNO]
+		where (DATEDIFF(d, [RefundTime], GETDATE()) = 0
+		<if test="code != null and code != ''"> and ic_order.[CompanyCode]=#{code} </if>
+		)) -->;
+		
+		
+<!--  		select
+			@icTransferenceNum = COUNT (*) ,@icTransferenceAmount = COALESCE (SUM([TxnAmount]), 0)
+		from
+			[dbo].[IC_TopupOrder]
+		WHERE
+			(
+				DATEDIFF(d, [TxnDateTime], GETDATE()) = 0
+			)
+		<if test="code != null and code != ''"> and CompanyCode=#{code} </if>
+		AND [loadState] = 1 
+		
+		
+		select
+			@icTopupNum = COUNT (*) ,@icTopupAmount = COALESCE (SUM([TxnAmount]), 0)
+		from
+			[dbo].[IC_TopupOrder]
+		WHERE
+			(
+				DATEDIFF(d, [TxnDateTime], GETDATE()) = 0
+			)
+		<if test="code != null and code != ''"> and CompanyCode=#{code} </if>
+		AND [payResult] = 1 
+		
+		
+		select
+			@icRefundNum = COUNT (*) ,@icRefundAmount = COALESCE (SUM([RefundAmount]), 0)		
+			from IC_WX_Refund as ictb
+		right join [dbo].[IC_TopupOrder] as ic_order on ic_order.[OrderNO]=ictb.[OrderNO]	
+		where (DATEDIFF(d, [RefundTime], GETDATE()) = 0
+		<if test="code != null and code != ''"> and ic_order.[CompanyCode]=#{code} </if>
+		AND [RefundResult] = 1   -->
+		
+		select @icTransferenceNum=count(*),@icTransferenceAmount=COALESCE(SUM([TxnAmount]),0) from [dbo].[IC_TopupOrder]
+		<!-- where (DATEDIFF(d, [TxnDateTime], GETDATE()) = 0) --> 
+		where TxnDateTime BETWEEN CONVERT(varchar(100), GETDATE(), 23) +' 00:00:00' AND CONVERT(varchar(100), GETDATE(), 23) +' 23:59:59'
+		and [loadState]=1
+		<if test="code != null and code != ''"> and CompanyCode = #{code} </if>
+		select @icTopupNum=count(*),@icTopupAmount=COALESCE(SUM([TxnAmount]),0) from [dbo].[IC_TopupOrder]
+		<!-- where (DATEDIFF(d, [TxnDateTime], GETDATE()) = 0) --> 
+		where TxnDateTime BETWEEN CONVERT(varchar(100), GETDATE(), 23) +' 00:00:00' AND CONVERT(varchar(100), GETDATE(), 23) +' 23:59:59'
+		and [payResult]=1
+		<if test="code != null and code != ''"> and CompanyCode = #{code} </if>
+		
+		select @icRefundNum=count(*),@icRefundAmount=COALESCE(SUM([RefundAmount]),0) from [dbo].[IC_WX_Refund] as ictb
+		right join [dbo].[IC_TopupOrder] as ic_order on ic_order.[OrderNO]=ictb.[OrderNO]
+		<!-- where (DATEDIFF(d, [RefundTime], GETDATE()) = 0) --> 
+		where RefundTime BETWEEN CONVERT(varchar(100), GETDATE(), 23) +' 00:00:00' AND CONVERT(varchar(100), GETDATE(), 23) +' 23:59:59'
+		and [RefundResult]=1
+		<if test="code != null and code != ''"> and ic_order.[CompanyCode]=#{code} </if>
+		
+		select @TopupNum  as TopupNum,@TopupAmount as TopupAmount,@DebitNum as DebitNum,@DebitAmount as DebitAmount,@RefundNum as RefundNum,
+		@RefundAmount as RefundAmount,@icTransferenceNum AS icTransferenceNum ,@icTransferenceAmount AS icTransferenceAmount ,@icTopupNum AS icTopupNum ,
+		@icTopupAmount AS icTopupAmount ,@icRefundNum AS icRefundNum ,@icRefundAmount AS icRefundAmount
+	</select>
+	
+	<select id="GetWeekRegister" resultType="com.slzr.system.vo.DayRegisterVO">
+	SELECT Convert(varchar(10),createddate,121) as date,count(*) as DayRegister FROM [dbo].[BAR_Account] 
+	where createddate > DATEADD(day,-7,getdate()) 
+	<if test="code != null and code != ''"> and MerchantCode=#{code} </if>
+	 group by Convert(varchar(10),createddate,121)
+	</select>
+	
+	<select id="GetTodayRegister" resultType="int">
+		SELECT count(*) FROM [dbo].[BAR_Account]
+	  	<!-- where (DATEDIFF(d, [createddate], GETDATE()) = 0)  -->
+	  	where createddate BETWEEN CONVERT(varchar(100), GETDATE(), 23) +' 00:00:00' AND CONVERT(varchar(100), GETDATE(), 23) +' 23:59:59'
+		<if test="code != null and code != ''"> and MerchantCode=#{code} </if>
+	</select>
+	
+	<select id="GetTotalRegister" resultType="int">
+		SELECT count(*) FROM [dbo].[BAR_Account]
+		<where>
+			<if test="code != null and code != ''"> and MerchantCode=#{code} </if>
+		</where>
+	</select>
+	
+	<select id="GetWeekDay" resultType="com.slzr.system.vo.WeekDayVO">
+		SELECT CONVERT(varchar(10), [TxnDate], 121) as date
+	      ,SUM([TopupNum]) as DayTopupNum
+	      ,SUM([TopupAmount]) as DayTopupAmount
+	      ,SUM([DebitNum] + [DelayPaidNum] + [UnPaidNum]) as DayDebitNum
+	      ,SUM([DebitAmount] + [DelayPaidAmount] + [UnPaidAmount]) as DayDebitAmount
+	      ,SUM([RefundNum]) as DayRefundNum
+	      ,SUM([RefundAmount]) as DayRefundAmount
+	  FROM [dbo].[BAR_DailySummary_Base] 
+	  where DATEDIFF(d, [TxnDate], GETDATE()) &lt; 7
+	  <if test="code != null and code != ''"> and MerchantCode=#{code}</if>
+	  GROUP BY CONVERT(varchar(10), [TxnDate], 121)
+	</select>
+	
+	<select id="IsEnableDiscountSetting" resultType="boolean">
+		SELECT count(*) FROM [BAR_TopupDiscountSetting] where [Enabled]=1 and [MerchantCode]=#{code}
+	</select>
+	
+	<select id="GetZSToday" resultType="com.slzr.system.vo.ZSTodayVO">
+		declare @FreeTopupNum int=0;
+		declare @FreeTopupAmount decimal(10,2)=0;
+		declare @FreeDebitNum int=0;
+		declare @FreeDebitAmount decimal(10,2)=0;
+		SELECT @FreeTopupNum=count(*)
+		  FROM [dbo].[BAR_TopupTransaction] topup left join [BAR_Account] account on topup.AccountNO=account.AccountNO where topup.freeAmount>0 and account.[MerchantCode]=#{code}
+		 <!--  and (DATEDIFF(d, [TxnDateTime], GETDATE()) = 0) -->
+		 and TxnDateTime BETWEEN CONVERT(varchar(100), GETDATE(), 23) +' 00:00:00' AND CONVERT(varchar(100), GETDATE(), 23) +' 23:59:59'
+		SELECT @FreeTopupAmount=COALESCE(sum(topup.freeAmount),0)
+		  FROM [dbo].[BAR_TopupTransaction] topup left join [BAR_Account] account on topup.AccountNO=account.AccountNO where topup.freeAmount>0 and account.[MerchantCode]=#{code}
+		  <!-- and (DATEDIFF(d, [TxnDateTime], GETDATE()) = 0) -->
+		   and TxnDateTime BETWEEN CONVERT(varchar(100), GETDATE(), 23) +' 00:00:00' AND CONVERT(varchar(100), GETDATE(), 23) +' 23:59:59'
+		SELECT @FreeDebitNum=count(*)
+		  FROM [dbo].[BAR_DebitTransaction] debit left join [dbo].[BAR_Merchant] merchant on debit.[MerchantCode]=merchant.[MapMerchantCode]
+		  where debit.DebitFrom=1 and merchant.[MerchantCode]=#{code}
+		  <!-- and (DATEDIFF(d, [TxnDateTime], GETDATE()) = 0) -->
+		  and TxnDateTime BETWEEN CONVERT(varchar(100), GETDATE(), 23) +' 00:00:00' AND CONVERT(varchar(100), GETDATE(), 23) +' 23:59:59'
+		SELECT @FreeDebitAmount=COALESCE(sum(debit.txnAmount),0)
+		  FROM [dbo].[BAR_DebitTransaction] debit left join [dbo].[BAR_Merchant] merchant on debit.[MerchantCode]=merchant.[MapMerchantCode]
+		  where debit.DebitFrom=1 and merchant.[MerchantCode]=#{code}
+		  <!-- and (DATEDIFF(d, [TxnDateTime], GETDATE()) = 0) -->
+		  and TxnDateTime BETWEEN CONVERT(varchar(100), GETDATE(), 23) +' 00:00:00' AND CONVERT(varchar(100), GETDATE(), 23) +' 23:59:59'
+		select @FreeTopupNum as FreeTopupNum,@FreeTopupAmount as FreeTopupAmount,@FreeDebitNum as FreeDebitNum,@FreeDebitAmount as FreeDebitAmount;
+	</select>
+	
+	<select id="GetZSTotal" resultType="com.slzr.system.vo.ZSTotalVO">
+		SELECT COALESCE(SUM([TopupFreeNum]),0) as TopupFreeNum
+		      ,COALESCE(SUM([TopupFreeAmount]),0) as TopupFreeAmount
+		      ,COALESCE(SUM([DebitFreeNum]),0) as DebitFreeNum
+		      ,COALESCE(SUM([DebitFreeAmount]),0) as DebitFreeAmount
+		  FROM [dbo].[BAR_DailySummary_Base] where MerchantCode=#{code}
+	</select>
+	
+</mapper>

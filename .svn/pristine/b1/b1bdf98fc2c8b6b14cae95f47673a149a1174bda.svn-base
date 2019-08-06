@@ -1,0 +1,16 @@
+package com.slzr.common.service;
+
+
+import com.slzr.common.domain.LogDO;
+
+public interface LogService {
+	//增删改
+	public int createLog(LogDO log);
+
+
+	public int updateLog(LogDO log);
+	
+	
+
+	
+}

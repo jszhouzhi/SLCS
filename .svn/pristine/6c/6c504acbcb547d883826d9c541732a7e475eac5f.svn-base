@@ -1,0 +1,24 @@
+package com.slzr.ureport.bean;
+
+
+import com.slzr.ureport.domain.BCountDo;
+import com.slzr.ureport.service.BCountBusDriverService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+
+import java.util.*;
+
+public class BCountBusDriverBean {
+
+    @Autowired
+    private BCountBusDriverService bCountBusDriverService;
+
+    public List<BCountDo> getListAccount(String dsName, String datasetName, Map<String,Object> parameters){
+
+
+        List<BCountDo> list= bCountBusDriverService.list(parameters);;
+
+        return list;
+    }
+
+}

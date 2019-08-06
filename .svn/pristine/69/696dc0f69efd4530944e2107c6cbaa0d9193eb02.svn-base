@@ -1,0 +1,37 @@
+package com.slzr.common.service.impl;
+
+import com.slzr.common.dao.LogDao;
+import com.slzr.common.domain.LogDO;
+import com.slzr.common.service.LogService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class LogServiceImpl implements LogService {
+	
+
+	@Autowired
+	private LogDao logDao;
+	
+	@Override
+	public int createLog(LogDO log) {
+		//return this.logDao.insertSelective(log);
+		System.out.println("模拟日志入库"+log);
+		return logDao.createLog(log);
+	}
+	
+	@Override
+	public int updateLog(LogDO log) {
+		//return this.logDao.updateByPrimaryKeySelective(log);
+		System.out.println("模拟日志更新"+log);
+		return logDao.updateLog(log);
+	}
+
+
+	
+
+
+
+
+
+}

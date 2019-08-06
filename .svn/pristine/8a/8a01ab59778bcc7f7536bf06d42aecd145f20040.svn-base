@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="signupForm">
+							<input id="id" name="id" type="hidden" th:value="${model.iD}">
+							<!-- merchantCode -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">商户代码：</label>
+								<div class="col-sm-8">
+									<input id="merchantCode" name="merchantCode" class="form-control" type="text" disabled th:value="${model.merchantCode}">
+								</div><span class="text_red " style="color: red" >*</span>
+							</div>
+							<!-- checktype -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label" >审核结果：</label>
+								<div class="col-sm-8">
+									<select  class="form-control"  id="checktype" name="checktype">
+										<option value="">请选择</option>
+										<option value="1">通过</option>
+										<option value="0">不通过</option>
+									</select>
+								</div><span class="text_red " style="color: red" >*</span>
+							</div>
+							<!-- transAmount -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">转账金额：</label>
+								<div class="col-sm-8">
+									<input id="transAmount" name="transAmount" class="form-control" type="text" th:value="${model.transferAmount}">
+								</div>
+							</div>
+							<!-- transDate -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">转账时间：</label>
+								<div class="col-sm-8">
+									<input id="transDate" name="transDate" class="form-control" type="text" th:if="${model.transferDateTime}!=null" th:value="${#dates.format(model.transferDateTime,'yyyy-MM-dd')}">
+									<input id="transDate" name="transDate" class="form-control" type="text" th:if="${model.transferDateTime}==null" value="">
+								</div><span class="text_red " style="color: red" >*</span>
+							</div>
+							<!-- transNo -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">转账单号：</label>
+								<div class="col-sm-8">
+									<input id="transNo" name="transNo" class="form-control" type="text" th:value="${model.transferOrderNO}">
+								</div>
+							</div>
+							<!-- transNo -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">转账状态：</label>
+								<div class="col-sm-8">
+									<select  class="form-control"  id="transStatus" name="transStatus">
+										<option value="">请选择</option>
+										<option value="0" th:selected="${model.TransferStatus}==0">未转账</option>
+										<option value="1" th:selected="${model.TransferStatus}==1">已转账</option>
+									</select>
+								</div>
+							</div>
+							<!-- transDec -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">转账说明：</label>
+								<div class="col-sm-8">
+									<textarea id="transDec" name="transDec" class="form-control" rows="4"></textarea>
+								</div>
+							</div>
+							<div class="form-group text-center">
+								<button type="submit" class="btn btn-primary">提交</button>
+								<button type="submit" class="btn btn-warning" onclick="parent.layer.close(parent.layer.getFrameIndex(window.name))">关闭</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+	</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript" src="/js/appjs/operation/settle/check.js"></script>
+</body>
+</html>

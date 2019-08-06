@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg commonquerypage">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox">
+					<div class="ibox-body">
+						<div class="fixed-table-toolbar clearfix">
+							<div class="columns pull-left">
+								<button shiro:hasPermission="set:qa:add" type="button" class="btn  btn-primary" onclick="add()">
+									<i class="fa fa-plus" aria-hidden="true"></i>添加
+								</button>
+							</div>
+							<div class="searchbox columns pull-left col-md-4 nopadding">
+								<input class="searchinput form-control" id="searchName" placeholder="输入问题进行搜索" type="text">
+							</div>
+							<div class="querybtns columns pull-left">
+								<button class="btn btn-success btn-sm" onclick="reLoad()">查询</button>
+								<button id="btnreset" class="btn btn-success btn-sm">重置</button>
+							</div>
+							<span class="modechangebtn pull-right">高级查询<i class="fa fa-chevron-down"></i></span>
+						</div>
+ 						<div class="query-inputs clearfix">
+ 							<div class="layui-form">
+						  	  <div class="layui-form-item">
+ 
+							    
+							    <div class="layui-inline">
+									  <label class="layui-form-label">商户：</label>
+									  <div class="layui-input-block">
+										  <select  lay-verify="required" id="merchantCode" name="merchantCode">
+											  <option value="">全部</option>
+											  <option th:each="merchant : ${merchantList}" th:value="${merchant.merchantCode}" th:text="${merchant.merchantName}"></option>
+										  </select>
+									  </div>
+								 </div>
+								 
+								 <div class="layui-inline">
+									  <label class="layui-form-label">问题类型：</label>
+									  <div class="layui-input-block">
+									      <select  class="form-control" name="questionTypeId" id="questionTypeId">
+									        <option value="">请选择</option>
+											<option th:each="type : ${dictType}" th:value="${type.DataCode}" th:text="${type.DataValue}"></option>
+										  </select>
+									  </div>
+								 </div>
+							    
+							  </div>
+ 
+
+						  	</div>
+ 
+						</div>
+ 
+						
+						<table id="exampleTable" data-mobile-responsive="true">
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+		<div>
+			<script type="text/javascript">
+				var s_edit_h = 'hidden';
+				var s_remove_h = 'hidden';
+				var s_resetPwd_h = 'hidden';
+			</script>
+		</div>
+		<div shiro:hasPermission="set:qa:edit">
+			<script type="text/javascript">
+				s_edit_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="set:qa:remove">
+			<script type="text/javascript">
+				var s_remove_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="set:qa:resetPwd">
+			<script type="text/javascript">
+				var s_resetPwd_h = '';
+			</script>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script type="application/javascript" th:src="@{/js/appjs/set/qa/qa.js}"></script>
+</body>
+</html>

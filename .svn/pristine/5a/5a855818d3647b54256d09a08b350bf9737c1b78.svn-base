@@ -1,0 +1,53 @@
+package com.slzr.common.controller;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+
+import com.slzr.common.utils.ExcelExportTool;
+import com.slzr.common.utils.ShiroUtils;
+import com.slzr.system.domain.UserDO;
+
+@Controller
+public class BaseController {
+
+
+	public UserDO getUser() {
+		return ShiroUtils.getUser();
+	}
+
+	public Long getId() {
+		return getUser().getId();
+	}
+
+	public String getUserName() {
+		return getUser().getUserName();
+	}
+	
+	public String getMerchantCode() {
+		return getUser().getMerchantCode();
+	}
+	
+	public  void export(HttpServletResponse response,/*ExportType exportType,*/String reportTitle,
+		LinkedHashMap<String, String> fields,List<?> list) {
+		
+		try{
+		String fileName = reportTitle + ".xls";
+		
+		byte[] b = fileName.getBytes("UTF-8"); 
+	    String formatFileName = new String(b,"ISO-8859-1");		      	 
+	    response.setContentType("application/ms-excel");
+	    response.setHeader("Content-disposition", "attachment;filename="+formatFileName);	
+	    
+	    ExcelExportTool.export(reportTitle, fields, list, response);
+	    
+		} catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			list=null;
+		}
+	}
+}

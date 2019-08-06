@@ -1,0 +1,185 @@
+package com.slzr.operation.controller;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.slzr.common.utils.DWMQDateUtil;
+import com.slzr.common.utils.DWMQDateVO;
+import com.slzr.common.utils.DateUtils;
+import com.slzr.common.utils.ExcelExportTool;
+import com.slzr.common.utils.PageUtils;
+import com.slzr.common.utils.Query;
+import com.slzr.operation.domain.DailysummaryTopupDO;
+import com.slzr.operation.domain.TopupTransDO;
+import com.slzr.operation.service.TopupTransService;
+
+@RequestMapping("/operation/topupTrans")
+@Controller
+public class TopupTransController {
+	private String prefix = "operation/topupTrans";
+	@Autowired
+	private TopupTransService topuptransservice;
+	
+	@GetMapping("/list")
+	public String list(Model model) {
+		DWMQDateVO dwmq = null;
+		try {
+			dwmq = DWMQDateUtil.GetDWMQDateVO(DateUtils.format(Calendar.getInstance().getTime(), DateUtils.DATE_PATTERN));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		model.addAttribute("dwmq", dwmq);
+		return prefix + "/list";
+	}
+	
+	@ResponseBody
+	@GetMapping("api/list")
+	@RequiresPermissions("operation:topupTrans:list")
+	public PageUtils list(@RequestParam Map<String, Object> params) {
+		//查询列表数据
+        Query query = new Query(params);
+		List<TopupTransDO> list = topuptransservice.list(query);
+		int total = topuptransservice.count(query);
+		PageUtils pageUtils = new PageUtils(list, total);
+		return pageUtils;
+	}
+    @RequestMapping("/expexcel")
+	public void expExceluser(ModelMap model,HttpServletRequest request,HttpServletResponse response,@RequestParam Map<String, Object> params){
+		String fileName = "交易充值报表.xls";
+		
+		String[] title = new String[]{"订单号","计数器","账号余额","订单金额","订单时间","支付方式","支付终端ID","支付时间","支付结果","支付结果描述","TAC","日结时间","退款时间","结算时间"};
+		
+		List<TopupTransDO> list = null;
+		
+			try {
+				list = topuptransservice.list(params);
+				List<Object[]> data = new ArrayList<Object[]>();
+				for(int i=0; i<list.size();i++){
+		        Object[] str = new Object[title.length];
+			        //订单号
+			        if(null!=list.get(i).getOrderNO() && !list.get(i).getOrderNO().equals("")){
+		        		str[0] = list.get(i).getOrderNO();
+			        }else{
+			        	str[0] = "";
+			        }
+			        //计数器
+			        if(null!=list.get(i).getCounter()){
+		        		str[1] = list.get(i).getCounter();
+			        }else{
+			        	str[1] = "";
+			        }
+			        //账号余额
+			        if(null!=list.get(i).getBalance()){
+		        		str[2] = list.get(i).getCounter();
+			        }else{
+			        	str[2] = "";
+			        }
+			        //订单金额
+			        if(null!=list.get(i).getTxnAmount()){
+		        		str[3] = list.get(i).getTxnAmount();
+			        }else{
+			        	str[3] = "";
+			        }
+			        //订单时间
+			        if(null!=list.get(i).getTxnDateTime()){
+		        		str[4] = DateUtils.format(list.get(i).getTxnDateTime(), DateUtils.DATE_TIME_PATTERN);
+			        }else{
+			        	str[4] = "";
+			        }
+			        //支付方式
+			        if(null!=list.get(i).getPayMethodId()){
+			        	str[5] = ConvertToPayMethodText(list.get(i).getPayMethodId());
+			        }else{
+			        	str[5] = "";
+			        }
+			        //支付终端ID
+			        if(null!=list.get(i).getPayClientID()){
+		        		str[6] = list.get(i).getPayClientID();
+			        }else{
+			        	str[6] = "";
+			        }
+			        //支付时间
+			        if(null!=list.get(i).getPayTime()){
+		        		str[7] = DateUtils.format(list.get(i).getPayTime(), DateUtils.DATE_TIME_PATTERN);
+			        }else{
+			        	str[7] = "";
+			        }
+			        //支付结果
+			        if(null!=list.get(i).getPayResult()){
+		        		str[8] = list.get(i).getPayResult();
+			        }else{
+			        	str[8] = "";
+			        }
+			        //支付结果描述
+			        if(null!=list.get(i).getPayResultMsg() && !list.get(i).getPayResultMsg().equals("")){
+		        		str[9] = list.get(i).getPayResultMsg();
+			        }else{
+			        	str[9] = "";
+			        }
+			        //TAC
+			        if(null!=list.get(i).getTAC() && !list.get(i).getTAC().equals("")){
+		        		str[10] = list.get(i).getTAC();
+			        }else{
+			        	str[10] = "";
+			        }
+			        //日结时间
+			        if(null!=list.get(i).getSummaryDateTime()){
+		        		str[11] = DateUtils.format(list.get(i).getSummaryDateTime(),DateUtils.DATE_TIME_PATTERN);
+			        }else{
+			        	str[11] = "";
+			        }
+			        //退款时间
+			        if(null!=list.get(i).getRefundDateTime()){
+		        		str[12] = DateUtils.format(list.get(i).getRefundDateTime(),DateUtils.DATE_TIME_PATTERN);
+			        }else{
+			        	str[12] = "";
+			        }
+			        //结算时间
+			        if(null!=list.get(i).getSettleDateTime()){
+		        		str[13] = DateUtils.format(list.get(i).getSettleDateTime(),DateUtils.DATE_TIME_PATTERN);
+			        }else{
+			        	str[13] = "";
+			        }
+			        data.add(str);
+				}
+				String sheetName = "expExcel";
+				byte[] b = fileName.getBytes("UTF-8"); 
+			    String formatFileName = new String(b,"ISO-8859-1");
+			    response.setContentType("application/ms-excel");
+			    response.setHeader("Content-disposition", "attachment;filename="+formatFileName);
+			    ExcelExportTool.exportExcel(formatFileName, sheetName, title, data, response);
+			 } catch (Exception e) {
+				 e.printStackTrace();
+			 }finally{
+				 list=null;
+			 }
+    }
+	private String ConvertToPayMethodText(int value)
+	{
+		switch(value)
+		{
+		   case 0:
+				return "微信";
+		   case 1:
+				return "支付宝";
+		    default:break;
+		}
+		return "未知";
+	}
+}

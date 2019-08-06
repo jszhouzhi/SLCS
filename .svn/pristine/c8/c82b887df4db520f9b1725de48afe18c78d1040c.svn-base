@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.DebitTransDao">
+
+	<sql id="thisColumns">
+        BAR_DebitTransaction.ID as ID
+        ,BAR_DebitTransaction.Discount as Discount
+        ,BAR_DebitTransaction.AccountNO as AccountNO
+        ,BAR_DebitTransaction.UploadDateTime as UploadDateTime
+        ,BAR_DebitTransaction.UnpackDateTime as UnpackDateTime
+        ,BAR_DebitTransaction.TxnAmount as TxnAmount
+        ,BAR_DebitTransaction.SettleDateTime as SettleDateTime
+        ,BAR_DebitTransaction.Direction as Direction
+        ,BAR_DebitTransaction.RecordTAC as RecordTAC
+        ,BAR_DebitTransaction.AppVersion as AppVersion
+        ,BAR_DebitTransaction.TxnDateTime as TxnDateTime
+        ,BAR_DebitTransaction.DebitStatus as DebitStatus
+        ,BAR_DebitTransaction.TerminalNO as TerminalNO
+        ,BAR_DebitTransaction.Counter as Counter
+        ,BAR_DebitTransaction.TerminalCounter as TerminalCounter
+        ,BAR_DebitTransaction.SummaryDateTime as SummaryDateTime
+        ,BAR_DebitTransaction.TxnTypeID as TxnTypeID
+        ,BAR_DebitTransaction.TxnBalance as TxnBalance
+        ,BAR_DebitTransaction.StartStationCode as StartStationCode
+        ,BAR_DebitTransaction.EndStaionTime as EndStaionTime
+        ,BAR_DebitTransaction.TicketPrice as TicketPrice
+        ,BAR_DebitTransaction.TicketData as TicketData
+        ,BAR_DebitTransaction.FromFileID as FromFileID
+        ,BAR_DebitTransaction.EndStationCode as EndStationCode
+        ,BAR_DebitTransaction.UpdateStatusDateTime as UpdateStatusDateTime
+        ,BAR_DebitTransaction.CardTypeID as CardTypeID
+        ,BAR_DebitTransaction.StartStationTime as StartStationTime
+        ,BAR_DebitTransaction.MerchantCode as MerchantCode
+        ,BAR_DebitTransaction.TicketMac as TicketMac
+        ,BAR_DebitTransaction.KerVersion as KerVersion
+        ,BAR_DebitTransaction.DriverNO as DriverNO
+        ,BAR_DebitTransaction.TerminalID as TerminalID
+        ,BAR_DebitTransaction.Balance as Balance
+        ,BAR_DebitTransaction.CompanyCode as CompanyCode
+        ,BAR_DebitTransaction.[LineNO] as [LineNO]
+        ,isnull(BAR_DebitTransaction.DebitFrom,0) as debitFrom
+
+
+    </sql>
+	<select id="get" resultType="com.slzr.operation.domain.DebitTransDO">
+		select 
+		<include refid="thisColumns" /> 
+		from BAR_DebitTransaction where ID = #{id}
+	</select>
+
+	<select id="list" resultType="com.slzr.operation.domain.DebitTransDO">
+		<if test="offset != null and limit != null">
+		select top ${limit}  *  from (
+		</if>
+		select 
+		ROW_NUMBER() OVER(ORDER BY TxnDateTime desc) AS Seq, 
+		<include refid="thisColumns" /> 
+		from BAR_DebitTransaction
+        <where>
+            <if test="searchvalue != null and  searchvalue!= ''"> and (BAR_DebitTransaction.TerminalNO like '${searchvalue}%' or BAR_DebitTransaction.AccountNO like '${searchvalue}%' or BAR_DebitTransaction.DriverNO like '${searchvalue}%' or BAR_DebitTransaction.CompanyCode like '${searchvalue}%' or BAR_DebitTransaction.[LineNO] like '${searchvalue}%')</if>
+            <if test="sdate != null and  sdate!= ''"> and BAR_DebitTransaction.TxnDateTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="edate != null and  edate!= ''"> and BAR_DebitTransaction.TxnDateTime &lt;= '${edate} 23:59:59'</if>
+            <if test="merchantCode != null and  merchantCode!= ''">AND BAR_DebitTransaction.MerchantCode IN (select MapMerchantCode from BAR_Merchant WHERE merchantcode= #{merchantCode}) </if>
+            <if test="lineName != null and  lineName!= ''"> AND BAR_DebitTransaction.[LineNO] = #{lineName}</if>
+            <if test="busNO != null and  busNO!= ''"> AND BAR_DebitTransaction.TerminalNO = #{busNO}</if>
+            <if test="driverName != null and  driverName!= ''"> AND BAR_DebitTransaction.DriverNO = #{driverName}</if>
+            <if test="deptName != null and  deptName!= ''"> AND OPT_Line.[DeptID] = #{deptName}</if>
+            <if test="status != null and  status!= ''"> AND BAR_DebitTransaction.DebitStatus = #{status}</if>
+            
+             <if test="debitFrom != -1 and debitFrom == 1"> AND BAR_DebitTransaction.DebitFrom = 1</if>
+             <if test="debitFrom != -1 and debitFrom == 0"> AND (BAR_DebitTransaction.DebitFrom is null or BAR_DebitTransaction.DebitFrom=0) </if>
+             <if test="debitFrom != -1 and debitFrom == 2"> AND BAR_DebitTransaction.DebitFrom = 2</if>
+        </where>
+        <if test="offset != null and limit != null">
+        ) a
+		where seq BETWEEN ${offset+1} and ${limit+offset}
+		</if>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by TxnDateTime desc
+			</otherwise>
+        </choose>
+
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from BAR_DebitTransaction 
+        <where>
+            <if test="searchvalue != null and  searchvalue!= ''"> and (BAR_DebitTransaction.TerminalNO like '${searchvalue}%' or BAR_DebitTransaction.AccountNO like '${searchvalue}%' or BAR_DebitTransaction.DriverNO like '${searchvalue}%' or BAR_DebitTransaction.CompanyCode like '${searchvalue}%' or BAR_DebitTransaction.[LineNO] like '${searchvalue}%')</if>
+            <if test="sdate != null and  sdate!= ''"> and BAR_DebitTransaction.TxnDateTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="edate != null and  edate!= ''"> and BAR_DebitTransaction.TxnDateTime &lt;= '${edate} 23:59:59'</if>
+            <if test="merchantCode != null and  merchantCode!= ''">AND BAR_DebitTransaction.MerchantCode IN (select MapMerchantCode from BAR_Merchant WHERE merchantcode= #{merchantCode}) </if>
+            <if test="lineName != null and  lineName!= ''"> AND BAR_DebitTransaction.[LineNO] = #{lineName}</if>
+            <if test="busNO != null and  busNO!= ''"> AND BAR_DebitTransaction.TerminalNO = #{busNO}</if>
+            <if test="driverName != null and  driverName!= ''"> AND BAR_DebitTransaction.DriverNO = #{driverName}</if>
+            <if test="deptName != null and  deptName!= ''"> AND OPT_Line.[DeptID] = #{deptName}</if>
+            <if test="status != null and  status!= ''"> AND BAR_DebitTransaction.DebitStatus = #{status}</if>
+            
+             <if test="debitFrom != -1 and debitFrom == 1"> AND BAR_DebitTransaction.DebitFrom = 1</if>
+             <if test="debitFrom != -1 and debitFrom == 0"> AND (BAR_DebitTransaction.DebitFrom is null or BAR_DebitTransaction.DebitFrom=0) </if>
+        </where>
+	</select>
+
+</mapper>

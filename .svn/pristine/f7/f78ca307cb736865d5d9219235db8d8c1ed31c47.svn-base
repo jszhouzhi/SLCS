@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.account.dao.AccountDao">
+
+	<select id="get" resultType="com.slzr.account.domain.AccountDO">
+		select ID,MerchantCode,UID,AccountType,AccountNO,MobilePhone,TrueName,Gender,CertNO,CardTypeCode,
+		SubCardTypeCode,State,MaxTxnAmount,TopupCounter,DebitCounter,LastMakePayTicketTime,LastTopupAmount,
+		LastTopupTime,LastDebitAmount,LastDebitTime,TotalTopupAmount,TotalDebitAmount,Balance,Score,FreeBalance,
+		FreeTimes,AccountExpireTime,CertPhotoUrl,PersonPhotoUrl,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,Remark,
+		CertMAC from BAR_Account where ID = #{value}
+	</select>
+
+	<select id="list" resultType="com.slzr.account.domain.AccountDO">
+		SELECT a.AccountNO,a.ID,a.MerchantCode,AccountTypeName.DataValue AS AccountTypeName,StateName.DataValue AS StateName,
+					a.MobilePhone,a.CreatedDate,a.Balance,a.LastDebitTime,
+					a.LastDebitAmount,a.PersonPhotoUrl,a.CertPhotoUrl
+					
+		From (SELECT AccountNO,ID,AccountType,State,MobilePhone,CreatedDate,Balance,LastDebitTime,LastDebitAmount,
+							PersonPhotoUrl,CertPhotoUrl,MerchantCode
+					FROM BAR_Account) AS a LEFT OUTER JOIN
+						(SELECT DataCode,DataValue
+							FROM SYS_Dictionary 
+							WHERE (DictCode='AccountType')) AS AccountTypeName ON
+					a.AccountType = AccountTypeName.DataCode LEFT OUTER JOIN
+						(SELECT DataCode,DataValue
+							FROM SYS_Dictionary AS SYS_Dictionary_1
+							WHERE (DictCode='AccountState')) AS StateName ON a.State = StateName.DataCode
+		<where>  		  		  
+		  		  <if test="searchName != null and searchName != ''">(   a.AccountNO LIKE	 '${searchName}%' OR a.MobilePhone LIKE	 '${searchName}%')
+				  </if>
+					<if test="merchantCode != null and merchantCode != ''"> and a.MerchantCode = #{merchantCode} </if>
+		  		  <if test="state != null and state != ''"> and a.State = #{state} </if>
+		</where>
+
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by CreatedDate desc
+			</otherwise>
+        </choose>
+
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*)
+				From (SELECT AccountNO,ID,AccountType,State,MobilePhone,CreatedDate,Balance,LastDebitTime,LastDebitAmount,
+							PersonPhotoUrl,CertPhotoUrl,MerchantCode
+					FROM BAR_Account) AS a LEFT OUTER JOIN
+						(SELECT DataCode,DataValue
+							FROM SYS_Dictionary 
+							WHERE (DictCode='AccountType')) AS AccountTypeName ON
+					a.AccountType = AccountTypeName.DataCode LEFT OUTER JOIN
+						(SELECT DataCode,DataValue
+							FROM SYS_Dictionary AS SYS_Dictionary_1
+							WHERE (DictCode='AccountState')) AS StateName ON a.State = StateName.DataCode
+		<where>  		  		  
+		  		  <if test="searchName != null and searchName != ''">(   a.AccountNO LIKE	 '${searchName}%' OR a.MobilePhone LIKE	 '${searchName}%')
+				  </if>
+					<if test="merchantCode != null and merchantCode != ''"> and a.MerchantCode = #{merchantCode} </if>
+		  		  <if test="state != null and state != ''"> and a.State = #{state} </if>
+		</where>
+	</select>
+
+
+	
+	<update id="updateAccountState" >
+		update BAR_Account 
+		<set>
+			<if test="operationType != null">State = #{operationType}</if>
+		</set>
+		where AccountNO = #{accountno,jdbcType=VARCHAR}
+	</update>
+	
+
+
+
+</mapper>

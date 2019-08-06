@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>欢迎页</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+	<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+		 
+	<script src="js/jquery.min.js?v=2.1.4"></script>
+	<script src="js/bootstrap.min.js"></script>
+</head>
+    <style>
+ 
+ 
+        .color-swatch:hover .fa{
+            transform: rotate(180deg);
+            -webkit-transform: rotate(180deg);
+            -moz-transform: rotate(180deg);
+            -o-transform: rotate(180deg);
+            -ms-transform: rotate(180deg);
+        }
+        .fa{
+ 
+            transition: all 0.2s ease-in-out;
+            -webkit-transition: all 0.2s ease-in-out;
+            -moz-transition: all 0.2s ease-in-out;
+            -o-transition: all 0.2s ease-in-out;
+        }
+    </style>
+    
+<body>
+
+<ul id="myTab" class="nav nav-tabs">
+	<li class="active">
+		<a href="#home" data-toggle="tab">
+			二维码统计
+		</a>
+	</li>
+	<li><a href="#ios" data-toggle="tab">IC卡统计</a></li>
+ 
+</ul>
+<div id="myTabContent" class="tab-content">
+	<div id="shjc" class="clearfix form-inline">
+		<div class="form-group col-md-3" th:if="${isadmin}">
+			<label> 商户： </label>
+			<select class="form-control" onclick="change(this)" id="merchslct">
+				<option value="">全部</option>
+				<option th:value="${comcode.Code}" th:each="comcode:${companycodes}" th:text="${comcode.ShortName}"></option>
+			</select>
+		</div>
+	</div>
+
+	<div class="tab-pane fade in active" id="home">
+		 
+		 	<div id="tj" class="swatches highlight clearfix">
+		<h5>二维码统计</h5>
+        <div class="item clearfix">
+            <div class="color-swatch btn-danger">
+                <i class="fa fa-users"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totalregisternum}"></div>
+                <div class="nm">总用户数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-info">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totaltopupnum}"></div>
+                <div class="nm">充值总笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-warning">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totaltopupamount}"></div>
+                <div class="nm">充值总金额</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-success">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totalrefundnum}"></div>
+                <div class="nm">退款总笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-primary">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totalrefundamount}"></div>
+                <div class="nm">退款总金额</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-warning">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totaldebitnum}"></div>
+                <div class="nm">消费总笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-info">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totaldebitamount}"></div>
+                <div class="nm">消费总金额</div>
+            </div>
+        </div>
+	</div>
+	
+			 	<div id="tj" class="swatches highlight clearfix">
+		<h5>二维码今日统计</h5>
+        <div class="item clearfix">
+            <div class="color-swatch btn-info">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todaytopupnum}"></div>
+                <div class="n" th:if="${todaytopupnum}==null">0</div>
+                <div class="nm">今日充值笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-primary">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todaytopupamount}"></div>
+                <div class="n" th:if="${todaytopupamount}==null">0</div>
+                <div class="nm">今日充值金额</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-primary">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todaydebitnum}"></div>
+                <div class="n" th:if="${todaydebitnum}==null">0</div>
+                <div class="nm">今日消费笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-warning">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todaydebitamount}"></div>
+                <div class="n" th:if="${todaydebitamount}==null">0</div>
+                <div class="nm">今日消费金额</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-warning">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todayrefundnum}"></div>
+                <div class="n" th:if="${todayrefundnum}==null">0</div>
+                <div class="nm">今日退款笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-info">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todayrefundamount}"></div>
+                <div class="n" th:if="${todayrefundamount}==null">0</div>
+                <div class="nm">今日退款金额</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-danger">
+                <i class="fa fa-users"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todayregisternum}"></div>
+                <div class="n" th:if="${todayregisternum}==null">0</div>
+                <div class="nm">今日注册数</div>
+            </div>
+        </div>
+	</div>
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+	</div>
+	<div class="tab-pane fade" id="ios">
+		 
+		 		 	<div id="tj" class="swatches highlight clearfix">
+		<h5>IC卡统计</h5>
+       <div class="item clearfix">
+            <div class="color-swatch btn-info">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totalicTransferenceNum}"></div>
+                <div class="nm">IC卡圈存总笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-warning">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totalicTransferenceAmount}"></div>
+                <div class="nm">IC卡圈存总金额</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-success">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totalicTopupNum}"></div>
+                <div class="nm">IC卡充值总笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-primary">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totalicTopupAmount}"></div>
+                <div class="nm">IC卡充值总金额</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-warning">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totalicRefundNum}"></div>
+                <div class="nm">IC卡退款总笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-info">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${totalicRefundAmount}"></div>
+                <div class="nm">IC卡退款总金额</div>
+            </div>
+        </div>
+	</div>
+	
+			 		 	<div id="tj" class="swatches highlight clearfix">
+		<h5>IC卡今日统计</h5>
+       <div class="item clearfix">
+            <div class="color-swatch btn-info">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todayicTransferenceNum}"></div>
+                <div class="n" th:if="${todayicTransferenceNum}==null">0</div>
+                <div class="nm">今日IC卡圈存笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-primary">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todayicTransferenceAmount}"></div>
+                <div class="n" th:if="${todayicTransferenceAmount}==null">0</div>
+                <div class="nm">今日IC卡圈存金额</div>
+            </div>
+        </div>
+        
+        <div class="item clearfix">
+            <div class="color-swatch btn-primary">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todayicTopupNum}"></div>
+                <div class="n" th:if="${todayicTopupNum}==null">0</div>
+                <div class="nm">今日IC卡充值笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-warning">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todayicTopupAmount}"></div>
+                <div class="n" th:if="${todayicTopupAmount}==null">0</div>
+                <div class="nm">今日IC卡充值金额</div>
+            </div>
+        </div>
+        
+        <div class="item clearfix">
+            <div class="color-swatch btn-warning">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todayicRefundNum}"></div>
+                <div class="n" th:if="${todayicRefundNum}==null">0</div>
+                <div class="nm">今日IC卡退款笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-info">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${todayicRefundAmount}"></div>
+                <div class="n" th:if="${todayicRefundAmount}==null">0</div>
+                <div class="nm">今日IC卡退款金额</div>
+            </div>
+        </div>
+	</div>	 
+		 
+		 
+		 
+		 
+		 
+	</div>
+	
+
+ 	<div class="clearfix"></div>
+	<div id="zstj" class="swatches highlight clearfix" th:if="${enableDiscount}">
+		<h5>赠送统计</h5>
+        <div class="item clearfix">
+            <div class="color-swatch btn-info">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${ZSTotalVO.TopupFreeNum}"></div>
+                <div class="nm">赠送总笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-warning">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${ZSTotalVO.TopupFreeAmount}"></div>
+                <div class="nm">赠送总金额</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-warning">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${ZSTotalVO.DebitFreeNum}"></div>
+                <div class="nm">消费总笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-info">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${ZSTotalVO.DebitFreeAmount}"></div>
+                <div class="nm">消费总金额</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-warning">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${ZSTodayVO.FreeTopupNum}"></div>
+                <div class="nm">今日赠送总笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-info">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${ZSTodayVO.FreeTopupAmount}"></div>
+                <div class="nm">今日赠送总金额</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-warning">
+                <i class="fa fa-calculator"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${ZSTodayVO.FreeDebitNum}"></div>
+                <div class="nm">今日赠送消费总笔数</div>
+            </div>
+        </div>
+        <div class="item clearfix">
+            <div class="color-swatch btn-info">
+                <i class="fa fa-cny"></i>
+            </div>
+            <div>
+                <div class="n" th:text="${ZSTodayVO.FreeDebitAmount}"></div>
+                <div class="nm">今日赠送消费总金额</div>
+            </div>
+        </div>
+	</div>
+  <div id="chart1" style="width: 1380px;" class="col-md-6"></div>
+ 
+</div>
+
+
+	<div id="weeks" style="display:none; width: 1380px;" th:utext="${weeks}"></div>
+	
+    <script src="js/echarts.js"></script>
+    <script type="application/javascript" th:src="@{/js/index.js}"></script>
+</body>
+</html>

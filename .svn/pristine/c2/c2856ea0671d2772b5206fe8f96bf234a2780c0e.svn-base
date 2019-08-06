@@ -1,0 +1,182 @@
+package com.slzr.common.utils;
+
+import java.security.MessageDigest;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.slzr.common.domain.AccessToken;
+import com.slzr.common.domain.BaseDO;
+import com.slzr.common.domain.SLRequest;
+import com.slzr.common.domain.SLResponse;
+import com.slzr.common.domain.enums.ErrCode;
+
+/**
+ * 通用的一些辅助方法封装
+ * @author Administrator
+ *
+ */
+public class CommUtil {
+
+	
+	private static String apiDomain;
+	
+	private static AccessToken accessToken = null;
+	
+	private static String appId;
+	
+	private static String appType;
+	
+	private static String appKey;
+	
+	private static BaseDO baseDO; 
+	
+	
+	public static BaseDO getBaseDO() {
+		return baseDO;
+	}
+
+	public static void setBaseDO(BaseDO baseDO) {
+		CommUtil.baseDO = baseDO;
+	}
+
+	public static AccessToken getAccessToken() {
+		return accessToken;
+	}
+
+	public static void setAccessToken(AccessToken accessToken) {
+		CommUtil.accessToken = accessToken;
+	}
+
+	public static String getAppId() {
+		return appId;
+	}
+
+	public static void setAppId(String appId) {
+		CommUtil.appId = appId;
+	}
+
+	public static String getAppType() {
+		return appType;
+	}
+
+	public static void setAppType(String appType) {
+		CommUtil.appType = appType;
+	}
+
+	public static String getAppKey() {
+		return appKey;
+	}
+
+	public static void setAppKey(String appKey) {
+		CommUtil.appKey = appKey;
+	}
+
+	public static String getApiDomain() {
+		return apiDomain;
+	}
+
+	public static void setApiDomain(String apiDomain) {
+		CommUtil.apiDomain = apiDomain;
+	}
+
+	/**
+	 * 获取指定对象的mac值
+	 * @param obj 要计算mac的对象
+	 * @return mac值
+	 * @throws Exception
+	 */
+	@SuppressWarnings("restriction")
+	public static String getMAC(Object obj) throws Exception {
+		String json = JSONObject.toJSONString(obj);
+		String value = null;
+		try {
+			MessageDigest md5 = MessageDigest.getInstance("MD5"); 
+			sun.misc.BASE64Encoder baseEncoder = new sun.misc.BASE64Encoder(); 
+			value = baseEncoder.encode(md5.digest(json.getBytes("GB2312")));
+		} catch (Exception e) {
+			 throw new Exception("计算MAC异常！"+ e.getMessage());
+		}  
+		
+		return value.substring(0, 8);
+	}
+	
+	/**
+	 * 获取Api令牌
+	 * @return 令牌
+	 */
+	public static String getApiToken() {
+		if(accessToken != null && accessToken.getExpireTime().before(new Date()))
+			return accessToken.getToken();
+		
+		String UserName = "zhy";
+		String Password = "8A4A41D59AA8EB8DB189EDE440B25D0A";
+		String url = apiDomain +"api/sl/GetToken";  //签名接口
+		
+
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("UserName", UserName);
+		data.put("Password", Password);
+		SLResponse slResponse = callApiService(url, data, false);
+		if(slResponse.getCode() == 0)
+			return slResponse.getData().toString();
+		return "";
+	}
+	
+	/**
+	 * 调用api接口
+	 * @param url 接口地址
+	 * @param data 数据
+	 * @param needToken 是否需要令牌
+	 * @return 接口返回数据
+	 */
+	public static SLResponse callApiService(String url,Object data ,boolean needToken) {
+		String token = "";	
+		if(needToken)
+			token = getApiToken();
+		
+		SLRequest slRequest = new SLRequest();
+		slRequest.setAppId("slzrop");
+		slRequest.setAppType("OP");
+		slRequest.setTimeStamp(YXDate.getTime());
+		slRequest.setNonce(YXDate.getTime() +new java.util.Random().nextInt(100));
+		slRequest.setSignType("MD5");
+		slRequest.setSignVersion("1.0");
+		
+		slRequest.setData(data);
+		
+		if(!url.startsWith("http")) url  = apiDomain + url;
+		slRequest.setUrl(url);
+		
+
+		String AppKey= "A0E6C376000F44AEF13F58614C379DD9";
+
+        Map<String,String> paraMap = new HashMap<String,String>();  
+        paraMap.put("AppId",slRequest.getAppId());  
+        paraMap.put("AppType", slRequest.getAppType());  
+        paraMap.put("Data", JSON.toJSONString(slRequest.getData()));  
+        paraMap.put("Nonce",slRequest.getNonce()); 
+        paraMap.put("TimeStamp",slRequest.getTimeStamp()); 
+        paraMap.put("Url",slRequest.getUrl()); 
+        paraMap.put("AppKey",AppKey); 
+        
+       
+		try {
+			String signature =SignatureUtil.formatUrlMap(paraMap, false, false); 
+			
+			slRequest.setSignature(signature);
+			
+			String map = JSONObject.toJSONString(slRequest);		
+					
+			String msg= HttpUtil.sendPost(url,map,token);
+			
+			return JSONObject.parseObject(msg, SLResponse.class);
+			 
+		} catch (Exception e1) {
+			return new SLResponse(ErrCode.CALL_API_ERROR,"调用接口【url=" + url + "】异常:" + e1.getMessage());
+		}
+	}
+
+}

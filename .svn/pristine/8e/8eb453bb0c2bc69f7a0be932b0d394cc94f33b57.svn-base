@@ -1,0 +1,37 @@
+package com.slzr.ureport.bean;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.slzr.ureport.domain.ACountDo;
+
+/**
+ * 一级统计  线路消费统计
+ * @author Administrator
+ *
+ */
+public class ACountLineBean {
+    public List<ACountDo> loadReportData(String dsName,String datasetName,Map<String,Object> parameters){
+    	List<ACountDo> aCountLineDoList=new ArrayList<ACountDo>();        
+        String p = null;
+        if(parameters.containsKey("a")){  
+        	p = parameters.get("a").toString();
+        }
+        int i;
+        for(i=1;i<15;i++) {
+        	ACountDo aCountLineDo=new ACountDo();
+        	aCountLineDo.setId((long) i);
+        	aCountLineDo.setDateTime(new Date());
+        	aCountLineDo.setDept("线路消费统计(O_o)??部"+i+"参数为:"+p);       	
+        	aCountLineDo.setConsumptionPerson(3*i);
+        	aCountLineDo.setConsumptionAmount( new BigDecimal(33.63*i));    
+        	
+        	aCountLineDoList.add(aCountLineDo);
+        }    
+        return aCountLineDoList;
+    }
+}

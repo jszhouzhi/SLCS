@@ -1,0 +1,107 @@
+package com.slzr.ureport.bean;
+
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.utils.TimeConverUtils;
+import com.slzr.system.domain.UserDO;
+import com.slzr.system.service.UserService;
+import com.slzr.ureport.domain.ACountDo;
+import com.slzr.ureport.domain.BCountDo;
+import com.slzr.ureport.service.BCountService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.Map;
+
+public class BCountBean extends BaseController{
+
+    @Autowired
+    private BCountService bCountService;
+
+    @Autowired
+    private UserService userService;
+
+    public List<BCountDo> getBusDriverlist(String dsName, String datasetName, Map<String, Object> parameters) {
+        Map<String, Object> stringObjectMap=null;
+        if (parameters != null) {
+            stringObjectMap = TimeConverUtils.converDate(parameters);
+        }
+
+        UserDO userDO = userService.get(getId());
+        List<BCountDo> list = null;
+        if (userDO.getMerchantCode() == "" || userDO.getMerchantCode() == null) {
+             list = bCountService.BusDriverlist(stringObjectMap);
+            for (int i=0;i<list.size();i++){
+                list.get(i).setUserName(getUserName());
+                list.get(i).setStartDate(stringObjectMap.get("startDate").toString());
+                list.get(i).setEndDate(stringObjectMap.get("endDate").toString());
+            }
+        } else {
+            parameters.put("merchantCode", userDO.getMerchantCode());
+             list = bCountService.BusDriverlist(stringObjectMap);
+            for (int i=0;i<list.size();i++){
+                list.get(i).setUserName(getUserName());
+                list.get(i).setStartDate(stringObjectMap.get("startDate").toString());
+                list.get(i).setEndDate(stringObjectMap.get("endDate").toString());
+            }
+        }
+
+
+        return list;
+    }
+    public List<BCountDo> getLineBuslist(String dsName, String datasetName, Map<String, Object> parameters) {
+        Map<String, Object> stringObjectMap=null;
+        if (parameters != null) {
+            stringObjectMap = TimeConverUtils.converDate(parameters);
+        }
+
+
+        UserDO userDO = userService.get(getId());
+        List<BCountDo> list = null;
+        if (userDO.getMerchantCode() == "" || userDO.getMerchantCode() == null) {
+            list = bCountService.LineBuslist(stringObjectMap);
+            for (int i=0;i<list.size();i++){
+                list.get(i).setUserName(getUserName());
+                list.get(i).setStartDate(stringObjectMap.get("startDate").toString());
+                list.get(i).setEndDate(stringObjectMap.get("endDate").toString());
+            }
+        } else {
+            parameters.put("merchantCode", userDO.getMerchantCode());
+            list = bCountService.LineBuslist(stringObjectMap);
+            for (int i=0;i<list.size();i++){
+                list.get(i).setUserName(getUserName());
+                list.get(i).setStartDate(stringObjectMap.get("startDate").toString());
+                list.get(i).setEndDate(stringObjectMap.get("endDate").toString());
+            }
+        }
+
+
+        return list;
+    }
+    public List<BCountDo> getDeptLinelist(String dsName, String datasetName, Map<String, Object> parameters) {
+        Map<String, Object> stringObjectMap=null;
+        if (parameters != null) {
+            stringObjectMap = TimeConverUtils.converDate(parameters);
+        }
+        UserDO userDO = userService.get(getId());
+        List<BCountDo> list = null;
+        if (userDO.getMerchantCode() == "" || userDO.getMerchantCode() == null) {
+            list = bCountService.DeptLinelist(stringObjectMap);
+            for (int i=0;i<list.size();i++){
+                list.get(i).setUserName(getUserName());
+                list.get(i).setStartDate(stringObjectMap.get("startDate").toString());
+                list.get(i).setEndDate(stringObjectMap.get("endDate").toString());
+            }
+        } else {
+            parameters.put("merchantCode", userDO.getMerchantCode());
+           list = bCountService.DeptLinelist(stringObjectMap);
+            for (int i=0;i<list.size();i++){
+                list.get(i).setUserName(getUserName());
+                list.get(i).setStartDate(stringObjectMap.get("startDate").toString());
+                list.get(i).setEndDate(stringObjectMap.get("endDate").toString());
+            }
+        }
+
+
+        return list;
+    }
+}

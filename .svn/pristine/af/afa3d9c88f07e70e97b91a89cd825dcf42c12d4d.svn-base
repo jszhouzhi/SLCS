@@ -1,0 +1,13 @@
+package com.slzr.set.service;
+
+import com.slzr.set.domain.MerchDo;
+
+import java.util.List;
+import java.util.Map;
+
+public interface MerchService {
+
+    List<MerchDo> list(Map<String,Object> map);
+
+    int count(Map<String,Object> map);
+}

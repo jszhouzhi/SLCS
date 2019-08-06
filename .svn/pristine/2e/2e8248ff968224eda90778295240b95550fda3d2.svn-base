@@ -1,0 +1,38 @@
+package com.slzr.ureport.bean;
+
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.batik.anim.timing.TimeContainer;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.slzr.common.utils.TimeConverUtils;
+import com.slzr.ureport.domain.IcTransferCountDo;
+import com.slzr.ureport.service.IcTransferCountService;
+
+/**
+ * IC卡圈存统计
+ * @author Administrator
+ *
+ */
+public class IcTransferCountBean {
+	@Autowired
+	private IcTransferCountService icTransferCountService;
+	
+	
+    public List<IcTransferCountDo> loadReportData(String dsName,String datasetName,Map<String,Object> parameters){
+    	
+        String p = null;
+        if(parameters.containsKey("a")){  
+        	p = parameters.get("a").toString();
+        }
+        
+        Map<String,Object> mobj = TimeConverUtils.converDate(parameters);
+        
+    	List<IcTransferCountDo> icTransferCountDao = icTransferCountService.list(mobj);        
+
+  
+        return icTransferCountDao;
+    }
+}

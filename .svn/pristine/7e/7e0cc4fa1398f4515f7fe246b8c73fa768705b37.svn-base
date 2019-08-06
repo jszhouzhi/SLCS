@@ -1,0 +1,14 @@
+package com.slzr.system.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.slzr.system.domain.StatisticsDO;
+
+@Mapper
+public interface StatisticsDao {
+	List<StatisticsDO> GetTotalStatistics();
+	List<StatisticsDO> GetTodayStatistics();
+	List<StatisticsDO> GetRecentlyWeekStatistics();
+}

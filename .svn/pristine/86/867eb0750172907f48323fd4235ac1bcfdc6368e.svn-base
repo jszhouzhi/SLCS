@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="signupForm">
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">商户：</label>
+								<div class="col-sm-5">
+								<select class="form-control"  lay-verify="required" id="merchantCode" name="merchantCode">
+									<option value="">请选择</option>
+									<option th:each="merchant : ${merchantList}" th:value="${merchant.merchantCode}" th:text="${merchant.merchantName}"></option>
+								</select>
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">优惠方案名称：</label>
+								<div class="col-sm-5">
+									<input id="discountname" name="discountname" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">优惠方案描述：</label>
+								<div class="col-sm-5">
+									<input id="discountdesc" name="discountdesc" class="form-control" type="text">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">方案开始时间：</label>
+								<div class="col-sm-5">
+									 
+									<input   type="text" name="effectivedatetime" id="effectivedatetime" autocomplete="off" class="layui-input">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">方案结束时间：</label>
+								<div class="col-sm-5">
+									<input   type="text" name="expireddatetime" id="expireddatetime" autocomplete="off" class="layui-input">
+								</div>
+							</div>
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">启用状态：</label>
+								<div class="col-sm-5">
+							    	启用<input type="radio" name="enabled" value="0" title="" checked="">  &nbsp&nbsp&nbsp
+     							           不启用<input type="radio" name="enabled" value="1" title="">
+								</div>
+							</div>
+
+						<div class="row"> 
+							  <div class="col-sm-12"> 
+							    <div class="ibox float-e-margins"> 
+							      <div align="center"> 
+							        <h3>添加区间</h3>  
+							          <br/>
+							          <input type="button" value="追加" onclick="addBtn()"  /> 
+							         
+							        <hr/>  
+							        <table border="1"> 
+							          <tr>
+							            <th>充值</th>  
+							            <th>至</th>  
+							            <th>奖励金额</th>  
+							            <th>操作</th> 
+							          </tr>
+							        </table> 
+							      </div> 
+							    </div> 
+							  </div> 
+						</div>
+							
+							
+							
+							
+							<div class="form-group">
+								<div class="col-sm-5 col-sm-offset-3">
+									<button type="submit" class="btn btn-primary">提交</button>
+								</div>
+							</div>
+							
+							
+						</form>
+					</div>
+				</div>
+			</div>
+	</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript" src="/js/appjs/operation/sendcase/add.js">
+	</script>
+</body>
+</html>

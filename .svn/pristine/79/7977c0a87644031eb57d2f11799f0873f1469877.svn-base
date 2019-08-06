@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<form class="form-horizontal m-t" id="signupForm">
+						<input id="id" name="id" th:value="${apiDo.id}" type="hidden">
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label" >应用类型：</label>
+							<div class="col-sm-8">
+								<select  class="form-control"  id="appType" name="appType">
+									<option value="">请选择</option>
+									<option th:each="option : ${sysDictList}" th:value="${option.DataValue}" th:selected="${apiDo.appType==option.DataValue}"  th:text="${option.DataValue}"></option>
+								</select>
+							</div><span class="text_red " style="color: red" >*</span>&nbsp
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">应用ID：</label>
+							<div class="col-sm-8">
+								<input id="appId" name="appId" class="form-control" th:value="${apiDo.appId}" type="text">
+							</div><span class="text_red " style="color: red" >*</span>&nbsp
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">应用密匙：</label>
+							<div class="col-sm-8">
+								<input id="appKey" name="appKey" class="form-control" th:value="${apiDo.appKey}" type="text">
+							</div><span class="text_red " style="color: red" >*</span>&nbsp
+						</div>
+
+						<div class="form-group text-center">
+							<div class="col-sm-8 col-sm-offset-3">
+								<button type="submit" class="btn btn-primary">提交</button>
+								<button type="button" class="btn btn-warning" onclick="parent.layer.close(parent.layer.getFrameIndex(window.name))">关闭</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/js/appjs/set/api/edit.js">
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+package com.slzr.ureport.service;
+
+
+import com.slzr.ureport.domain.BCountDo;
+
+
+import java.util.List;
+import java.util.Map;
+
+
+public interface BCountBusDriverService {
+
+
+    List<BCountDo> list(Map<String, Object> parameters);
+
+
+}

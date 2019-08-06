@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.account.dao.AccountCancelDao">
+
+	<select id="get" resultType="com.slzr.account.domain.AccountCancelDO">
+		select `ID`,`MerchantCode`,`AccountNO`,`SubmitTime`,`UID`,`MobilePhone`,`Balance`,`ServiceFee`,`DealResult`,`DealTime`,`DealMsg`,`UserConfirm`,`UserConfirmTime`,`SummaryDateTime` from BAR_Account_Cancel where ID = #{value}
+	</select>
+
+	<select id="list" resultType="com.slzr.account.domain.AccountCancelDO">
+		select `ID`,`MerchantCode`,`AccountNO`,`SubmitTime`,`UID`,`MobilePhone`,`Balance`,`ServiceFee`,`DealResult`,`DealTime`,`DealMsg`,`UserConfirm`,`UserConfirmTime`,`SummaryDateTime` from BAR_Account_Cancel
+        <where>  
+		  		  <if test="id != null and id != ''"> and ID = #{id} </if>
+		  		  <if test="merchantcode != null and merchantcode != ''"> and MerchantCode = #{merchantcode} </if>
+		  		  <if test="accountno != null and accountno != ''"> and AccountNO = #{accountno} </if>
+		  		  <if test="submittime != null and submittime != ''"> and SubmitTime = #{submittime} </if>
+		  		  <if test="uid != null and uid != ''"> and UID = #{uid} </if>
+		  		  <if test="mobilephone != null and mobilephone != ''"> and MobilePhone = #{mobilephone} </if>
+		  		  <if test="balance != null and balance != ''"> and Balance = #{balance} </if>
+		  		  <if test="servicefee != null and servicefee != ''"> and ServiceFee = #{servicefee} </if>
+		  		  <if test="dealresult != null and dealresult != ''"> and DealResult = #{dealresult} </if>
+		  		  <if test="dealtime != null and dealtime != ''"> and DealTime = #{dealtime} </if>
+		  		  <if test="dealmsg != null and dealmsg != ''"> and DealMsg = #{dealmsg} </if>
+		  		  <if test="userconfirm != null and userconfirm != ''"> and UserConfirm = #{userconfirm} </if>
+		  		  <if test="userconfirmtime != null and userconfirmtime != ''"> and UserConfirmTime = #{userconfirmtime} </if>
+		  		  <if test="summarydatetime != null and summarydatetime != ''"> and SummaryDateTime = #{summarydatetime} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by ID desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from BAR_Account_Cancel
+		 <where>  
+		  		  <if test="id != null and id != ''"> and ID = #{id} </if>
+		  		  <if test="merchantcode != null and merchantcode != ''"> and MerchantCode = #{merchantcode} </if>
+		  		  <if test="accountno != null and accountno != ''"> and AccountNO = #{accountno} </if>
+		  		  <if test="submittime != null and submittime != ''"> and SubmitTime = #{submittime} </if>
+		  		  <if test="uid != null and uid != ''"> and UID = #{uid} </if>
+		  		  <if test="mobilephone != null and mobilephone != ''"> and MobilePhone = #{mobilephone} </if>
+		  		  <if test="balance != null and balance != ''"> and Balance = #{balance} </if>
+		  		  <if test="servicefee != null and servicefee != ''"> and ServiceFee = #{servicefee} </if>
+		  		  <if test="dealresult != null and dealresult != ''"> and DealResult = #{dealresult} </if>
+		  		  <if test="dealtime != null and dealtime != ''"> and DealTime = #{dealtime} </if>
+		  		  <if test="dealmsg != null and dealmsg != ''"> and DealMsg = #{dealmsg} </if>
+		  		  <if test="userconfirm != null and userconfirm != ''"> and UserConfirm = #{userconfirm} </if>
+		  		  <if test="userconfirmtime != null and userconfirmtime != ''"> and UserConfirmTime = #{userconfirmtime} </if>
+		  		  <if test="summarydatetime != null and summarydatetime != ''"> and SummaryDateTime = #{summarydatetime} </if>
+		  		</where>
+	</select>
+	 
+
+
+</mapper>

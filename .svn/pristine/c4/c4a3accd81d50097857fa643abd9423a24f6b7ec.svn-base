@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.system.dao.UserDao">
+
+	<select id="get" resultType="com.slzr.system.domain.UserDO">
+		select ID,RoleID,UserName,PassWord,TrueName,MobilePhone,Gender,BirthDate,
+		UserTypeID,StateID,LastLoginDate,LastLoginIP,LoginNum,CreatedBy,CreatedDate,
+		UpdatedBy,UpdatedDate,Remark,MerchantCode from SYS_User 
+		where ID = #{value}
+	</select>
+
+	<select id="list" resultType="com.slzr.system.domain.UserDO">
+		select ID,RoleID,UserName,PassWord,TrueName,MobilePhone,Gender,BirthDate,
+		UserTypeID,StateID,LastLoginDate,LastLoginIP,LoginNum,CreatedBy,CreatedDate,
+		UpdatedBy,UpdatedDate,Remark,MerchantCode from SYS_User 
+        <where>
+		  		  <if test="id != null and id != ''"> and ID != #{id}</if>
+		  		  <if test="roleID != null and roleID != ''"> and RoleID = #{roleID} </if>
+		  		  <if test="userName != null and userName != ''"> and UserName = #{userName} </if>
+		  		  <if test="passWord != null and passWord != ''"> and PassWord = #{passWord} </if>
+		  		  <if test="trueName != null and trueName != ''"> and TrueName = #{trueName} </if>
+		  		  <if test="mobilePhone != null and mobilePhone != ''"> and MobilePhone = #{mobilePhone} </if>
+		  		  <if test="gender != null and gender != ''"> and Gender = #{gender} </if>
+		  		  <if test="birthDate != null and birthDate != ''"> and BirthDate = #{birthDate} </if>
+		  		  <if test="userTypeID != null and userTypeID != ''"> and UserTypeID = #{userTypeID} </if>
+		  		  <if test="stateID != null and stateID != ''"> and StateID = #{stateID} </if>
+		  		  <if test="lastLoginDate != null and lastLoginDate != ''"> and LastLoginDate = #{lastLoginDate} </if>
+		  		  <if test="lastLoginIP != null and lastLoginIP != ''"> and LastLoginIP = #{lastLoginIP} </if>
+		  		  <if test="loginNum != null and loginNum != ''"> and LoginNum = #{loginNum} </if>
+		  		  <if test="createdBy != null and createdBy != ''"> and CreatedBy = #{createdBy} </if>
+		  		  <if test="createdDate != null and createdDate != ''"> and CreatedDate = #{createdDate} </if>
+		  		  <if test="updatedBy != null and updatedBy != ''"> and UpdatedBy = #{updatedBy} </if>
+		  		  <if test="updatedDate != null and updatedDate != ''"> and UpdatedDate = #{updatedDate} </if>
+		  		  <if test="remark != null and remark != ''"> and Remark = #{remark} </if>
+		  		  <if test="merchantCode != null and merchantCode != ''"> and MerchantCode = #{merchantCode} </if>
+		  		  
+		  		  <if test="searchName != null and searchName != ''">
+		  		  (   UserName LIKE	 '${searchName}%' OR TrueName LIKE	 '${searchName}%')
+		  		  </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by ID desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+
+	<select id="getOneUser" resultType="com.slzr.system.domain.UserDO">
+		select ID,RoleID,UserName,PassWord,TrueName,MobilePhone,Gender,BirthDate,
+		UserTypeID,StateID,LastLoginDate,LastLoginIP,LoginNum,CreatedBy,CreatedDate,
+		UpdatedBy,UpdatedDate,Remark,MerchantCode from SYS_User 
+		<where>
+		  		  <if test="id != null and id != ''"> and ID = #{id}</if>
+		  		  <if test="roleID != null and roleID != ''"> and RoleID = #{roleID} </if>
+		  		  <if test="userName != null and userName != ''"> and UserName = #{userName} </if>
+		  		  <if test="passWord != null and passWord != ''"> and PassWord = #{passWord} </if>
+		  		  <if test="trueName != null and trueName != ''"> and TrueName = #{trueName} </if>
+		  		  <if test="mobilePhone != null and mobilePhone != ''"> and MobilePhone = #{mobilePhone} </if>
+		  		  <if test="gender != null and gender != ''"> and Gender = #{gender} </if>
+		  		  <if test="birthDate != null and birthDate != ''"> and BirthDate = #{birthDate} </if>
+		  		  <if test="userTypeID != null and userTypeID != ''"> and UserTypeID = #{userTypeID} </if>
+		  		  <if test="stateID != null and stateID != ''"> and StateID = #{stateID} </if>
+		  		  <if test="lastLoginDate != null and lastLoginDate != ''"> and LastLoginDate = #{lastLoginDate} </if>
+		  		  <if test="lastLoginIP != null and lastLoginIP != ''"> and LastLoginIP = #{lastLoginIP} </if>
+		  		  <if test="loginNum != null and loginNum != ''"> and LoginNum = #{loginNum} </if>
+		  		  <if test="createdBy != null and createdBy != ''"> and CreatedBy = #{createdBy} </if>
+		  		  <if test="createdDate != null and createdDate != ''"> and CreatedDate = #{createdDate} </if>
+		  		  <if test="updatedBy != null and updatedBy != ''"> and UpdatedBy = #{updatedBy} </if>
+		  		  <if test="updatedDate != null and updatedDate != ''"> and UpdatedDate = #{updatedDate} </if>
+		  		  <if test="remark != null and remark != ''"> and Remark = #{remark} </if>
+		  		  <if test="merchantCode != null and merchantCode != ''"> and MerchantCode = #{merchantCode} </if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by ID desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+
+	
+ 	<select id="count" resultType="int">
+		select count(*) from SYS_User
+		 <where>
+		  		  <if test="id != null and id != ''"> and ID = #{id}</if>
+		  		  <if test="roleID != null and roleID != ''"> and RoleID = #{roleID} </if>
+		  		  <if test="userName != null and userName != ''"> and UserName = #{userName} </if>
+		  		  <if test="passWord != null and passWord != ''"> and PassWord = #{passWord} </if>
+		  		  <if test="trueName != null and trueName != ''"> and TrueName = #{trueName} </if>
+		  		  <if test="mobilePhone != null and mobilePhone != ''"> and MobilePhone = #{mobilePhone} </if>
+		  		  <if test="gender != null and gender != ''"> and Gender = #{gender} </if>
+		  		  <if test="birthDate != null and birthDate != ''"> and BirthDate = #{birthDate} </if>
+		  		  <if test="userTypeID != null and userTypeID != ''"> and UserTypeID = #{userTypeID} </if>
+		  		  <if test="stateID != null and stateID != ''"> and StateID = #{stateID} </if>
+		  		  <if test="lastLoginDate != null and lastLoginDate != ''"> and LastLoginDate = #{lastLoginDate} </if>
+		  		  <if test="lastLoginIP != null and lastLoginIP != ''"> and LastLoginIP = #{lastLoginIP} </if>
+		  		  <if test="loginNum != null and loginNum != ''"> and LoginNum = #{loginNum} </if>
+		  		  <if test="createdBy != null and createdBy != ''"> and CreatedBy = #{createdBy} </if>
+		  		  <if test="createdDate != null and createdDate != ''"> and CreatedDate = #{createdDate} </if>
+		  		  <if test="updatedBy != null and updatedBy != ''"> and UpdatedBy = #{updatedBy} </if>
+		  		  <if test="updatedDate != null and updatedDate != ''"> and UpdatedDate = #{updatedDate} </if>
+		  		  <if test="remark != null and remark != ''"> and Remark = #{remark} </if>
+		  		  <if test="merchantCode != null and merchantCode != ''"> and MerchantCode = #{merchantCode} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.slzr.system.domain.UserDO"  useGeneratedKeys="true" keyProperty="id">
+		insert into SYS_User
+		(
+		RoleID,UserName,PassWord,TrueName,MobilePhone,Gender,BirthDate,
+		UserTypeID,StateID,LastLoginDate,LastLoginIP,LoginNum,CreatedBy,CreatedDate,
+		UpdatedBy,UpdatedDate,Remark,MerchantCode 
+		) 
+		values
+		(
+			#{roleID,jdbcType=INTEGER}, 
+			#{userName,jdbcType=VARCHAR}, 
+			#{passWord,jdbcType=VARCHAR}, 
+			#{trueName,jdbcType=VARCHAR}, 
+			#{mobilePhone,jdbcType=VARCHAR}, 
+			#{gender,jdbcType=VARCHAR}, 
+			#{birthDate,jdbcType=TIMESTAMP}, 
+			#{userTypeID,jdbcType=INTEGER}, 
+			#{stateID,jdbcType=INTEGER}, 
+			#{lastLoginDate,jdbcType=TIMESTAMP}, 
+			#{lastLoginIP,jdbcType=VARCHAR}, 
+			#{loginNum,jdbcType=INTEGER}, 
+			#{createdBy,jdbcType=INTEGER}, 
+			#{createdDate,jdbcType=TIMESTAMP}, 
+			#{updatedBy,jdbcType=INTEGER}, 
+			#{updatedDate,jdbcType=TIMESTAMP}, 
+			#{remark,jdbcType=VARCHAR}, 
+			#{merchantCode,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.slzr.system.domain.UserDO">
+		update SYS_User 
+		<set>
+
+  		  <if test="roleID != null">RoleID = #{roleID,jdbcType=INTEGER}, </if>
+  		  <if test="userName != null">UserName = #{userName,jdbcType=VARCHAR}, </if>
+  		  <if test="passWord != null">PassWord = #{passWord,jdbcType=VARCHAR}, </if>
+  		  <if test="trueName != null">TrueName = #{trueName,jdbcType=VARCHAR}, </if>
+  		  <if test="mobilePhone != null"> MobilePhone = #{mobilePhone,jdbcType=VARCHAR}, </if>
+  		  <if test="gender != null">Gender = #{gender,jdbcType=VARCHAR}, </if>
+  		  <if test="birthDate != null">BirthDate = #{birthDate,jdbcType=TIMESTAMP}, </if>
+  		  <if test="userTypeID != null">UserTypeID = #{userTypeID,jdbcType=INTEGER}, </if>
+  		  <if test="stateID != null">StateID = #{stateID,jdbcType=INTEGER}, </if>
+  		  <if test="lastLoginDate != null">LastLoginDate = #{lastLoginDate,jdbcType=TIMESTAMP}, </if>
+  		  <if test="lastLoginIP != null">LastLoginIP = #{lastLoginIP,jdbcType=VARCHAR}, </if>
+  		  <if test="loginNum != null">LoginNum = #{loginNum,jdbcType=INTEGER}, </if>
+  		  <if test="createdBy != null">CreatedBy = #{createdBy,jdbcType=INTEGER}, </if>
+  		  <if test="createdDate != null">CreatedDate = #{createdDate,jdbcType=TIMESTAMP}, </if>
+  		  <if test="updatedBy != null">UpdatedBy = #{updatedBy,jdbcType=INTEGER}, </if>
+  		  <if test="updatedDate != null">UpdatedDate = #{updatedDate,jdbcType=TIMESTAMP}, </if>
+  		  <if test="remark != null">Remark = #{remark,jdbcType=VARCHAR}, </if>
+  		  <if test="merchantCode != null">MerchantCode = #{merchantCode,jdbcType=VARCHAR} </if>
+		</set>
+		where ID = #{id,jdbcType=INTEGER}
+	</update>
+
+
+	<update id="updateNameAndPasW" >
+		update SYS_User
+		<set>
+			PassWord = #{password}
+		</set>
+		where ID = #{userId}
+	</update>
+
+	<delete id="remove">
+		delete from SYS_User where ID = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from SYS_User where ID in 
+		<foreach item="userId" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+
+	</delete>
+
+	<select id="listAllDept" resultType="long">
+				select DISTINCT DeptId from SYS_User
+	</select>
+</mapper>

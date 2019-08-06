@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.common.dao.DictDao">
+
+	<select id="get" resultType="com.slzr.common.domain.DictDO">
+		select ID,DictCode,DataCode,DataValue,OrderNo,State,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,Remark from SYS_Dictionary where ID = #{value}
+	</select>
+
+	<select id="list" resultType="com.slzr.common.domain.DictDO">
+		select ID,DictCode,DataCode,DataValue,OrderNo,State,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,Remark from SYS_Dictionary
+        <where>  
+		  		  <if test="id != null and id != ''"> and ID = #{id} </if>
+		  		  <if test="type != null and type != ''"> and DictCode = #{type} </if>
+		  		  <if test="datacode != null and datacode != ''"> and DataCode = #{datacode} </if>
+		  		  <if test="datavalue != null and datavalue != ''"> and DataValue = #{datavalue} </if>
+		  		  <if test="orderno != null and orderno != ''"> and OrderNo = #{orderno} </if>
+		  		  <if test="state != null and state != ''"> and State = #{state} </if>
+		  		  <if test="createdby != null and createdby != ''"> and CreatedBy = #{createdby} </if>
+		  		  <if test="createddate != null and createddate != ''"> and CreatedDate = #{createddate} </if>
+		  		  <if test="updatedby != null and updatedby != ''"> and UpdatedBy = #{updatedby} </if>
+		  		  <if test="updateddate != null and updateddate != ''"> and UpdatedDate = #{updateddate} </if>
+		  		  <if test="remark != null and remark != ''"> and Remark = #{remark} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by ID desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+
+ 	<select id="count" resultType="int">
+		select count(*) from SYS_Dictionary
+		 <where>  
+		  		  <if test="id != null and id != ''"> and ID = #{id} </if>
+		  		  <if test="dictcode != null and dictcode != ''"> and DictCode = #{dictcode} </if>
+		  		  <if test="datacode != null and datacode != ''"> and DataCode = #{datacode} </if>
+		  		  <if test="datavalue != null and datavalue != ''"> and DataValue = #{datavalue} </if>
+		  		  <if test="orderno != null and orderno != ''"> and OrderNo = #{orderno} </if>
+		  		  <if test="state != null and state != ''"> and State = #{state} </if>
+		  		  <if test="createdby != null and createdby != ''"> and CreatedBy = #{createdby} </if>
+		  		  <if test="createddate != null and createddate != ''"> and CreatedDate = #{createddate} </if>
+		  		  <if test="updatedby != null and updatedby != ''"> and UpdatedBy = #{updatedby} </if>
+		  		  <if test="updateddate != null and updateddate != ''"> and UpdatedDate = #{updateddate} </if>
+		  		  <if test="remark != null and remark != ''"> and Remark = #{remark} </if>
+		  		</where>
+	</select>
+
+	<insert id="save" parameterType="com.slzr.common.domain.DictDO">
+		insert into SYS_Dictionary
+		(
+			`ID`, 
+			`DictCode`, 
+			`DataCode`, 
+			`DataValue`, 
+			`OrderNo`, 
+			`State`, 
+			`CreatedBy`, 
+			`CreatedDate`, 
+			`UpdatedBy`, 
+			`UpdatedDate`, 
+			`Remark`
+		)
+		values
+		(
+			#{id}, 
+			#{dictcode}, 
+			#{datacode}, 
+			#{datavalue}, 
+			#{orderno}, 
+			#{state}, 
+			#{createdby}, 
+			#{createddate}, 
+			#{updatedby}, 
+			#{updateddate}, 
+			#{remark}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.slzr.common.domain.DictDO">
+		update SYS_Dictionary 
+		<set>
+			<if test="dictcode != null">`DictCode` = #{dictcode}, </if>
+			<if test="datacode != null">`DataCode` = #{datacode}, </if>
+			<if test="datavalue != null">`DataValue` = #{datavalue}, </if>
+			<if test="orderno != null">`OrderNo` = #{orderno}, </if>
+			<if test="state != null">`State` = #{state}, </if>
+			<if test="createdby != null">`CreatedBy` = #{createdby}, </if>
+			<if test="createddate != null">`CreatedDate` = #{createddate}, </if>
+			<if test="updatedby != null">`UpdatedBy` = #{updatedby}, </if>
+			<if test="updateddate != null">`UpdatedDate` = #{updateddate}, </if>
+			<if test="remark != null">`Remark` = #{remark}</if>
+		</set>
+		where ID = #{id}
+	</update>
+
+	<delete id="remove">
+		delete from SYS_Dict where ID = #{value}
+	</delete>
+
+	<delete id="batchRemove">
+		delete from SYS_Dictionary where ID in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="listType" resultType="com.slzr.common.domain.DictDO">
+		select distinct DictCode from SYS_Dictionary
+	</select>
+
+</mapper>

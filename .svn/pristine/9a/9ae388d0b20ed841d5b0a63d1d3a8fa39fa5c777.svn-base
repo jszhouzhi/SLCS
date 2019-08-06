@@ -1,0 +1,208 @@
+package com.slzr.system.controller;
+
+import com.slzr.common.annotation.Log;
+import com.slzr.common.config.Constant;
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.domain.Tree;
+import com.slzr.common.utils.DateUtils;
+import com.slzr.common.utils.JSONUtils;
+import com.slzr.common.utils.MD5Utils;
+import com.slzr.common.utils.R;
+import com.slzr.common.utils.ShiroUtils;
+import com.slzr.system.domain.MenuDO;
+import com.slzr.system.domain.StatisticsDO;
+import com.slzr.system.service.MenuService;
+import com.slzr.system.service.StatisticsService;
+import com.slzr.system.service.UserService;
+import com.slzr.system.vo.StatisticsVO;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+
+@Controller
+public class LoginController extends BaseController {
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired
+	MenuService menuService;
+
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	StatisticsService statisticsService;
+	
+	@GetMapping({ "/", "" })
+	String welcome(Model model) {
+		return "redirect:/login";
+	}
+
+	@Log("请求访问主页")
+	@GetMapping({ "/index" })
+	String index(Model model) {
+		List<Tree<MenuDO>> menus = menuService.listMenuTree(getUserId());
+		model.addAttribute("menus", menus);
+		model.addAttribute("name", getUser().getName());
+/*		FileDO fileDO = fileService.get(getUser().getPicId());
+		if(fileDO!=null&&fileDO.getUrl()!=null){
+			if(fileService.isExist(fileDO.getUrl())){
+				model.addAttribute("picUrl",fileDO.getUrl());
+			}else {
+				model.addAttribute("picUrl","/img/photo_s.jpg");
+			}
+		}else {
+			model.addAttribute("picUrl ","/img/photo_s.jpg");
+		}*/
+		model.addAttribute("picUrl","/img/photo_s.jpg");
+		model.addAttribute("username", getUser().getUsername());
+
+		return "index_v1";
+	}
+
+	@GetMapping("/login")
+	String login() {
+		return "login";
+	}
+
+	@Log("登录")
+	@PostMapping("/login")
+	@ResponseBody
+	R ajaxLogin(String username, String password) {
+		password = MD5Utils.encrypt(username, password);
+		UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+		Subject subject = SecurityUtils.getSubject();
+		try {
+			subject.login(token);
+			return R.ok();
+		} catch (AuthenticationException e) {
+			return R.error("用户或密码错误");
+		}
+	}
+
+	@GetMapping("/logout")
+	String logout() {
+		ShiroUtils.logout();
+		return "redirect:/login";
+	}
+
+	@GetMapping("/main")
+	String main(Model model) {
+		StatisticsVO vo = statisticsService.GetStatisticsVO();
+		for(StatisticsDO obj : vo.getTotalStatistics())
+		{
+			String nameattr="total";
+			switch(obj.getDatatype())
+			{
+				case "debit":
+					model.addAttribute(nameattr+"debit"+"amount", obj.getDebitAmount());
+					model.addAttribute(nameattr+"debit"+"num", obj.getDebitNum());
+					break;
+				case "refund":
+					model.addAttribute(nameattr+"refund"+"amount", obj.getDebitAmount()!=null?obj.getDebitAmount():0);
+					model.addAttribute(nameattr+"refund"+"num", obj.getDebitNum());
+					break;
+				case "register":
+					model.addAttribute(nameattr+"register"+"num", obj.getDebitNum());
+					break;
+				case "topup":
+					model.addAttribute(nameattr+"topup"+"amount", obj.getDebitAmount());
+					model.addAttribute(nameattr+"topup"+"num", obj.getDebitNum());
+					break;
+				default:
+					break;
+			}
+		}
+		for(StatisticsDO obj : vo.getTodayStatistics())
+		{
+			String nameattr="today";
+			switch(obj.getDatatype())
+			{
+				case "debit":
+					model.addAttribute(nameattr+"debit"+"amount", obj.getDebitAmount());
+					model.addAttribute(nameattr+"debit"+"num", obj.getDebitNum());
+					break;
+				case "refund":
+					model.addAttribute(nameattr+"refund"+"amount", obj.getDebitAmount()!=null?obj.getDebitAmount():0);
+					model.addAttribute(nameattr+"refund"+"num", obj.getDebitNum());
+					break;
+				case "register":
+					model.addAttribute(nameattr+"register"+"num", obj.getDebitNum());
+					break;
+				case "topup":
+					model.addAttribute(nameattr+"topup"+"amount", obj.getDebitAmount());
+					model.addAttribute(nameattr+"topup"+"num", obj.getDebitNum());
+					break;
+				default:
+					break;
+			}
+		}
+//		List<StatisticsDO> weeks = vo.getRecentlyWeekStatistics();
+//		model.addAttribute("weeks",JSONUtils.beanToJson(weeks));
+		return "main";
+	}
+
+	@GetMapping("/403")
+	String error403() {
+		return "403";
+	}
+
+	@Log("修改密码")
+	@GetMapping (value = "/edit")
+	String  editUser(Model model) {
+		model.addAttribute("name", getUser().getName());
+		model.addAttribute("username", getUser().getUsername());
+		model.addAttribute("userId",getUser().getUserId());
+		return "edit";
+	}
+
+	/**
+	 * 判断输入的密码是否正确
+	 */
+	@PostMapping("/isExit")
+	@ResponseBody
+	boolean exit(@RequestParam Map<String, Object> params) {
+		String  username= (String) params.get("username");
+		String password = (String) params.get("password");
+		String Mpassword=MD5Utils.encrypt(username,password);
+		params.put("password",Mpassword);
+		// 存在，不通过，false
+		return userService.exit(params);
+	}
+
+
+	/**
+	 * 修改账号用户名跟密码
+	 */
+	@Log("更新用户")
+	@PostMapping("/updateNameAndPasW")
+	@ResponseBody
+	R updatePeronal(@RequestParam Map<String, Object> params) {
+		String  username= (String) params.get("username");
+		String password = (String) params.get("newPassword");
+		 password=MD5Utils.encrypt(username,password);
+		 params.put("password",password);
+		if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
+			return R.error(1, "演示系统不允许修改,完整体验请部署程序");
+		}
+		if (userService.updateNameAndPasW(params) > 0) {
+			return R.ok();
+		}
+		return R.error();
+	}
+}

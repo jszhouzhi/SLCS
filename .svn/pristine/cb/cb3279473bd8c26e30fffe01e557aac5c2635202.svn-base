@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.ICTopupOrderDao">
+
+	<sql id="IC_TopupOrder_Column">
+        IC_TopupOrder.ID as ID
+        ,IC_TopupOrder.UID as UID
+        ,IC_TopupOrder.TerminalNO as TerminalNO
+        ,IC_TopupOrder.OrderNO as OrderNO
+        ,IC_TopupOrder.CardNO as CardNO
+        ,IC_TopupOrder.Counter as Counter
+        ,IC_TopupOrder.Balance as Balance
+        ,IC_TopupOrder.TxnAmount as TxnAmount
+        ,IC_TopupOrder.OrderState as OrderState
+        ,IC_TopupOrder.OrderBackDate as OrderBackDate
+        ,IC_TopupOrder.LoadState as LoadState
+        ,IC_TopupOrder.LoadDescribe as LoadDescribe
+        ,IC_TopupOrder.LoadBackDate as LoadBackDate
+        ,IC_TopupOrder.PayMethodId as PayMethodId
+        ,IC_TopupOrder.PayTime as PayTime
+        ,IC_TopupOrder.PayResult as PayResult
+        ,IC_TopupOrder.PayResultMsg as PayResultMsg
+        ,IC_TopupOrder.TAC as TAC
+        ,IC_TopupOrder.ReviewID as ReviewID
+        ,IC_TopupOrder.ReviewTime as ReviewTime
+        ,IC_TopupOrder.SummaryTime as SummaryTime
+        ,IC_TopupOrder.MAC as 	MAC
+        ,IC_TopupOrder.TxnDateTime as 	TxnDateTime
+        ,IC_TopupOrder.OrderDescribe as 	OrderDescribe
+		,c.Name as CompanyCode
+
+
+    </sql>
+	<select id="get" resultType="com.slzr.operation.domain.ICTopupOrderDO">
+		select 
+		<include refid="IC_TopupOrder_Column" />
+		from IC_TopupOrder where ID = #{id}
+	</select>
+
+
+	<select id="list" resultType="com.slzr.operation.domain.ICTopupOrderDO">
+		<if test="offset != null and limit != null">
+		select top ${limit}  *  from (
+		</if>
+		select 
+		ROW_NUMBER() OVER(ORDER BY IC_TopupOrder.TxnDateTime desc) AS Seq,
+		
+		<include refid="IC_TopupOrder_Column" />
+		from IC_TopupOrder
+		LEFT JOIN BAR_Company c ON c.Code = IC_TopupOrder.CompanyCode
+
+
+        <where>
+            <if test="auditRemark != null and  auditRemark != ''"> and IC_TopupOrder.TerminalNO like '%${auditRemark}%'</if>
+            <if test="auditRemark != null and  auditRemark != ''"> OR IC_TopupOrder.OrderNO like '%${auditRemark}%'</if>
+            <if test="auditRemark != null and  auditRemark != ''"> OR IC_TopupOrder.CardNO like '%${auditRemark}%'</if>
+
+            <if test="sdate != null and  sdate!= ''"> and IC_TopupOrder.TxnDateTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="edate != null and  edate!= ''"> and IC_TopupOrder.TxnDateTime &lt;= '${edate} 23:59:59'</if>
+
+            <if test="payMethodId != null and  payMethodId!= ''"> and IC_TopupOrder.PayMethodId = '${payMethodId}'</if>
+            <if test="payResult != null and  payResult!= ''"> and IC_TopupOrder.PayResult = '${payResult}'</if>
+            
+            <if test="merchantCode != null and merchantCode != ''"> and IC_TopupOrder.CompanyCode = #{merchantCode} </if>
+
+
+				and IC_TopupOrder.PayResult is not null
+        </where>
+
+        
+		<if test="offset != null and limit != null">
+      	) a
+		where seq BETWEEN ${offset+1} and ${limit+offset}
+		</if>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+
+            <otherwise>
+                order by TxnDateTime desc
+            </otherwise>
+        </choose>
+ 
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from IC_TopupOrder
+        <where>
+            <if test="auditRemark != null and  auditRemark != ''"> and IC_TopupOrder.TerminalNO like '%${auditRemark}%'</if>
+            <if test="auditRemark != null and  auditRemark != ''"> OR IC_TopupOrder.OrderNO like '%${auditRemark}%'</if>
+            <if test="auditRemark != null and  auditRemark != ''"> OR IC_TopupOrder.CardNO like '%${auditRemark}%'</if>
+
+            <if test="sdate != null and  sdate!= ''"> and IC_TopupOrder.TxnDateTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="edate != null and  edate!= ''"> and IC_TopupOrder.TxnDateTime &lt;= '${edate} 23:59:59'</if>
+            <if test="merchantCode != null and merchantCode != ''"> and IC_TopupOrder.CompanyCode = #{merchantCode} </if>
+            and IC_TopupOrder.PayResult is not null
+        </where>
+
+        
+
+    </select>
+	
+	<select id="updateAudit">
+		update IC_TopupOrder set IC_TopupOrder.AuditStatus = #{auditvalue},IC_TopupOrder.AuditUID = #{chkuserid},IC_TopupOrder.AuditDateTime=getdate(), IC_TopupOrder.AuditRemark=#{remark} where IC_TopupOrder.ID=#{id}
+	</select>
+
+</mapper>

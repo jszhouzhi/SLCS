@@ -1,0 +1,16 @@
+package com.slzr.operation.dao;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.slzr.operation.domain.DailysummaryTopupDO;
+
+@Mapper
+public interface DailysummaryTopupDao{
+
+	List<DailysummaryTopupDO> list(Map<String,Object> map);
+	
+	int count(Map<String,Object> map);
+
+}

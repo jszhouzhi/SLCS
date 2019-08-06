@@ -1,0 +1,162 @@
+package com.slzr.set.domain;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import com.alibaba.fastjson.JSONObject;
+
+public class ICSysSettingDo {
+
+	private Integer id;
+	// 商户代码
+	private String merchantCode;
+
+	/**
+	 * M1卡配置 （为空表示不支持该卡类） 值为JSON字符串 { InitParam: 1 //物理卡号, 2 //逻辑卡号 ReverseCardNO: 1
+	 * //反转， 2 //不反转 KeyType: 1 // 密钥方案 1 - N }
+	 */
+	private String m1;
+	// 交通部卡配置 （为空表示不支持该卡类）
+	private String jt;
+	// 住建部卡配置 （为空表示不支持该卡类）
+	private String zj;
+	// 住建部（三联）卡配置（为空表示不支持该卡类）
+	private String sl;
+
+	private BigDecimal maxAmount;
+
+	private Long createdBy;
+
+	private Date createdDateTime;
+
+	private Long updatedBy;
+
+	private Date updatedDateTime;
+
+	private String remark;
+
+	public M1SysSetting getM1SysSetting() {
+		JSONObject jsonObject = JSONObject.parseObject(getM1());
+		M1SysSetting sysSetting = JSONObject.toJavaObject(jsonObject, M1SysSetting.class);
+
+		return sysSetting;
+	}
+	
+	public JTSysSetting getJtSysSetting() {
+		JSONObject jsonObject = JSONObject.parseObject(getJt());
+		JTSysSetting sysSetting = JSONObject.toJavaObject(jsonObject, JTSysSetting.class);
+
+		return sysSetting;
+	}
+	
+	public SLSysSetting getSlSysSetting() {
+		JSONObject jsonObject = JSONObject.parseObject(getSl());
+		SLSysSetting sysSetting = JSONObject.toJavaObject(jsonObject, SLSysSetting.class);
+
+		return sysSetting;
+	}
+	
+	public ZJSysSetting getZjSysSetting() {
+		JSONObject jsonObject = JSONObject.parseObject(getZj());
+		ZJSysSetting sysSetting = JSONObject.toJavaObject(jsonObject, ZJSysSetting.class);
+
+		return sysSetting;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getMerchantCode() {
+		return merchantCode;
+	}
+
+	public void setMerchantCode(String merchantCode) {
+		this.merchantCode = merchantCode;
+	}
+
+	public String getM1() {
+		return m1;
+	}
+
+	public void setM1(String m1) {
+		this.m1 = m1;
+	}
+
+	public String getJt() {
+		return jt;
+	}
+
+	public void setJt(String jt) {
+		this.jt = jt;
+	}
+
+	public String getZj() {
+		return zj;
+	}
+
+	public void setZj(String zj) {
+		this.zj = zj;
+	}
+
+	public String getSl() {
+		return sl;
+	}
+
+	public void setSl(String sl) {
+		this.sl = sl;
+	}
+
+	public BigDecimal getMaxAmount() {
+		return maxAmount;
+	}
+
+	public void setMaxAmount(BigDecimal maxAmount) {
+		this.maxAmount = maxAmount;
+	}
+
+	public Long getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Long createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getCreatedDateTime() {
+		return createdDateTime;
+	}
+
+	public void setCreatedDateTime(Date createdDateTime) {
+		this.createdDateTime = createdDateTime;
+	}
+
+	public Long getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(Long updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public Date getUpdatedDateTime() {
+		return updatedDateTime;
+	}
+
+	public void setUpdatedDateTime(Date updatedDateTime) {
+		this.updatedDateTime = updatedDateTime;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+}

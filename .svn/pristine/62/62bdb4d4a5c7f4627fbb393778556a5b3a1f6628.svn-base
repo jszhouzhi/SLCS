@@ -1,0 +1,33 @@
+package com.slzr.common.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import com.slzr.ureport.bean.ACountCarBean;
+import com.slzr.ureport.bean.ACountDeptBean;
+import com.slzr.ureport.bean.ACountDriverBean;
+import com.slzr.ureport.bean.ACountLineBean;
+
+
+@Configuration
+public class ReportBeanConfig {
+    @Bean
+    public ACountDeptBean aCountDeptBean(){
+        return new ACountDeptBean();
+    }
+    
+    @Bean
+    public ACountLineBean aCountLineBean(){
+        return new ACountLineBean();
+    }
+    
+    @Bean
+    public ACountCarBean aCountCarBean(){
+        return new ACountCarBean();
+    }
+    
+    @Bean
+    public ACountDriverBean aCountDriverBean(){
+        return new ACountDriverBean();
+    }
+}

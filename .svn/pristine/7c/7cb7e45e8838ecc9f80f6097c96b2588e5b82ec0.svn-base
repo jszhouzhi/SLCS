@@ -1,0 +1,137 @@
+package com.slzr.operation.controller;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import com.slzr.common.utils.R;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.utils.PageUtils;
+import com.slzr.common.utils.PathUtils;
+import com.slzr.common.utils.Query;
+import com.slzr.operation.domain.ArticleDO;
+import com.slzr.operation.domain.DailysummaryTopupDO;
+import com.slzr.operation.service.ArticleService;
+
+@RequestMapping("/operation/article")
+@Controller
+public class ArticleController extends BaseController{
+	private String prefix = "operation/article";
+	@Autowired
+	private ArticleService articleservice;
+	
+	@GetMapping("/list")
+	public String list() {
+		return prefix + "/list";
+	}
+	
+	@GetMapping("/add")
+	public String add() {
+		return prefix + "/add";
+	}
+	
+	@GetMapping("/edit/{id}")
+	public String edit(Model model,@PathVariable("id") String id) {
+		model.addAttribute("model",articleservice.get(id));
+		return prefix + "/edit";
+	}
+	
+	@ResponseBody
+	@GetMapping("api/list")
+	@RequiresPermissions("operation:article:list")
+	public PageUtils list(@RequestParam Map<String, Object> params) {
+		//查询列表数据
+        Query query = new Query(params);
+		List<ArticleDO> list = articleservice.list(query);
+		int total = articleservice.count(query);
+		PageUtils pageUtils = new PageUtils(list, total);
+		return pageUtils;
+	}
+	
+	@ResponseBody
+	@PostMapping("api/add")
+	public R apiadd(@RequestParam Map<String, Object> params){
+		String arttype = params.get("arttype").toString();
+		String arttitle = params.get("arttitle").toString();
+		String artsummary = params.get("artsummary").toString();
+		String content = params.get("content").toString();
+		String imgpath = params.get("imgpath").toString();
+		articleservice.add(arttype, arttitle, artsummary,content,imgpath, this.getUserId().intValue());
+		return R.ok("添加成功");
+	}
+	
+	@ResponseBody
+	@PostMapping("api/edit")
+	public R apiedit(@RequestParam Map<String, Object> params){
+		int id = Integer.parseInt(params.get("id").toString());
+		String arttype = params.get("arttype").toString();
+		String arttitle = params.get("arttitle").toString();
+		String artsummary = params.get("artsummary").toString();
+		String content = params.get("content").toString();
+		String imgpath = params.get("imgpath").toString();
+		articleservice.edit(id,arttype, arttitle, artsummary,content,imgpath, this.getUserId().intValue());
+		return R.ok("添加成功");
+	}
+	
+	@ResponseBody
+	@PostMapping("api/uploadImg")
+	public R apiuploadImg(@RequestParam("files") MultipartFile file){
+        if (!file.isEmpty()) {
+        	String nid=UUID.randomUUID().toString();
+        	String extname = file.getOriginalFilename().substring(file.getOriginalFilename().indexOf("."),file.getOriginalFilename().length());
+            String nname=nid+extname;
+            try {
+            	BufferedOutputStream out = new BufferedOutputStream(
+                		new FileOutputStream(new File(PathUtils.AbsolutePath("static/upload/").replace("%20", " ")+"/"+nname)));
+                out.write(file.getBytes());
+                out.flush();
+                out.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return R.error("上传失败," + e.getMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+                return R.error("上传失败," + e.getMessage());
+            }
+            
+            Map<String, Object> params=new HashMap<String, Object>();
+            params.put("msg", "上传成功");
+            params.put("id", nname);
+            return R.ok(params);
+        } else {
+            return R.error("上传失败，因为文件是空的.");      
+        }
+	}
+
+
+	/**
+	 * 标记 删除
+	 */
+	@PostMapping("/deleteart")
+	@ResponseBody
+	//	@RequiresPermissions("operation:GuestMessage:remove")
+	public R deleteart(Integer id){
+		try {
+//			GuestMessageDO Do = GuestMessageService.getByID(id);
+			articleservice.remove(id);
+			return R.ok();
+		}catch (Exception e) {
+			e.printStackTrace();
+			return R.error();
+		}
+	}
+	
+}

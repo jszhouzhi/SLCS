@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.ureport.dao.IcTransferCountDao">
+
+	<select id="list" resultType="com.slzr.ureport.domain.IcTransferCountDo">
+		select d.SummaryDateTime,d.CardTypeID,d.PayNum,d.PayAmount,
+		d.UnTopupNum,d.UnTopupAmount,d.OldTopupOKNum,d.OldTopupOKAmount,
+		d.RefundNum,d.RefundAmount,d.OldRefundNum,d.OldRefundAmount
+		from IC_DailySummary_Topup d
+		<where>
+			<if test="startDate != null and startDate != '' and endDate!='' and endDate!=null "> and d.SummaryDateTime BETWEEN #{startDate}  AND  #{endDate}</if>
+		</where>
+				ORDER BY d.SummaryDateTime
+	</select>
+</mapper>

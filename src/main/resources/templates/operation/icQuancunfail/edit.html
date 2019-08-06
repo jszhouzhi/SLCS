@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html>
+
+<meta charset="utf-8">
+<head th:include="include :: header">
+    <title>指点生活二维码支付系统 | 编辑</title>
+</head>
+<body  >
+ 
+        
+
+<div style="margin-left: 3%;margin:20px 10px">  
+    
+        <select name="pagecount" id="pagecount" class="layui-inputf-block">
+            <option value="10">最新10条</option>
+            <option value="20">最新20条</option>
+            <option value="30">最新30条</option>
+            <option value="50">最新50条</option>
+        </select>
+           
+</div>
+<input id="t_id" name="t_id" th:value="${id}"  type="hidden">
+<div class="layui-form">
+    
+    <table class="layui-table" id="tabList" style="width: 94%; margin-left: 3%;margin:20px 10px">
+        <thead>
+            <tr>
+                <th style="text-align:center">卡号</th>
+                <th style="text-align:center">交易时间</th>
+                <th style="text-align:center">交易类型</th>
+                <th style="text-align:center">交易前余额</th>
+                <th style="text-align:center">交易金额</th>
+                <th style="text-align:center">交易后余额</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align:center">21343242</td>
+                <td style="text-align:center">2017-10-1 08:56:01</td>
+                <td style="text-align:center">1</td>
+                <td style="text-align:center">20.0</td>
+                <td style="text-align:center">21.0</td>
+                <td style="text-align:center">21.0</td>
+            </tr>
+
+            <tr>
+                <td style="text-align:center">21343242</td>
+                <td style="text-align:center">2017-10-1 08:56:01</td>
+                <td style="text-align:center">1</td>
+                <td style="text-align:center">20.0</td>
+                <td style="text-align:center">21.0</td>
+                <td style="text-align:center">21.0</td>
+            </tr>
+            <tr>
+                <td style="text-align:center">21343242</td>
+                <td style="text-align:center">2017-10-1 08:56:01</td>
+                <td style="text-align:center">1</td>
+                <td style="text-align:center">20.0</td>
+                <td style="text-align:center">21.0</td>
+                <td style="text-align:center">21.0</td>
+            </tr>
+            <tr>
+                <td style="text-align:center">21343242</td>
+                <td style="text-align:center">2017-10-1 08:56:01</td>
+                <td style="text-align:center">1</td>
+                <td style="text-align:center">20.0</td>
+                <td style="text-align:center">21.0</td>
+                <td style="text-align:center">21.0</td>
+            </tr>
+            <tr>
+                <td style="text-align:center">21343242</td>
+                <td style="text-align:center">2017-10-1 08:56:01</td>
+                <td style="text-align:center">1</td>
+                <td style="text-align:center">20.0</td>
+                <td style="text-align:center">21.0</td>
+                <td style="text-align:center">21.0</td>
+            </tr>
+            <tr>
+                <td style="text-align:center">21343242</td>
+                <td style="text-align:center">2017-10-1 08:56:01</td>
+                <td style="text-align:center">1</td>
+                <td style="text-align:center">20.0</td>
+                <td style="text-align:center">21.0</td>
+                <td style="text-align:center">21.0</td>
+            </tr>
+            <tr>
+                <td style="text-align:center">21343242</td>
+                <td style="text-align:center">2017-10-1 08:56:01</td>
+                <td style="text-align:center">1</td>
+                <td style="text-align:center">20.0</td>
+                <td style="text-align:center">21.0</td>
+                <td style="text-align:center">21.0</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="dialog-save-div" style="text-align:right;margin-right:30px">
+        <a  class="layui-btn " id="btnNo"> 审核不通过</a>
+        <a  class="layui-btn " id="btnYes"> 审核通过</a>
+    </div>
+</div>
+
+<div th:include="include :: footer"></div>
+  
+<script type="text/javascript">
+
+$("#btnNo").click(function(){
+	 var tid = $("input:hidden").val();
+	layer.confirm('审核不通过？', {
+		btn : [ '确定', '取消' ]
+	}, function() {
+		$.ajax({
+				url : "/operation/icQuancunfail/operation",
+				type : "post",
+				data : {
+					'id' : tid,
+					'operationType' : '0'
+				},
+				success : function(r) {
+					if (r.code == 0) {
+						layer.msg(r.msg);
+						var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+						parent.layer.close(index);  // 关闭layer
+						
+						window.parent.location.reload();
+					} else {
+						layer.msg(r.msg);
+					}
+				}
+		});
+	})
+});
+
+$("#btnYes").click(function(){
+	 var tid = $("input:hidden").val();
+		layer.confirm('审核通过？', {
+			btn : [ '确定', '取消' ]
+		}, function() {
+			$.ajax({
+					url : "/operation/icQuancunfail/operation",
+					type : "post",
+					data : {
+						'id' : tid,
+						'operationType' : '1'
+					},
+					success : function(r) {
+						if (r.code == 0) {
+							layer.msg(r.msg);
+							var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+							parent.layer.close(index);  // 关闭layer
+							
+							window.parent.location.reload();
+						} else {
+							layer.msg(r.msg);
+						}
+					}
+			});
+		})
+});
+
+	
+
+	
+	
+
+</script>  
+    
+</body>
+
+
+</html>
+
+
+
+

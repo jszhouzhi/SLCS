@@ -1,0 +1,75 @@
+
+$().ready(function() {
+    validateRule();
+});
+
+$.validator.setDefaults({
+    submitHandler : function() {
+        save();
+    }
+});
+
+function validateRule() {
+    var icon = "<i class='fa fa-times-circle'></i> ";
+    $("#form").validate({
+        rules : {
+            lineCode : {
+                required : true
+            },
+            lineName : {
+		        required : true
+		    },
+            state : {
+		        required : true
+		    }
+        },
+        messages : {
+            lineCode : {
+                required : icon + "线路代码不能为空"
+            },
+            lineName : {
+	            required : icon + "线路名称不能为空"
+	        },
+            state : {
+	            required : icon + "请填写文章摘要"
+	        }
+        }
+    });
+}
+
+function save() {
+    alert("22");
+    $.ajax({
+        cache : true,
+        type : "POST",
+        url : "/operation/optline/api/edit",
+        data : {
+            id:$("#id").val(),
+            lineCode:$("#lineCode").val(),
+            lineName:$("#lineName").val(),
+            state:$("#state").val(),
+            ticketPrice:$("#ticketPrice").val(),
+            attachFee:$("#attachFee").val(),
+            busNum:$("#busNum").val(),
+            masterLineID:$("#masterLineID").val(),
+            stationNum:$("#stationNum").val(),
+            distance:$("#distance").val(),
+        	imgpath:$("#upimg").data("id")
+        },
+        async : false,
+        error : function(request) {
+            parent.layer.alert("Connection error");
+        },
+        success : function(data) {
+            if (data.code == 0) {
+                parent.layer.msg("操作成功");
+                parent.reLoad();
+                var index = parent.layer.getFrameIndex(window.name); 
+                parent.layer.close(index);
+            } else {
+                parent.layer.alert(data.msg)
+            }
+
+        }
+    });
+}

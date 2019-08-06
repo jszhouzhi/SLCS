@@ -1,0 +1,168 @@
+package com.slzr.ureport.bean;
+
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.utils.PageUtils;
+import com.slzr.common.utils.Query;
+import com.slzr.common.utils.TimeConverUtils;
+import com.slzr.operation.domain.ArticleDO;
+import com.slzr.system.domain.UserDO;
+import com.slzr.system.service.UserService;
+import com.slzr.ureport.domain.ACountDo;
+import com.slzr.ureport.domain.BCountDo;
+import com.slzr.ureport.service.ACountService;
+import com.slzr.ureport.service.BCountService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+public class ACountBean extends BaseController {
+
+    @Autowired
+    private ACountService qCountService;
+
+    @Autowired
+    private UserService userService;
+
+    public List<ACountDo> loadReportCar(String dsName, String datasetName, Map<String, Object> parameters) { //车辆
+        Map<String, Object> stringObjectMap=null;
+        if (parameters != null) {
+            stringObjectMap = TimeConverUtils.converDate(parameters);
+        }
+
+
+        UserDO userDO = userService.get(getId());
+        List<ACountDo> aCountDoList = null;
+        if (userDO.getMerchantCode() == "" || userDO.getMerchantCode() == null) {
+            aCountDoList = qCountService.ACountCarlist(stringObjectMap);
+            for (int i = 0; i < aCountDoList.size(); i++) {
+                aCountDoList.get(i).setBusNO("  "+aCountDoList.get(i).getBusNO());
+                aCountDoList.get(i).setUserName(getUserName());
+                aCountDoList.get(i).setStartDate(parameters.get("startDate") + "");
+                aCountDoList.get(i).setEndDate(parameters.get("endDate") + "");
+            }
+        } else {
+            parameters.put("merchantCode", userDO.getMerchantCode());
+            aCountDoList = qCountService.ACountCarlist(stringObjectMap);
+            for (int i = 0; i < aCountDoList.size(); i++) {
+
+                aCountDoList.get(i).setBusNO("  "+aCountDoList.get(i).getBusNO());
+                aCountDoList.get(i).setUserName(getUserName());
+
+                aCountDoList.get(i).setStartDate(parameters.get("startDate") + "");
+                aCountDoList.get(i).setEndDate(parameters.get("endDate") + "");
+            }
+        }
+
+        return aCountDoList;
+    }
+
+    public List<ACountDo> loadReportDept(String dsName, String datasetName, Map<String, Object> parameters) { //部门
+        Map<String, Object> stringObjectMap=null;
+        if (parameters != null) {
+            stringObjectMap = TimeConverUtils.converDate(parameters);
+        }
+
+
+
+        UserDO userDO = userService.get(getId());
+        List<ACountDo> aCountDoList = null;
+        if (userDO.getMerchantCode() == "" || userDO.getMerchantCode() == null) {
+            aCountDoList = qCountService.ACountDeptlist(stringObjectMap);
+            for (int i = 0; i < aCountDoList.size(); i++) {
+
+                aCountDoList.get(i).setDeptName("  "+aCountDoList.get(i).getDeptName());
+                aCountDoList.get(i).setUserName(getUserName());
+
+                aCountDoList.get(i).setStartDate(parameters.get("startDate") + "");
+                aCountDoList.get(i).setEndDate(parameters.get("endDate") + "");
+            }
+        } else {
+            parameters.put("merchantCode", userDO.getMerchantCode());
+            aCountDoList = qCountService.ACountDeptlist(stringObjectMap);
+            for (int i = 0; i < aCountDoList.size(); i++) {
+
+                aCountDoList.get(i).setDeptName("  "+aCountDoList.get(i).getDeptName());
+                aCountDoList.get(i).setUserName(getUserName());
+
+                aCountDoList.get(i).setStartDate(parameters.get("startDate") + "");
+                aCountDoList.get(i).setEndDate(parameters.get("endDate") + "");
+            }
+        }
+
+
+        return aCountDoList;
+    }
+
+    public List<ACountDo> loadReportDriver(String dsName, String datasetName, Map<String, Object> parameters) { //司机
+
+        Map<String, Object> stringObjectMap=null;
+        if (parameters != null) {
+            stringObjectMap = TimeConverUtils.converDate(parameters);
+        }
+
+
+        UserDO userDO = userService.get(getId());
+        List<ACountDo> aCountDoList = null;
+        if (userDO.getMerchantCode() == "" || userDO.getMerchantCode() == null) {
+            aCountDoList = qCountService.ACountDriverlist(stringObjectMap);
+            for (int i = 0; i < aCountDoList.size(); i++) {
+
+                aCountDoList.get(i).setDriverName("  "+aCountDoList.get(i).getDriverName());
+                aCountDoList.get(i).setUserName(getUserName());
+
+                aCountDoList.get(i).setStartDate(parameters.get("startDate") + "");
+                aCountDoList.get(i).setEndDate(parameters.get("endDate") + "");
+            }
+        } else {
+            parameters.put("merchantCode", userDO.getMerchantCode());
+            aCountDoList = qCountService.ACountDriverlist(stringObjectMap);
+            for (int i = 0; i < aCountDoList.size(); i++) {
+
+                aCountDoList.get(i).setDriverName("  "+aCountDoList.get(i).getDriverName());
+                aCountDoList.get(i).setUserName(getUserName());
+
+                aCountDoList.get(i).setStartDate(parameters.get("startDate") + "");
+                aCountDoList.get(i).setEndDate(parameters.get("endDate") + "");
+            }
+        }
+
+
+
+        return aCountDoList;
+    }
+
+    public List<ACountDo> loadReportLine(String dsName, String datasetName, Map<String, Object> parameters) {  //线路
+
+        Map<String, Object> stringObjectMap=null;
+        if (parameters != null) {
+            stringObjectMap = TimeConverUtils.converDate(parameters);
+        }
+        UserDO userDO = userService.get(getId());
+        List<ACountDo> aCountDoList = null;
+        if (userDO.getMerchantCode() == "" || userDO.getMerchantCode() == null) {
+            aCountDoList = qCountService.ACountLine(stringObjectMap);
+            for (int i = 0; i < aCountDoList.size(); i++) {
+
+                aCountDoList.get(i).setLineName("  "+aCountDoList.get(i).getLineName());
+                aCountDoList.get(i).setUserName(getUserName());
+
+                aCountDoList.get(i).setStartDate(parameters.get("startDate") + "");
+                aCountDoList.get(i).setEndDate(parameters.get("endDate") + "");
+            }
+        } else {
+            parameters.put("merchantCode", userDO.getMerchantCode());
+            aCountDoList = qCountService.ACountLine(stringObjectMap);
+            for (int i = 0; i < aCountDoList.size(); i++) {
+
+                aCountDoList.get(i).setLineName("  "+aCountDoList.get(i).getLineName());
+                aCountDoList.get(i).setUserName(getUserName());
+                aCountDoList.get(i).setStartDate(parameters.get("startDate") + "");
+                aCountDoList.get(i).setEndDate(parameters.get("endDate") + "");
+            }
+        }
+        return aCountDoList;
+    }
+}

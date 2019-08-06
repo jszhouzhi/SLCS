@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="signupForm">
+						<input id="pid" name="pid" th:value="${xx.ID}"  type="hidden">
+						<input id="id" name="id" th:value="${xx.ID}"  type="hidden">
+							<div class="form-group">	
+								<label class="col-sm-3 control-label">MerchantCode：</label>
+								<div class="col-sm-8">
+									<input id="merchantcode" name="merchantcode" th:value="${topupdiscountsetting.merchantcode}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">DiscountName：</label>
+								<div class="col-sm-8">
+									<input id="discountname" name="discountname" th:value="${topupdiscountsetting.discountname}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">DiscountDesc：</label>
+								<div class="col-sm-8">
+									<input id="discountdesc" name="discountdesc" th:value="${topupdiscountsetting.discountdesc}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">EffectiveDateTime：</label>
+								<div class="col-sm-8">
+									<input id="effectivedatetime" name="effectivedatetime" th:value="${topupdiscountsetting.effectivedatetime}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">ExpiredDateTime：</label>
+								<div class="col-sm-8">
+									<input id="expireddatetime" name="expireddatetime" th:value="${topupdiscountsetting.expireddatetime}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">Enabled：</label>
+								<div class="col-sm-8">
+									<input id="enabled" name="enabled" th:value="${topupdiscountsetting.enabled}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">CreatedBy：</label>
+								<div class="col-sm-8">
+									<input id="createdby" name="createdby" th:value="${topupdiscountsetting.createdby}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">CreatedDateTime：</label>
+								<div class="col-sm-8">
+									<input id="createddatetime" name="createddatetime" th:value="${topupdiscountsetting.createddatetime}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">UpdatedBy：</label>
+								<div class="col-sm-8">
+									<input id="updatedby" name="updatedby" th:value="${topupdiscountsetting.updatedby}" class="form-control" type="text">
+								</div>
+							</div>
+														<div class="form-group">	
+								<label class="col-sm-3 control-label">UpdatedDateTime：</label>
+								<div class="col-sm-8">
+									<input id="updateddatetime" name="updateddatetime" th:value="${topupdiscountsetting.updateddatetime}" class="form-control" type="text">
+								</div>
+							</div>
+																					<div class="form-group">
+								<div class="col-sm-8 col-sm-offset-3">
+									<button type="submit" class="btn btn-primary">提交</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+	</div>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript" src="/js/appjs/operation/sendcase/edit.js">
+	</script>
+</body>
+</html>

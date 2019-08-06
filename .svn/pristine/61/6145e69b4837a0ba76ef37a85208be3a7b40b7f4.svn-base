@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.set.dao.ICSysSettingDao">
+
+	<select id="get" resultType="com.slzr.set.domain.ICSysSettingDo">
+		SELECT * FROM IC_SysSetting WHERE ID = #{id}
+	</select>
+
+	<select id="list"
+		resultType="com.slzr.set.domain.ICSysSettingDo">
+		SELECT TOP ${limit} * FROM (
+		SELECT
+		ROW_NUMBER() OVER(ORDER BY
+		t.CreatedDateTime desc) AS Seq, t.*
+		from IC_SysSetting t
+		) a
+		where seq
+		BETWEEN ${offset+1} and ${limit+offset}
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by CreatedDateTime desc
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="count" resultType="int">
+		SELECT count(*) from IC_SysSetting
+	</select>
+
+	<insert id="save"
+		parameterType="com.slzr.set.domain.ICSysSettingDo"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into IC_SysSetting
+		(
+		MerchantCode,
+		M1,
+		JT,
+		ZJ,
+		SL,
+		MaxAmount,
+		CreatedBy,
+		CreatedDateTime,
+		Remark
+		)
+		values
+		(
+		#{merchantCode},
+		#{m1},
+		#{jt},
+		#{zj},
+		#{sl},
+		#{maxAmount},
+		#{createdBy},
+		#{createdDateTime},
+		#{remark}
+		)
+	</insert>
+
+	<update id="remove" parameterType="java.lang.Long">
+		DELETE FROM IC_SysSetting
+		WHERE id=#{id}
+	</update>
+
+	<update id="update" parameterType="com.slzr.set.domain.MerchDo">
+		update IC_SysSetting
+		<set>
+			<if test="merchantCode != null">MerchantCode = #{merchantCode}, </if>
+			<if test="m1 != null">M1 = #{m1}, </if>
+			<if test="jt != null">JT = #{jt}, </if>
+			<if test="zj != null">ZJ = #{zj}, </if>
+			<if test="sl != null">SL = #{sl}, </if>
+			<if test="maxAmount != null">MaxAmount = #{maxAmount}, </if>
+			<if test="updatedBy != null">UpdatedBy = #{updatedBy}, </if>
+			<if test="updatedDateTime != null">UpdatedDateTime = #{updatedDateTime}, </if>
+			<if test="remark != null">Remark = #{remark}, </if>
+		</set>
+		where id = #{id}
+	</update>
+
+
+</mapper>

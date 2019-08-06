@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+
+<script th:inline="javascript">
+var baseDO = [[${baseDO}]];
+</script>
+<body class="gray-bg commonquerypage">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox">
+					<div class="ibox-body">
+						<div class="fixed-table-toolbar clearfix">
+							<div class="columns pull-left">
+								<button id='btnExport' shiro:hasPermission="account:accountBalanCetransfer:expexcel" class="btn  btn-warning" type="button">
+									<i aria-hidden="true" class="fa fa-trash hidden"></i>导出
+								</button>
+							</div>
+							
+							<div class="searchbox columns pull-left col-md-4 nopadding">
+								<input class="searchinput form-control" id="searchName" placeholder="请输入转赠账户或受赠账户进行查找" type="text">
+							</div>
+							<div class="querybtns columns pull-left">
+								<button class="btn btn-success btn-sm" onclick="base.reload()">查询</button>
+								<button id="btnreset" class="btn btn-success btn-sm">重置</button>
+							</div>
+							<span class="modechangebtn pull-right">高级查询 <i class="fa fa-chevron-down"></i></span>
+						</div>
+						<div class="query-inputs clearfix">
+						  <div class="layui-form">
+						  	  <div class="layui-form-item">
+						  	  	<div class="layui-inline">
+								    <label class="layui-form-label">审核状态：</label>
+								    <div class="layui-input-block">
+								      <select name="auditResult" lay-verify="required" id="auditResult">
+										<option value="">全部</option>
+								        <option value="-1">未审核</option>
+								        <option value="0">审核不通过</option>
+								        <option value="1">审核通过</option>
+								      </select>
+								    </div>
+						  	  	</div>
+					
+								  <div class="layui-inline">
+									  <label class="layui-form-label">商户：</label>
+									  <div class="layui-input-block">
+										  <select name="refundresult" lay-verify="required" id="merchantCode" name="merchantCode">
+											  <option value="">全部</option>
+											  <option th:each="merchant : ${baseDO.merchantList}" th:value="${merchant.merchantCode}" th:text="${merchant.merchantName}"></option>
+										  </select>
+									  </div>
+								  </div>
+						
+						  	  	
+							  </div>
+						  </div>
+						</div>
+						<table id="exampleTable" data-mobile-responsive="true">
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		 
+ 
+
+
+	</div>
+	<div th:include="include :: footer"></div>
+	<script type="application/javascript" th:src="@{/js/appjs/base/base.js}"></script>
+	<script type="text/javascript">
+	$(function () {
+
+		
+	
+		 base.initPage({
+				columns : [
+
+							{
+								field : 'fromAccountNo', 
+								align : 'center',
+								title : '转赠账户' 
+							},
+															{
+								field : 'toAccountNo', 
+								align : 'center',
+								title : '受赠账户' 
+							},
+															{
+								field : 'applyNickName', 
+								align : 'center',
+								title : '申请人' 
+							},
+															{
+								field : 'applyTime', 
+								align : 'center',
+								title : '申请时间' 
+							},
+															{
+								field : 'accountBalance', 
+								align : 'right',
+								title : '转赠账户余额' 
+							},
+															{
+								field : 'accountFreeBalance', 
+								align : 'right',
+								title : '转赠赠送余额' 
+							},
+
+															{
+								field : 'auditUserName', 
+								align : 'center',
+								title : '审核人' 
+							},
+															{
+								field : 'auditResult', 
+								align : 'center',
+								title : '审核状态',
+								formatter: function(value){
+									if(value==0){
+										return '<span class="label label-info">审核不通过</span>';
+									}else if(value==1){
+										return '<span class="label label-success">审核通过</span>';
+									}
+									else if(value==-1 || value==null){
+										return '<span class="label label-danger">未审核</span>';
+									}
+									/*else{
+										return '-';
+									}	*/
+								}
+							},
+															{
+								field : 'auditDateTime', 
+								align : 'center',
+								title : '审核时间' 
+							},
+															{
+								field : 'auditMsg', 
+								align : 'center',
+								title : '审核描述' 
+							},
+															{
+								field : 'userConfirmResult', 
+								align : 'center',
+								title : '确认结果',
+								formatter: function(value){
+									if(value==1){
+										return '<span class="label label-success">已确认</span>';
+									}
+								}
+							},
+															{
+								field : 'userConfirmDateTime', 
+								align : 'center',
+								title : '确认时间' 
+							},									
+															{
+								title : '操作',
+								field : 'id',
+								align : 'center',
+								formatter : function(value, row, index) {
+									if(!base.hasPermission("account:accountBalanceTransfer:deal")) return '';
+									
+									if(row.auditResult!=1 || row.userConfirmResult!=1){
+									/* 	var e = '<button class="layui-btn layui-btn-sm'+s_deal_h+'" type="button" onclick="deal(\''+ row.id													
+										+ '\')">审核</button> ';	
+										return e ; */
+										
+										
+										//组装命令参数
+										var cmd = {
+												cmd:'edit',
+												popupOptions:{
+													title:'转赠审核'
+												},
+												data:row.id
+										};
+										
+										return '<button class="layui-btn layui-btn-sm" type="button" ' + 
+										'onclick=\'base.doCommand('+ JSON.stringify(cmd)+')\'>'+ 
+										'审核' +'</button> ';
+									}
+									
+									
+
+								}
+							} ]
+		 });
+	});
+	</script>
+</body>
+</html>

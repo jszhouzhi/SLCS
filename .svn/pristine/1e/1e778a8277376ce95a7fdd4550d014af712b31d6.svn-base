@@ -1,0 +1,58 @@
+package com.slzr.account.service.impl;
+
+ 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.slzr.account.dao.CardTypeDao;
+import com.slzr.account.domain.CardTypeDO;
+import com.slzr.account.service.CardTypeService;
+
+import java.util.List;
+import java.util.Map;
+
+ 
+
+
+
+@Service
+public class CardTypeServiceImpl implements CardTypeService {
+	@Autowired
+	private CardTypeDao cardTypeDao;
+	
+	@Override
+	public CardTypeDO get(Integer id){
+		return cardTypeDao.get(id);
+	}
+	
+	@Override
+	public List<CardTypeDO> list(Map<String, Object> map){
+		return cardTypeDao.list(map);
+	}
+	
+	@Override
+	public int count(Map<String, Object> map){
+		return cardTypeDao.count(map);
+	}
+	
+	@Override
+	public int save(CardTypeDO cardType){
+		return cardTypeDao.save(cardType);
+	}
+	
+	@Override
+	public int update(CardTypeDO cardType){
+		return cardTypeDao.update(cardType);
+	}
+	
+	@Override
+	public int remove(Integer id){
+		return cardTypeDao.remove(id);
+	}
+	
+	@Override
+	public int batchRemove(Integer[] ids){
+		return cardTypeDao.batchRemove(ids);
+	}
+	
+}

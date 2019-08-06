@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.OPTLineDao">
+
+	<select id="list" resultType="com.slzr.operation.domain.OPTLineDO">
+		<if test="offset != null and limit != null">
+			select top ${limit}  *  from (	
+		</if>		
+		
+		SELECT 				
+		
+		<if test="offset != null and limit != null">
+			ROW_NUMBER() OVER(ORDER BY l.id desc) AS Seq,
+		</if> 
+		
+		l.*,m.MerchantName as merchantName FROM OPT_Line l LEFT JOIN  OPT_Department d on d.ID = l.DeptID
+		left join BAR_Merchant m on m.MerchantCode = l.MerchantCode 
+        <where>  
+			<if test="searchName != null and searchName != ''"> and l.LineCode like  CONCAT('%', #{searchName}, '%')  OR l.LineName like CONCAT('%', #{searchName}, '%') </if>
+			<if test="type != null and type != ''"> and l.State = #{type} </if>
+			<if test="isresolved != null and isresolved != ''"> and IsResolved = #{isresolved} </if>
+			<if test="id != null and isresolved != ''"> and id = #{id} </if>
+			<if test="merchantCode != null and  merchantCode!= ''">and l.MerchantCode = #{merchantCode}</if>
+		</where>
+		
+		<if test="offset != null and limit != null">
+			 ) a
+			where seq BETWEEN ${offset+1} and ${limit+offset}
+		</if>
+		
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by ID desc
+			</otherwise>
+        </choose>
+	 
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from OPT_Line l
+		 <where>  
+			<if test="searchName != null and searchName != ''"> and l.LineCode like  CONCAT('%', #{searchName}, '%')  OR l.LineName like CONCAT('%', #{searchName}, '%') </if>
+			<if test="type != null and type != ''"> and l.State = #{type} </if>
+			<if test="isresolved != null and isresolved != ''"> and IsResolved = #{isresolved} </if>
+			<if test="id != null and isresolved != ''"> and id = #{id} </if>
+			<if test="merchantCode != null and  merchantCode!= ''">and l.MerchantCode = #{merchantCode}</if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.slzr.operation.domain.OPTLineDO">
+        insert into OPT_Line
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            
+            <if test="busNum != null">BusNum,</if>
+            <if test="stationNum != null">StationNum,</if>
+            <if test="endStationName != null">EndStationName,</if>
+            <if test="createdBy != null">CreatedBy,</if>
+            <if test="attachFee != null">AttachFee,</if>
+            <if test="updatedDate != null">UpdatedDate,</if>
+            <if test="lineCode != null">LineCode,</if>
+            <if test="deptID != null">DeptID,</if>
+            <if test="masterLineID != null">MasterLineID,</if>
+            <if test="lineName != null">LineName,</if>
+            <if test="updatedBy != null">UpdatedBy,</if>
+            <if test="merchantCode != null">MerchantCode,</if>
+            <if test="state != null">State,</if>
+            <if test="createdDate != null">CreatedDate,</if>
+            <if test="startStationName != null">StartStationName,</if>
+            <if test="busCompanyCode != null">BusCompanyCode,</if>
+            <if test="busCompanyName != null">BusCompanyName,</if>
+            <if test="ticketPrice != null">TicketPrice,</if>
+            <if test="distance != null">Distance,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+             
+            <if test="busNum != null"> #{busNum},</if>
+            <if test="stationNum != null"> #{stationNum},</if>
+            <if test="endStationName != null"> #{endStationName},</if>
+            <if test="createdBy != null"> #{createdBy},</if>
+            <if test="attachFee != null"> #{attachFee},</if>
+            <if test="updatedDate != null"> #{updatedDate},</if>
+            <if test="lineCode != null"> #{lineCode},</if>
+            <if test="deptID != null"> #{deptID},</if>
+            <if test="masterLineID != null"> #{masterLineID},</if>
+            <if test="lineName != null"> #{lineName},</if>
+            <if test="updatedBy != null"> #{updatedBy},</if>
+            <if test="merchantCode != null"> #{merchantCode},</if>
+            <if test="state != null"> #{state},</if>
+            <if test="createdDate != null"> #{createdDate},</if>
+            <if test="startStationName != null"> #{startStationName},</if>
+            <if test="busCompanyCode != null"> #{busCompanyCode},</if>
+            <if test="busCompanyName != null"> #{busCompanyName},</if>
+            <if test="ticketPrice != null"> #{ticketPrice},</if>
+            <if test="distance != null"> #{distance},</if>
+        </trim>
+	</insert>
+
+	<!--CreatedDate,-->
+	<!--CreatedBy,-->
+	<!--UpdatedDate,-->
+	<!--UpdatedBy-->
+	<!---->
+	<!--#{createdDate,jdbcType=TIMESTAMP},-->
+	<!--#{createdBy,jdbcType=TIMESTAMP},-->
+	<!--#{updatedDate,jdbcType=TIMESTAMP},-->
+	<!--#{updatedBy,jdbcType=TIMESTAMP}-->
+
+	<select id="getByID" resultType="com.slzr.operation.domain.OPTLineDO">
+		select * from OPT_Line   where  ID = #{value}
+	</select>
+
+
+	<update id="update" parameterType="com.slzr.operation.domain.OPTLineDO">
+		update OPT_Line
+		<set>
+			<if test="merchantCode != null">MerchantCode = #{merchantCode,jdbcType=VARCHAR}, </if>
+			<if test="lineCode != null">LineCode = #{lineCode,jdbcType=VARCHAR}, </if>
+			<if test="lineName != null">LineName = #{lineName,jdbcType=VARCHAR}, </if>
+			<if test="state != null">State = #{state,jdbcType=VARCHAR}, </if>
+			<if test="ticketPrice != null">TicketPrice = #{ticketPrice,jdbcType=DOUBLE}, </if>
+			<if test="attachFee != null">AttachFee = #{attachFee,jdbcType=DOUBLE}, </if>
+			<if test="busNum != null">BusNum = #{busNum,jdbcType=INTEGER}, </if>
+			<if test="masterLineID != null">MasterLineID = #{masterLineID,jdbcType=INTEGER}, </if>
+			<if test="stationNum != null">StationNum = #{stationNum,jdbcType=INTEGER}, </if>
+			<if test="distance != null">Distance = #{distance,jdbcType=DOUBLE}, </if>
+			
+			<if test="startStationName != null">StartStationName = #{startStationName,jdbcType=VARCHAR}, </if>
+			<if test="endStationName != null">EndStationName = #{endStationName,jdbcType=VARCHAR}, </if>
+			<if test="busCompanyCode != null">BusCompanyCode = #{busCompanyCode,jdbcType=VARCHAR}, </if>
+			<if test="busCompanyName != null">BusCompanyName = #{busCompanyName,jdbcType=VARCHAR}, </if>
+			
+			<if test="createdDate != null">CreatedDate = #{createdDate,jdbcType=TIMESTAMP}, </if>
+			<if test="createdBy != null">CreatedBy = #{createdBy,jdbcType=INTEGER}, </if>
+			<if test="updatedDate != null">UpdatedDate = #{updatedDate,jdbcType=TIMESTAMP}, </if>
+			<if test="updatedBy != null">UpdatedBy = #{updatedBy,jdbcType=INTEGER}, </if>
+		</set>
+		where ID = #{iD,jdbcType=INTEGER}
+	</update>
+
+
+	<delete id="remove">
+		delete from OPT_Line where ID = #{value}
+	</delete>
+	
+
+</mapper>

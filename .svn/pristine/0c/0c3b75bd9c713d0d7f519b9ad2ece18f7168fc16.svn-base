@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.account.dao.AccountBalanceTransferDao">
+
+	<select id="get" resultType="com.slzr.account.domain.AccountBalanceTransferDO">
+			select  abt.ID ,abt.fromAccountNo,abt.toAccountNo, abt.ApplyUID , abt.ApplyTime , 
+			abt.AccountBalance , abt.AccountFreeBalance, abt.AuditUID , 
+			abt.AuditResult ,abt. AuditDateTime , abt.AuditMsg , abt.UserConfirmResult , abt.UserConfirmDateTime , abt.SummaryDateTime ,
+			m.NickName as applyNickName,
+			(select Balance from BAR_Account where AccountNO = abt.fromAccountNo) as realAccountBalance,
+			(select FreeBalance from BAR_Account where AccountNO = abt.fromAccountNo) as realAccountFreeBalance
+			from BAR_AccountBalanceTransfer abt 
+			LEFT JOIN BAR_Member m ON  m.id = abt.ApplyUID
+			LEFT JOIN BAR_Account a ON a.uid = m.id   
+			 where abt.ID = #{value}
+			 
+			 	GROUP BY abt.ID ,abt.fromAccountNo,abt.toAccountNo, abt.ApplyUID , abt.ApplyTime , abt.AccountBalance , 
+				abt.AccountFreeBalance , abt.AuditUID , abt.AuditResult ,abt. AuditDateTime , abt.AuditMsg , 
+				abt.UserConfirmResult , abt.UserConfirmDateTime , abt.SummaryDateTime,m.NickName
+	</select>
+
+	<select id="list" resultType="com.slzr.account.domain.AccountBalanceTransferDO">
+				<if test="offset != null and limit != null">
+				select top ${limit}  *  from (	
+				</if>							
+				SELECT 
+				ROW_NUMBER() OVER(ORDER BY abt.ApplyTime desc) AS Seq,  
+				
+				abt.ID, abt.fromAccountNo,abt.toAccountNo, abt.ApplyUID , abt.ApplyTime , 
+				abt.AccountBalance,abt.AccountFreeBalance,abt.AuditUID , 
+				(select UserName from SYS_User where id = abt.AuditUID) as auditUserName,
+				abt.AuditResult ,abt. AuditDateTime , abt.AuditMsg , abt.UserConfirmResult , abt.UserConfirmDateTime , abt.SummaryDateTime ,
+				m.NickName as applyNickName,
+				(select Balance from BAR_Account where AccountNO = abt.fromAccountNo) as realAccountBalance,
+				(select FreeBalance from BAR_Account where AccountNO = abt.fromAccountNo) as realAccountFreeBalance,
+				case when abt.auditResult = 1 then '审核通过' when abt.auditResult = 0 then '审核不通过' else '未审核' end AS auditResultName,
+				case when abt.userConfirmResult = 1 then '已确认'   end AS userConfirmResultName
+				
+				from BAR_AccountBalanceTransfer abt 
+				LEFT JOIN BAR_Member m ON  m.id = abt.ApplyUID
+				<!-- LEFT JOIN BAR_Account a ON a.uid = m.id -->
+			LEFT JOIN BAR_Account a ON a.AccountNO = abt.fromAccountNo
+  
+        	<where>  
+	  		  <if test="searchName != null and searchName != ''">(   abt.FromAccountNO LIKE	 '${searchName}%' OR abt.ToAccountNO LIKE	 '${searchName}%')
+			  </if>
+			  
+			  <if test="auditResult != null and auditResult != ''"> and abt.AuditResult = #{auditResult} </if>
+	  		  
+	  		  <if test="merchantCode != null and merchantCode != ''"> and a.MerchantCode = #{merchantCode} </if>
+	  		</where>
+		  		
+				GROUP BY abt.ID ,abt.fromAccountNo,abt.toAccountNo, abt.ApplyUID , abt.ApplyTime , abt.AccountBalance , 
+				abt.AccountFreeBalance ,  abt.AuditUID , abt.AuditResult ,abt. AuditDateTime , abt.AuditMsg , 
+				abt.UserConfirmResult , abt.UserConfirmDateTime , abt.SummaryDateTime,m.NickName
+		
+		<if test="offset != null and limit != null">
+		) a
+		where seq BETWEEN ${offset+1} and ${limit+offset}
+		</if>
+		
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by ApplyTime desc
+			</otherwise>
+        </choose>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from BAR_AccountBalanceTransfer abt 	
+			LEFT JOIN BAR_Account a ON a.AccountNO = abt.fromAccountNo
+		 <where>  
+		  		  <if test="searchName != null and searchName != ''">(   abt.FromAccountNO LIKE	 '${searchName}%' OR abt.ToAccountNO LIKE	 '${searchName}%')
+				  </if>
+				  
+				  <if test="auditResult != null and auditResult != ''"> and abt.AuditResult = #{auditResult} </if>
+		  		  
+		  		  <if test="merchantCode != null and merchantCode != ''"> and a.MerchantCode = #{merchantCode} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.slzr.account.domain.AccountBalanceTransferDO">
+		insert into BAR_AccountBalanceTransfer
+		(
+			 ID , 
+			 FromAccountNO , 
+			 ToAccountNO , 
+			 ApplyUID , 
+			 ApplyTime , 
+			 AccountBalance , 
+			 AccountFreeBalance , 
+			 
+			 AuditUID , 
+			 AuditResult , 
+			 AuditDateTime , 
+			 AuditMsg , 
+			 UserConfirmResult , 
+			 UserConfirmDateTime , 
+			 SummaryDateTime 
+		)
+		values
+		(
+			#{id}, 
+			#{fromaccountno}, 
+			#{toaccountno}, 
+			#{applyuid}, 
+			#{applytime}, 
+			#{accountbalance}, 
+			#{accountFreeBalance}, 
+			#{audituid}, 
+			#{auditresult}, 
+			#{auditdatetime}, 
+			#{auditmsg}, 
+			#{userconfirmresult}, 
+			#{userconfirmdatetime}, 
+			#{summarydatetime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.slzr.account.domain.AccountBalanceTransferDO">
+		update BAR_AccountBalanceTransfer 
+		<set>
+			<if test="fromaccountno != null"> FromAccountNO  = #{fromaccountno}, </if>
+			<if test="toaccountno != null"> ToAccountNO  = #{toaccountno}, </if>
+			<if test="applyuid != null"> ApplyUID  = #{applyuid}, </if>
+			<if test="applytime != null"> ApplyTime  = #{applytime}, </if>
+			<if test="accountbalance != null"> AccountBalance  = #{accountbalance}, </if>
+			<if test="accountFreeBalance != null"> AccountFreeBalance  = #{accountFreeBalance}, </if>
+			<if test="audituid != null"> AuditUID  = #{audituid}, </if>
+			<if test="auditresult != null"> AuditResult  = #{auditresult}, </if>
+			<if test="auditdatetime != null"> AuditDateTime  = #{auditdatetime}, </if>
+			<if test="auditmsg != null"> AuditMsg  = #{auditmsg}, </if>
+			<if test="userconfirmresult != null"> UserConfirmResult  = #{userconfirmresult}, </if>
+			<if test="userconfirmdatetime != null"> UserConfirmDateTime  = #{userconfirmdatetime}, </if>
+			<if test="summarydatetime != null"> SummaryDateTime  = #{summarydatetime}</if>
+		</set>
+		where ID = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from BAR_AccountBalanceTransfer where ID = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from BAR_AccountBalanceTransfer where ID in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

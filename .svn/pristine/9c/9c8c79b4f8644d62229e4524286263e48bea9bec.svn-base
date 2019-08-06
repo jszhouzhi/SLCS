@@ -1,0 +1,195 @@
+package com.slzr.account.domain;
+
+import java.io.Serializable;
+import java.util.Date;
+
+
+
+ 
+public class CardTypeDO implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
+	//ID
+	private Integer id;
+	//CardTypeName
+	private String cardtypename;
+	//CardTypeDesc
+	private String cardtypedesc;
+	//ValidDays
+	private Integer validdays;
+	//AutoAudit
+	private Boolean autoaudit;
+	//AuditValidDays
+	private Integer auditvaliddays;
+	//AllowAuditDays
+	private Integer allowauditdays;
+	//MerchantCode
+	private String merchantcode;
+	//State
+	private Integer state;
+	//CreatedBy
+	private String createdby;
+	//CreatedDate
+	private Date createddate;
+	//UpdatedBy
+	private String updatedby;
+	//UpdatedDate
+	private Date updateddate;
+
+	/**
+	 * 设置：ID
+	 */
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	/**
+	 * 获取：ID
+	 */
+	public Integer getId() {
+		return id;
+	}
+	/**
+	 * 设置：CardTypeName
+	 */
+	public void setCardtypename(String cardtypename) {
+		this.cardtypename = cardtypename;
+	}
+	/**
+	 * 获取：CardTypeName
+	 */
+	public String getCardtypename() {
+		return cardtypename;
+	}
+	/**
+	 * 设置：CardTypeDesc
+	 */
+	public void setCardtypedesc(String cardtypedesc) {
+		this.cardtypedesc = cardtypedesc;
+	}
+	/**
+	 * 获取：CardTypeDesc
+	 */
+	public String getCardtypedesc() {
+		return cardtypedesc;
+	}
+	/**
+	 * 设置：ValidDays
+	 */
+	public void setValiddays(Integer validdays) {
+		this.validdays = validdays;
+	}
+	/**
+	 * 获取：ValidDays
+	 */
+	public Integer getValiddays() {
+		return validdays;
+	}
+	/**
+	 * 设置：AutoAudit
+	 */
+	public void setAutoaudit(Boolean autoaudit) {
+		this.autoaudit = autoaudit;
+	}
+	/**
+	 * 获取：AutoAudit
+	 */
+	public Boolean getAutoaudit() {
+		return autoaudit;
+	}
+	/**
+	 * 设置：AuditValidDays
+	 */
+	public void setAuditvaliddays(Integer auditvaliddays) {
+		this.auditvaliddays = auditvaliddays;
+	}
+	/**
+	 * 获取：AuditValidDays
+	 */
+	public Integer getAuditvaliddays() {
+		return auditvaliddays;
+	}
+	/**
+	 * 设置：AllowAuditDays
+	 */
+	public void setAllowauditdays(Integer allowauditdays) {
+		this.allowauditdays = allowauditdays;
+	}
+	/**
+	 * 获取：AllowAuditDays
+	 */
+	public Integer getAllowauditdays() {
+		return allowauditdays;
+	}
+	/**
+	 * 设置：MerchantCode
+	 */
+	public void setMerchantcode(String merchantcode) {
+		this.merchantcode = merchantcode;
+	}
+	/**
+	 * 获取：MerchantCode
+	 */
+	public String getMerchantcode() {
+		return merchantcode;
+	}
+	/**
+	 * 设置：State
+	 */
+	public void setState(Integer state) {
+		this.state = state;
+	}
+	/**
+	 * 获取：State
+	 */
+	public Integer getState() {
+		return state;
+	}
+	/**
+	 * 设置：CreatedBy
+	 */
+	public void setCreatedby(String createdby) {
+		this.createdby = createdby;
+	}
+	/**
+	 * 获取：CreatedBy
+	 */
+	public String getCreatedby() {
+		return createdby;
+	}
+	/**
+	 * 设置：CreatedDate
+	 */
+	public void setCreateddate(Date createddate) {
+		this.createddate = createddate;
+	}
+	/**
+	 * 获取：CreatedDate
+	 */
+	public Date getCreateddate() {
+		return createddate;
+	}
+	/**
+	 * 设置：UpdatedBy
+	 */
+	public void setUpdatedby(String updatedby) {
+		this.updatedby = updatedby;
+	}
+	/**
+	 * 获取：UpdatedBy
+	 */
+	public String getUpdatedby() {
+		return updatedby;
+	}
+	/**
+	 * 设置：UpdatedDate
+	 */
+	public void setUpdateddate(Date updateddate) {
+		this.updateddate = updateddate;
+	}
+	/**
+	 * 获取：UpdatedDate
+	 */
+	public Date getUpdateddate() {
+		return updateddate;
+	}
+}

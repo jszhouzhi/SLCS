@@ -1,0 +1,64 @@
+$().ready(function() {
+	validateRule();
+});
+
+$.validator.setDefaults({
+	submitHandler : function() {
+		save();
+	}
+});
+function save() {
+	$.ajax({
+		cache : true,
+		type : "POST",
+		url : "/common/sysDict/save",
+		data : $('#signupForm').serialize(), // 你的formid
+		async : false,
+		error : function(request) {
+			parent.layer.alert("网络超时");
+		},
+		success : function(data) {
+			if (data.code == 0) {
+				parent.layer.msg("操作成功");
+				parent.reLoad();
+				var index = parent.layer.getFrameIndex(window.name);
+				parent.layer.close(index);
+
+			} else {
+				parent.layer.alert(data.msg)
+			}
+
+		}
+	});
+
+}
+function validateRule() {
+	var icon = "<i class='fa fa-times-circle'></i> ";
+	$("#signupForm").validate({
+		rules : {
+			dictCode : {
+				required : true
+			},
+			dataCode : {
+				required : true,
+				digits:true
+			},
+			dataValue : {
+				required : true
+			}
+		},
+		messages : {
+			dictCode : {
+				required : icon + "字典代码（类型）"
+			},
+			dataCode : {
+				required : icon + "字典数据项代码",
+				digits : icon + "只能输入整数"
+			},
+			dataValue : {
+				required : icon + "字典数据项值"
+			}
+			
+		}
+	})
+}

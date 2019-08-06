@@ -1,0 +1,229 @@
+package com.slzr.account.domain;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class VipMemberPlanDO {
+
+	private Long id;
+	// 商户代码
+	private String companyCode;
+	// 会员类型(数据字典,1：折扣会员)
+	private Integer typeID;
+	// 名称
+	private String name;
+	// 描述
+	private String describe;
+	// 折扣
+	private String discount;
+	// 月会员价格
+	private BigDecimal buyMonthPrice;
+	// 季会员价格
+	private BigDecimal buySeasonPrice;
+	// 年会员价格
+	private BigDecimal buyYearPrice;
+	// 月优惠价格
+	private BigDecimal buyMonthDiscountPrice;
+	// 季优惠价格
+	private BigDecimal buySeasonDiscountPrice;
+	// 年优惠价格
+	private BigDecimal buyYearDiscountPrice;
+
+	// 优惠起始时间
+	private Date buyDiscountStartDate;
+	// 优惠结束时间
+	private Date buyDiscountEndDate;
+
+	// 单次最大优惠金额
+	private BigDecimal maxDiscountAmount;
+
+	// 是否启用
+	private String enable;
+
+	private Long createdBy;
+	private Date createdDate;
+	private Long updatedBy;
+	private Date updatedDate;
+	
+	private String userName;
+	
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getStartDate() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return sdf.format(buyDiscountStartDate);
+	}
+	
+	public String getEndDate() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return sdf.format(buyDiscountEndDate);
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getCompanyCode() {
+		return companyCode;
+	}
+
+	public void setCompanyCode(String companyCode) {
+		this.companyCode = companyCode;
+	}
+
+	public Integer getTypeID() {
+		return typeID;
+	}
+
+	public void setTypeID(Integer typeID) {
+		this.typeID = typeID;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescribe() {
+		return describe;
+	}
+
+	public void setDescribe(String describe) {
+		this.describe = describe;
+	}
+
+	public String getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(String discount) {
+		this.discount = discount;
+	}
+
+	public BigDecimal getBuyMonthPrice() {
+		return buyMonthPrice;
+	}
+
+	public void setBuyMonthPrice(BigDecimal buyMonthPrice) {
+		this.buyMonthPrice = buyMonthPrice;
+	}
+
+	public BigDecimal getBuySeasonPrice() {
+		return buySeasonPrice;
+	}
+
+	public void setBuySeasonPrice(BigDecimal buySeasonPrice) {
+		this.buySeasonPrice = buySeasonPrice;
+	}
+
+	public BigDecimal getBuyYearPrice() {
+		return buyYearPrice;
+	}
+
+	public void setBuyYearPrice(BigDecimal buyYearPrice) {
+		this.buyYearPrice = buyYearPrice;
+	}
+
+	public BigDecimal getBuyMonthDiscountPrice() {
+		return buyMonthDiscountPrice;
+	}
+
+	public void setBuyMonthDiscountPrice(BigDecimal buyMonthDiscountPrice) {
+		this.buyMonthDiscountPrice = buyMonthDiscountPrice;
+	}
+
+	public BigDecimal getBuySeasonDiscountPrice() {
+		return buySeasonDiscountPrice;
+	}
+
+	public void setBuySeasonDiscountPrice(BigDecimal buySeasonDiscountPrice) {
+		this.buySeasonDiscountPrice = buySeasonDiscountPrice;
+	}
+
+	public BigDecimal getBuyYearDiscountPrice() {
+		return buyYearDiscountPrice;
+	}
+
+	public void setBuyYearDiscountPrice(BigDecimal buyYearDiscountPrice) {
+		this.buyYearDiscountPrice = buyYearDiscountPrice;
+	}
+
+	public Date getBuyDiscountStartDate() {
+		return buyDiscountStartDate;
+	}
+
+	public void setBuyDiscountStartDate(Date buyDiscountStartDate) {
+		this.buyDiscountStartDate = buyDiscountStartDate;
+	}
+
+	public Date getBuyDiscountEndDate() {
+		return buyDiscountEndDate;
+	}
+
+	public void setBuyDiscountEndDate(Date buyDiscountEndDate) {
+		this.buyDiscountEndDate = buyDiscountEndDate;
+	}
+
+	public BigDecimal getMaxDiscountAmount() {
+		return maxDiscountAmount;
+	}
+
+	public void setMaxDiscountAmount(BigDecimal maxDiscountAmount) {
+		this.maxDiscountAmount = maxDiscountAmount;
+	}
+
+	public String getEnable() {
+		return enable;
+	}
+
+	public void setEnable(String enable) {
+		this.enable = enable;
+	}
+
+	public Long getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Long createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public Long getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(Long updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+}

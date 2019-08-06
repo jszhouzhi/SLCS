@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.ureport.dao.BcountDao">
+
+	<select id="DeptLinelist" resultType="com.slzr.ureport.domain.BCountDo">
+		SELECT
+		d.MerchantCode AS merchantCode,
+		o.DeptName AS deptName,
+		l.LineName AS lineName,
+		TxnDate AS txnDate,
+		SUM (DebitNum) AS consumptionPerson,
+		SUM (DebitAmount) AS consumptionAmount
+		FROM
+		BAR_DailySummary_Debit d
+		LEFT JOIN OPT_Line l ON d.BusLineNO = l.LineCode
+		LEFT JOIN OPT_Department o ON o.ID = l.DeptID
+		<where>
+			<if test="deptCode != null and deptCode != ''"> and o.DeptCode = #{deptCode} </if>
+			<if test="lineCode != null and lineCode != ''"> and l.LineCode = #{lineCode} </if>
+			<if test="startDate != null and startDate != '' and endDate!='' and endDate!=null "> and TxnDate BETWEEN #{startDate}  AND  #{endDate}</if>
+			<if test="merchantCode != null and merchantCode != ''"> and d.MerchantCode = #{merchantCode} </if>
+		</where>
+		GROUP BY
+		deptName,
+		txnDate,
+		lineName,
+		d.MerchantCode
+		ORDER BY
+		TxnDate DESC
+	</select>
+
+	<select id="LineBuslist" resultType="com.slzr.ureport.domain.BCountDo">
+		SELECT
+		d.MerchantCode,
+		TxnDate AS txnDate,
+		l.LineName AS lineName,
+		b.BusNO AS busNO,
+		SUM (DebitNum) AS consumptionPerson,
+		SUM (DebitAmount) AS consumptionAmount
+		FROM
+		BAR_DailySummary_Debit d
+		LEFT JOIN OPT_Terminal te ON d.TerminalNO=te.TerminalNO
+		LEFT JOIN OPT_Bus b ON te.BusID = b.ID
+		LEFT JOIN OPT_Line l ON d.BusLineNO = l.LineCode
+		<where>
+			<if test="busNO != null and busNO != ''"> and b.BusNO = #{busNO} </if>
+			<if test="lineCode != null and lineCode != ''"> and l.LineCode = #{lineCode} </if>
+			<if test="startDate != null and startDate != '' and endDate!='' and endDate!=null "> and TxnDate BETWEEN #{startDate}  AND  #{endDate}</if>
+			<if test="merchantCode != null and merchantCode != ''"> and d.MerchantCode = #{merchantCode} </if>
+		</where>
+		GROUP BY
+		busNO,
+		TxnDate,
+		lineName,
+		d.MerchantCode
+		ORDER BY
+		d.TxnDate DESC
+
+	</select>
+
+	<select id="BusDriverlist" resultType="com.slzr.ureport.domain.BCountDo">
+		SELECT
+		d.MerchantCode,
+		TxnDate AS txnDate,
+		b.BusNO AS busNO,
+		dr.DriverName AS driverName,
+		SUM (DebitNum) AS consumptionPerson,
+		SUM (DebitAmount) AS consumptionAmount
+		FROM
+		BAR_DailySummary_Debit d
+		LEFT JOIN OPT_Terminal te ON d.TerminalNO=te.TerminalNO
+		LEFT JOIN OPT_Bus b ON te.BusID = b.ID
+		LEFT JOIN OPT_Driver dr ON dr.DriverNO = d.DriverNO
+		<where>
+			<if test="busNO != null and busNO != ''"> and b.BusNO = #{busNO} </if>
+			<if test="driverNO != null and driverNO != ''"> and dr.DriverNO = #{driverNO} </if>
+			<if test="startDate != null and startDate != '' and endDate!='' and endDate!=null "> and TxnDate BETWEEN #{startDate}  AND  #{endDate}</if>
+			<if test="merchantCode != null and merchantCode != ''"> and d.MerchantCode = #{merchantCode} </if>
+		</where>
+		GROUP BY
+		busNO,
+		TxnDate,
+		driverName,
+		d.MerchantCode
+		ORDER BY
+		d.TxnDate DESC
+	</select>
+</mapper>

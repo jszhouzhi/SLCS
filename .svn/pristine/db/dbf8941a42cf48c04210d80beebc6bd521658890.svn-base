@@ -1,0 +1,44 @@
+package com.slzr.set.controller;
+
+
+import com.slzr.common.utils.PageUtils;
+import com.slzr.common.utils.Query;
+import com.slzr.set.domain.MerchDo;
+import com.slzr.set.service.MerchService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
+import java.util.Map;
+
+@RequestMapping("/Merchant/merchantSet")
+@Controller
+public class MerchController {
+    private String prefix="set/merchant"  ;
+
+    @Autowired
+    MerchService  merchService;
+
+    @RequiresPermissions("set:merchantSet:merchantSet")
+    @GetMapping("")
+    String merch(Model model) {
+        return prefix + "/merchant";
+    }
+
+    @GetMapping("/list")
+    @ResponseBody
+    PageUtils list(@RequestParam Map<String, Object> params) {
+        // 查询列表数据
+        Query query = new Query(params);
+        List<MerchDo> sysUserList = merchService.list(query);
+        int total = merchService.count(query);
+        PageUtils pageUtil = new PageUtils(sysUserList, total);
+        return pageUtil;
+    }
+}

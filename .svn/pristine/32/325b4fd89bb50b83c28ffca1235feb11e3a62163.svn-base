@@ -1,0 +1,22 @@
+package com.slzr.operation.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.slzr.operation.service.DailysummaryTopupService;
+
+
+@Controller
+@RequestMapping("/operation")
+public class DailysummaryTopupController {
+	@Autowired
+	private DailysummaryTopupService topupservice;
+	
+	private String prefix = "operation";
+	@GetMapping("/topup")
+	public String topup() {
+		return prefix + "/topup";
+	}
+}

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.ICWXRefundDao">
+
+	<sql id="IC_WX_Refund_Column">
+        IC_WX_Refund.ID as ID
+        ,IC_WX_Refund.RefundOrderNO as RefundOrderNO
+        ,IC_WX_Refund.OrderNO as OrderNO
+        ,IC_WX_Refund.OrderAmount as OrderAmount
+        ,IC_WX_Refund.NickName as NickName
+        ,IC_WX_Refund.UnionId as UnionId
+        ,IC_WX_Refund.RefundAmount as RefundAmount
+        ,IC_WX_Refund.RefundResult as RefundResult
+        ,IC_WX_Refund.RefundResultMsg as RefundResultMsg
+        ,IC_WX_Refund.RefundTime as RefundTime
+        ,IC_WX_Refund.RefundReason as RefundReason
+        ,IC_WX_Refund.DailySummaryTime as DailySummaryTime
+    </sql>
+	<select id="get" resultType="com.slzr.operation.domain.ICWXRefundDO">
+		select 
+		<include refid="IC_WX_Refund_Column" />
+		from IC_WX_Refund where ID = #{id}
+	</select>
+
+
+	<select id="list" resultType="com.slzr.operation.domain.ICWXRefundDO">
+		<if test="offset != null and limit != null">
+		select top ${limit}  *  from (
+		</if>
+		select 
+		ROW_NUMBER() OVER(ORDER BY RefundTime desc) AS Seq,
+		<include refid="IC_WX_Refund_Column" />
+        ,IC_TopupOrder.CardNO AS  CardNO
+		from IC_WX_Refund
+        LEFT JOIN IC_TopupOrder  ON  IC_TopupOrder.OrderNO = IC_WX_Refund.OrderNO
+
+        <where>
+            <if test="auditRemark != null and  auditRemark != ''"> and IC_WX_Refund.RefundOrderNO like '%${auditRemark}%'</if>
+            <if test="auditRemark != null and  auditRemark != ''"> OR IC_WX_Refund.OrderNO like '%${auditRemark}%'</if>
+            <if test="auditRemark != null and  auditRemark != ''"> OR IC_WX_Refund.UnionId like '%${auditRemark}%'</if>
+            <if test="auditRemark != null and  auditRemark != ''"> OR IC_TopupOrder.CardNO like '%${auditRemark}%'</if>
+            <if test="sdate != null and  sdate!= ''"> and IC_WX_Refund.RefundTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="edate != null and  edate!= ''"> and IC_WX_Refund.RefundTime &lt;= '${edate} 23:59:59'</if>
+        </where>
+        <if test="offset != null and limit != null">
+        ) a
+		where seq BETWEEN ${offset+1} and ${limit+offset}
+		</if>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+
+            <otherwise>
+                order by RefundTime desc
+            </otherwise>
+        </choose>
+ 
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from IC_WX_Refund
+
+        LEFT JOIN IC_TopupOrder  ON  IC_TopupOrder.OrderNO = IC_WX_Refund.OrderNO
+
+
+        <where>
+            <if test="auditRemark != null and  auditRemark != ''"> and IC_WX_Refund.RefundOrderNO like '%${auditRemark}%'</if>
+            <if test="auditRemark != null and  auditRemark != ''"> OR IC_WX_Refund.OrderNO like '%${auditRemark}%'</if>
+            <if test="auditRemark != null and  auditRemark != ''"> OR IC_WX_Refund.UnionId like '%${auditRemark}%'</if>
+            <if test="auditRemark != null and  auditRemark != ''"> OR IC_TopupOrder.CardNO like '%${auditRemark}%'</if>
+
+
+            <if test="sdate != null and  sdate!= ''"> and IC_WX_Refund.RefundTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="edate != null and  edate!= ''"> and IC_WX_Refund.RefundTime &lt;= '${edate} 23:59:59'</if>
+
+        </where>
+	</select>
+	
+	<select id="updateAudit">
+		update IC_WX_Refund set IC_WX_Refund.AuditStatus = #{auditvalue},IC_WX_Refund.AuditUID = #{chkuserid},IC_WX_Refund.AuditDateTime=getdate(), IC_WX_Refund.AuditRemark=#{remark} where IC_WX_Refund.ID=#{id}
+	</select>
+
+</mapper>

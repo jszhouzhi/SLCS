@@ -1,0 +1,29 @@
+package com.slzr.system.vo;
+
+import java.util.List;
+
+import com.slzr.system.domain.StatisticsDO;
+
+public class StatisticsVO {
+	private List<StatisticsDO> TotalStatistics;
+	private List<StatisticsDO> TodayStatistics;
+	private List<StatisticsDO> RecentlyWeekStatistics;
+	public List<StatisticsDO> getTotalStatistics() {
+		return TotalStatistics;
+	}
+	public void setTotalStatistics(List<StatisticsDO> totalStatistics) {
+		TotalStatistics = totalStatistics;
+	}
+	public List<StatisticsDO> getTodayStatistics() {
+		return TodayStatistics;
+	}
+	public void setTodayStatistics(List<StatisticsDO> todayStatistics) {
+		TodayStatistics = todayStatistics;
+	}
+	public List<StatisticsDO> getRecentlyWeekStatistics() {
+		return RecentlyWeekStatistics;
+	}
+	public void setRecentlyWeekStatistics(List<StatisticsDO> recentlyWeekStatistics) {
+		RecentlyWeekStatistics = recentlyWeekStatistics;
+	}
+}

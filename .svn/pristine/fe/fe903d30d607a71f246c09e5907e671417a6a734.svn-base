@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.WxRefundDao">
+
+	<sql id="thisColumns">
+        BAR_WX_Refund.RefundTime as RefundTime
+        ,BAR_WX_Refund.RefundOrderNO as RefundOrderNO
+        ,BAR_WX_Refund.UnionId as UnionId
+        ,BAR_WX_Refund.OrderAmount as OrderAmount
+        ,BAR_WX_Refund.OrderNO as OrderNO
+        ,BAR_WX_Refund.RefundAmount as RefundAmount
+        ,BAR_WX_Refund.RefundReason as RefundReason
+        ,BAR_WX_Refund.ID as ID
+        ,BAR_WX_Refund.RefundResult as RefundResult
+        ,BAR_WX_Refund.NickName as NickName
+        ,BAR_WX_Refund.RefundResultMsg as RefundResultMsg
+        ,BAR_WX_Refund.DailySummaryTime as DailySummaryTime
+        ,BAR_TopupTransaction.AccountNO as AccountNO
+    </sql>
+	<select id="get" resultType="com.slzr.operation.domain.WxRefundDO">
+		select 
+		<include refid="thisColumns" /> 
+		from BAR_WX_Refund where ID = #{id}
+	</select>
+
+	<select id="list" resultType="com.slzr.operation.domain.WxRefundDO">
+		select 
+		<include refid="thisColumns" /> 
+		from BAR_WX_Refund left join BAR_TopupTransaction on BAR_WX_Refund.RefundOrderNO = BAR_TopupTransaction.OrderNO
+        <where>
+            <if test="searchvalue != null and  searchvalue!= ''"> and (BAR_WX_Refund.RefundOrderNO like '${searchvalue}%' or BAR_WX_Refund.OrderNO like '${searchvalue}%')</if>
+            <if test="sdate != null and  sdate!= ''"> and BAR_WX_Refund.RefundTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="edate != null and  edate!= ''"> and BAR_WX_Refund.RefundTime &lt;= '${edate} 23:59:59'</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by RefundTime desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from BAR_WX_Refund left join BAR_TopupTransaction on BAR_WX_Refund.RefundOrderNO = BAR_TopupTransaction.OrderNO
+        <where>
+            <if test="searchvalue != null and  searchvalue!= ''"> and (BAR_WX_Refund.RefundOrderNO like '${searchvalue}%' or BAR_WX_Refund.OrderNO like '${searchvalue}%')</if>
+            <if test="sdate != null and  sdate!= ''"> and BAR_WX_Refund.RefundTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="edate != null and  edate!= ''"> and BAR_WX_Refund.RefundTime &lt;= '${edate} 23:59:59'</if>
+        </where>
+	</select>
+
+</mapper>

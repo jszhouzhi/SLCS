@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.set.dao.TicketpriceDao">
+
+	<select id="get" resultType="com.slzr.set.domain.TicketpriceDO">
+		select ID,MerchantCode,LineCode,PriceSetting,DiscountSetting,IsEnable,EffectiveDateTime,ExpiredDateTime,UMaxStation,DMaxStation,CreatedBy,CreatedDate,UpdateBy,UpdateDate from BAR_TicketPrice where ID = #{value}
+	</select>
+
+	<select id="list" resultType="com.slzr.set.domain.TicketpriceDO">
+		select m.MerchantName,p.ID,p.MerchantCode,p.LineCode,p.PriceSetting,p.DiscountSetting,p.IsEnable,p.EffectiveDateTime,
+		p.ExpiredDateTime,p.UMaxStation,p.DMaxStation,p.CreatedBy,p.CreatedDate,p.UpdateBy,p.UpdateDate from BAR_TicketPrice p
+		LEFT JOIN BAR_Merchant m ON m.MerchantCode = p.MerchantCode
+        <where>  
+  		  <if test="merchantCode != null and merchantCode != ''"> and p.MerchantCode = #{merchantCode} </if>
+  		  <if test="linecode != null and linecode != ''"> and p.LineCode = #{linecode} </if>
+  		  <if test="searchName != null and  searchName != ''"> and p.LineCode like '%${searchName}%'</if>
+  		  <if test="id != null and id != ''">and p.ID != #{id}</if>
+  		  and p.UMaxStation = 0 and p.DMaxStation = 0
+  		</where>
+  			
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by p.ID desc
+			</otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            Offset ${offset} Row Fetch Next ${limit} Rows Only
+        </if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from BAR_TicketPrice
+		 <where>  
+ 		  <if test="merchantCode != null and merchantCode != ''"> and MerchantCode = #{merchantCode} </if>
+ 		  <if test="linecode != null and linecode != ''"> and LineCode = #{linecode} </if>
+ 		  <if test="searchName != null and  searchName != ''"> and BAR_TicketPrice.LineCode like '%${searchName}%'</if>
+ 		  and UMaxStation = 0 and DMaxStation = 0
+		 </where>
+		  
+	</select>
+	 
+    <insert id="save" parameterType="com.slzr.set.domain.TicketpriceDO">
+        insert into BAR_TicketPrice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">ID,</if>
+            <if test="dmaxstation != null">DMaxStation,</if>
+            <if test="umaxstation != null">UMaxStation,</if>
+            <if test="createdby != null">CreatedBy,</if>
+            <if test="expireddatetime != null">ExpiredDateTime,</if>
+            <if test="linecode != null">LineCode,</if>
+            <if test="updateby != null">UpdateBy,</if>
+            <if test="isenable != null">IsEnable,</if>
+            <if test="updatedate != null">UpdateDate,</if>
+            <if test="merchantCode != null">MerchantCode,</if>
+            <if test="pricesetting != null">PriceSetting,</if>
+            <if test="createddate != null">CreatedDate,</if>
+            <if test="effectivedatetime != null">EffectiveDateTime,</if>
+            <if test="discountsetting != null">DiscountSetting,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null"> #{iD},</if>
+            <if test="dmaxstation != null"> #{dmaxstation},</if>
+            <if test="umaxstation != null"> #{umaxstation},</if>
+            <if test="createdby != null"> #{createdby},</if>
+            <if test="expireddatetime != null"> #{expireddatetime},</if>
+            <if test="linecode != null"> #{linecode},</if>
+            <if test="updateby != null"> #{updateby},</if>
+            <if test="isenable != null"> #{isenable},</if>
+            <if test="updatedate != null"> #{updatedate},</if>
+            <if test="merchantCode != null"> #{merchantCode},</if>
+            <if test="pricesetting != null"> #{pricesetting},</if>
+            <if test="createddate != null"> #{createddate},</if>
+            <if test="effectivedatetime != null"> #{effectivedatetime},</if>
+            <if test="discountsetting != null"> #{discountsetting},</if>
+        </trim>
+    </insert>
+	 
+    <update id="update" parameterType="com.slzr.set.domain.TicketpriceDO">
+        update BAR_TicketPrice
+        <set>
+            <if test="dmaxstation != null">
+                DMaxStation=#{dmaxstation},
+            </if>
+            <if test="umaxstation != null">
+                UMaxStation=#{umaxstation},
+            </if>
+            <if test="createdby != null">
+                CreatedBy=#{createdby},
+            </if>
+            <if test="expireddatetime != null">
+                ExpiredDateTime=#{expireddatetime},
+            </if>
+            <if test="linecode != null">
+                LineCode=#{linecode},
+            </if>
+            <if test="updateby != null">
+                UpdateBy=#{updateby},
+            </if>
+            <if test="isenable != null">
+                IsEnable=#{isenable},
+            </if>
+            <if test="updatedate != null">
+                UpdateDate=#{updatedate},
+            </if>
+            <if test="merchantCode != null">
+                MerchantCode=#{merchantCode},
+            </if>
+            <if test="pricesetting != null">
+                PriceSetting=#{pricesetting},
+            </if>
+            <if test="createddate != null">
+                CreatedDate=#{createddate},
+            </if>
+            <if test="effectivedatetime != null">
+                EffectiveDateTime=#{effectivedatetime},
+            </if>
+            <if test="discountsetting != null">
+                DiscountSetting=#{discountsetting},
+            </if>
+        </set>
+        where ID=#{id}
+    </update>
+	
+	<delete id="remove">
+		delete from BAR_TicketPrice where ID = #{value}
+	</delete>
+	
+    <update id="updateByEnable" parameterType="com.slzr.set.domain.TicketpriceDO">
+        update BAR_TicketPrice
+        <set>
+            <if test="isenable != null">
+                IsEnable=#{isenable},
+            </if>
+            
+            <if test="id != null">
+                ID!=#{id}
+            </if>
+
+        </set>
+        where MerchantCode=#{merchantCode} and LineCode=#{linecode}
+    </update>
+
+</mapper>

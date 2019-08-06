@@ -1,0 +1,203 @@
+package com.slzr.operation.controller;
+
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.utils.ExcelExportTool;
+import com.slzr.common.utils.PageUtils;
+import com.slzr.common.utils.Query;
+import com.slzr.common.utils.R;
+import com.slzr.operation.domain.ICTopupTransactionDO;
+import com.slzr.operation.domain.ICWXRefundDO;
+import com.slzr.operation.service.ICTopupTransactionService;
+import com.slzr.operation.service.ICWXRefundService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+
+// IC卡 圈存查询
+@Controller
+@RequestMapping("/operation/ictopuptransaction")
+public class ICTopupTransactionController extends BaseController{
+	private String prefix = "operation/ictopuptransaction";
+//	@Autowired
+//	private DailysummaryTopupService topupservice;
+
+	@Autowired
+	private ICTopupTransactionService icTopupTransactionService;
+	
+	@GetMapping("/list")
+	public String list() {
+		return prefix + "/list";
+	}
+	
+	@GetMapping("/edit/{id}")
+	public String edit(@PathVariable("id") String id) {
+		return prefix + "/edit";
+	}
+	
+	@GetMapping("/check/{id}")
+	public String check(Model model,@PathVariable("id") String id) {
+		model.addAttribute("id",id);
+		return prefix + "/check";
+	}
+	
+	@ResponseBody
+	@GetMapping("api/list")
+	@RequiresPermissions("operation:topup:list")
+	public PageUtils list(@RequestParam Map<String, Object> params) {
+		//查询列表数据
+        Query query = new Query(params);
+		List<ICTopupTransactionDO> list = icTopupTransactionService.list(query);
+		int total = icTopupTransactionService.count(query);
+		PageUtils pageUtils = new PageUtils(list, total);
+		return pageUtils;
+	}
+	
+//	@ResponseBody
+//	@RequestMapping("api/check")
+//	@RequiresPermissions("operation:topup:check")
+//	public R apicheck(String id,int auditvalue,String remark){
+//		ICWXRefundDO settledo = icwxRefundService.get(id);
+//		if(settledo.getAuditStatus()==-1)
+//		{
+//			icwxRefundService.updateAudit(id, auditvalue, this.getUserId().intValue(),remark);
+//			return R.ok();
+//		}
+//        return R.error();
+//	}
+	
+	@ResponseBody
+	@RequestMapping("api/again")
+	@RequiresPermissions("operation:topup:do")
+	public R apiagain(String id){
+		icTopupTransactionService.updateAudit(id, -1, this.getId().intValue(),"");
+		return R.ok();
+	}
+    @RequestMapping("/expexcel")
+    public void expExceluser(ModelMap model,HttpServletRequest request,HttpServletResponse response,@RequestParam Map<String, Object> params){
+    	
+  	  	String fileName = "IC卡圈存查询报表.xls";
+  	  	
+  	  	String[] title = new String[]{"操作员编号","IC卡号","IC卡类型","交易后金额","终端交易编号","交易金额","交易类型","商户号","交易时间","订单号","终端编号","IC卡流水号","交易前金额","日结时间"};
+  	  	
+  	    List<ICTopupTransactionDO> list = null;
+  	    
+		try {
+			list = icTopupTransactionService.list(params);
+	    	List<Object[]> data = new ArrayList<Object[]>();
+	    	for(int i=0; i<list.size();i++){
+		        Object[] str = new Object[title.length];
+		        //操作员编号
+		        if(null!=list.get(i).getOperatorNO() && !list.get(i).getOperatorNO().equals("")){
+		        	str[0] = list.get(i).getOperatorNO();
+		        }else{
+		        	str[0] = "";
+		        }
+		        //IC卡号
+		        if(null!=list.get(i).getCardAppNO() && !list.get(i).getCardAppNO().equals("")){
+		        	str[1] = list.get(i).getCardAppNO();
+		        }else{
+		        	str[1] = "";
+		        }
+		        //IC卡类型
+		        if(null!=list.get(i).getCardTypeID()){
+		        	str[2] = list.get(i).getCardTypeID();
+		        }else{
+		        	str[2] = "";
+		        }
+		        //交易后金额
+		        if(null!=list.get(i).getBalance()){
+		        	str[3] = list.get(i).getBalance();
+		        }else{
+		        	str[3] = "";
+		        }
+		        //终端交易编号
+		        if(null!=list.get(i).getTerminalTxnNO()){
+		        	str[4] = list.get(i).getTerminalTxnNO();
+		        }else{
+		        	str[4] = "";
+		        }
+		        //交易金额
+		        if(null!=list.get(i).getAmount()){
+		        	str[5] = list.get(i).getAmount();
+		        }else{
+		        	str[5] = "";
+		        }
+		        //交易类型
+		        if(null!=list.get(i).getTxnType()){
+		        	str[6] = list.get(i).getTxnType();
+		        }else{
+		        	str[6] = "";
+		        }
+		        //商户号
+		        if(null!=list.get(i).getMerchNO()){
+		        	str[7] = list.get(i).getMerchNO();
+		        }else{
+		        	str[7] = "";
+		        }
+		        //交易时间
+		        if(null!=list.get(i).getTxnDateTime()){
+		        	str[8] = list.get(i).getTxnDateTime();
+		        }else{
+		        	str[8] = "";
+		        }
+		        //订单号
+		        if(null!=list.get(i).getOrderNO()){
+		        	str[9] = list.get(i).getOrderNO();
+		        }else{
+		        	str[9] = "";
+		        }
+		        //终端编号
+		        if(null!=list.get(i).getTerminalNO()){
+		        	str[10] = list.get(i).getTerminalNO();
+		        }else{
+		        	str[10] = "";
+		        }
+
+				//IC卡流水号
+				if(null!=list.get(i).getCardCTC()){
+					str[11] = list.get(i).getCardCTC();
+				}else{
+					str[11] = "";
+				}
+
+				//交易前金额
+				if(null!=list.get(i).getBeforeBalance()){
+					str[12] = list.get(i).getBeforeBalance();
+				}else{
+					str[12] = "";
+				}
+
+				//日结时间
+				if(null!=list.get(i).getSummaryTime()){
+					str[13] = list.get(i).getSummaryTime();
+				}else{
+					str[13] = "";
+				}
+
+
+				data.add(str);
+	    	}
+	    	String sheetName = "expExcel";
+			byte[] b = fileName.getBytes("UTF-8"); 
+		    String formatFileName = new String(b,"ISO-8859-1");		      	 
+		    response.setContentType("application/ms-excel");
+		    response.setHeader("Content-disposition", "attachment;filename="+formatFileName);
+		    ExcelExportTool.exportExcel(formatFileName, sheetName, title, data, response);
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 }finally{
+			 list=null;
+		 }
+    }
+
+}

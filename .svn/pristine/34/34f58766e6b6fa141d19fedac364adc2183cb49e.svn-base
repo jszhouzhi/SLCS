@@ -1,0 +1,61 @@
+package com.slzr.ureport.bean;
+
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.utils.TimeConverUtils;
+import com.slzr.ureport.domain.BCountDo;
+import com.slzr.ureport.service.BCountService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+public class BCountBean extends BaseController{
+
+    @Autowired
+    private BCountService bCountService;
+
+    public List<BCountDo> getBusDriverlist(String dsName, String datasetName, Map<String, Object> parameters) {
+        Map<String, Object> stringObjectMap=null;
+        if (parameters != null) {
+            stringObjectMap = TimeConverUtils.converDate(parameters);
+        }
+
+        List<BCountDo> list = bCountService.BusDriverlist(stringObjectMap);
+
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        for (int i=0;i<list.size();i++){
+            list.get(i).setUserName(getUsername());
+            list.get(i).setStartDate(sdf.format(new Date()));
+            list.get(i).setEndDate(sdf.format(new Date()));
+        }
+        return list;
+    }
+    public List<BCountDo> getLineBuslist(String dsName, String datasetName, Map<String, Object> parameters) {
+        Map<String, Object> stringObjectMap=null;
+        if (parameters != null) {
+            stringObjectMap = TimeConverUtils.converDate(parameters);
+        }
+
+        List<BCountDo> list = bCountService.LineBuslist(stringObjectMap);
+
+        for (int i=0;i<list.size();i++){
+            list.get(i).setUserName(getUsername());
+        }
+
+        return list;
+    }
+    public List<BCountDo> getDeptLinelist(String dsName, String datasetName, Map<String, Object> parameters) {
+        Map<String, Object> stringObjectMap=null;
+        if (parameters != null) {
+            stringObjectMap = TimeConverUtils.converDate(parameters);
+        }
+        List<BCountDo> list = bCountService.DeptLinelist(stringObjectMap);
+
+        for (int i=0;i<list.size();i++){
+            list.get(i).setUserName(getUsername());
+        }
+        return list;
+    }
+}

@@ -1,0 +1,27 @@
+package com.slzr.system.vo;
+
+import java.math.BigDecimal;
+
+public class DayDebitVO {
+	private String date;
+	private int dayDebitNum;
+	private BigDecimal dayDebitAmount;
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
+	}
+	public int getDayDebitNum() {
+		return dayDebitNum;
+	}
+	public void setDayDebitNum(int dayDebitNum) {
+		this.dayDebitNum = dayDebitNum;
+	}
+	public BigDecimal getDayDebitAmount() {
+		return dayDebitAmount;
+	}
+	public void setDayDebitAmount(BigDecimal dayDebitAmount) {
+		this.dayDebitAmount = dayDebitAmount;
+	}
+}

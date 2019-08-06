@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.account.dao.CardTypeDao">
+
+	<select id="get" resultType="com.slzr.account.domain.CardTypeDO">
+			SELECT
+				c.ID,
+				c.CardTypeID,
+				c.CardTypeName,
+				c.CardTypeDesc,
+				c.ValidDays,
+				c.AutoAudit,
+				c.AuditValidDays,
+				c.AllowAuditDays,
+			  	m.MerchantName as merchantName,
+			  	c.MerchantCode as merchantCode,
+				c.State,
+				c.CreatedBy,
+				c.CreatedDate,
+				c.UpdatedBy,
+				c.UpdatedDate,
+				c.MinBalance,
+				c.SubCardTypeID subCardTypeID,
+				c.Times times
+			FROM
+				BAR_CardType c
+			LEFT JOIN 
+			  BAR_Merchant m ON  m.MerchantCode = c.MerchantCode
+		 
+	</select>
+	
+	<select id="getByid" resultType="com.slzr.account.domain.CardTypeDO">
+		select ID,CardTypeID,CardTypeName,CardTypeDesc,ValidDays,AutoAudit,AuditValidDays,AllowAuditDays,MerchantCode,State,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,MinBalance,
+				SubCardTypeID subCardTypeID, Times times from BAR_CardType 
+		 where ID = #{id}
+	</select>
+
+	<select id="list" resultType="com.slzr.account.domain.CardTypeDO">
+			select top ${limit}  *  from (								
+				SELECT 
+				ROW_NUMBER() OVER(ORDER BY a.CreatedDate desc) AS Seq,
+				C.ID,
+				c.CardTypeID,
+				c.CardTypeName,
+				c.CardTypeDesc,
+				c.ValidDays,
+				c.AutoAudit,
+				c.AuditValidDays,
+				c.AllowAuditDays,
+			  m.MerchantName as MerchantCode,
+				c.State,
+				c.CreatedBy,
+				c.CreatedDate,
+				c.UpdatedBy,
+				c.UpdatedDate,
+				c.MinBalance,
+				c.SubCardTypeID subCardTypeID,
+				c.Times times
+			FROM
+				BAR_CardType c
+			LEFT JOIN 
+			  BAR_Merchant m ON  m.MerchantCode = c.MerchantCode
+			  ) a
+		where seq BETWEEN ${offset+1} and ${limit+offset}
+        <where>  
+         		<if test="searchName != null and searchName != ''">(   c.CardTypeName LIKE	 '${searchName}%')</if>
+		  		  
+		 </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by CreatedDate ASC
+			</otherwise>
+        </choose>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from BAR_CardType
+		 <where>  
+		  		  <if test="cardTypeID != null and cardTypeID != ''"> and CardTypeID = #{cardTypeID} </if>
+		  		  <if test="searchName != null and searchName != ''"> and CardTypeName = #{searchName} </if>
+		  		  <if test="cardtypedesc != null and cardtypedesc != ''"> and CardTypeDesc = #{cardtypedesc} </if>
+		  		  <if test="validdays != null and validdays != ''"> and ValidDays = #{validdays} </if>
+		  		  <if test="autoaudit != null and autoaudit != ''"> and AutoAudit = #{autoaudit} </if>
+		  		  <if test="auditvaliddays != null and auditvaliddays != ''"> and AuditValidDays = #{auditvaliddays} </if>
+		  		  <if test="allowauditdays != null and allowauditdays != ''"> and AllowAuditDays = #{allowauditdays} </if>
+		  		  <if test="merchantcode != null and merchantcode != ''"> and MerchantCode = #{merchantcode} </if>
+		  		  <if test="state != null and state != ''"> and State = #{state} </if>
+		  		  <if test="createdby != null and createdby != ''"> and CreatedBy = #{createdby} </if>
+		  		  <if test="createddate != null and createddate != ''"> and CreatedDate = #{createddate} </if>
+		  		  <if test="updatedby != null and updatedby != ''"> and UpdatedBy = #{updatedby} </if>
+		  		  <if test="updateddate != null and updateddate != ''"> and UpdatedDate = #{updateddate} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.slzr.account.domain.CardTypeDO">
+		insert into BAR_CardType
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cardTypeID != null">CardTypeID,</if>
+            <if test="cardtypedesc != null">CardTypeDesc,</if>
+            <if test="createdby != null">CreatedBy,</if>
+            <if test="updateddate != null">UpdatedDate,</if>
+            <if test="cardtypename != null">CardTypeName,</if>
+            <if test="validdays != null">ValidDays,</if>
+            <if test="updatedby != null">UpdatedBy,</if>
+            <if test="auditvaliddays != null">AuditValidDays,</if>
+            <if test="merchantcode != null">MerchantCode,</if>
+            <if test="state != null">State,</if>
+            <if test="allowauditdays != null">AllowAuditDays,</if>
+            <if test="createddate != null">CreatedDate,</if>
+            <if test="autoaudit != null">AutoAudit,</if>
+            <if test="minBalance != null">MinBalance,</if>
+            <if test="subCardTypeID != null">SubCardTypeID,</if>
+            <if test="times != null">Times,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cardTypeID != null"> #{cardTypeID},</if>
+            <if test="cardtypedesc != null"> #{cardtypedesc},</if>
+            <if test="createdby != null"> #{createdby},</if>
+            <if test="updateddate != null"> #{updateddate},</if>
+            <if test="cardtypename != null"> #{cardtypename},</if>
+            <if test="validdays != null"> #{validdays},</if>
+            <if test="updatedby != null"> #{updatedby},</if>
+            <if test="auditvaliddays != null"> #{auditvaliddays},</if>
+            <if test="merchantcode != null"> #{merchantcode},</if>
+            <if test="state != null"> #{state},</if>
+            <if test="allowauditdays != null"> #{allowauditdays},</if>
+            <if test="createddate != null"> #{createddate},</if>
+            <if test="autoaudit != null"> #{autoaudit},</if>
+            <if test="minBalance != null">#{minBalance},</if>
+            <if test="subCardTypeID != null">#{subCardTypeID},</if>
+            <if test="times != null">#{times},</if>
+        </trim>
+	</insert>
+	 
+	<update id="update" parameterType="com.slzr.account.domain.CardTypeDO">
+		update BAR_CardType 
+		<set>
+			<if test="cardTypeID != null">CardTypeID = #{cardTypeID}, </if>
+			<if test="cardtypename != null">CardTypeName = #{cardtypename}, </if>
+			<if test="cardtypedesc != null">CardTypeDesc = #{cardtypedesc}, </if>
+			<if test="validdays != null">ValidDays = #{validdays}, </if>
+			<if test="autoaudit != null">AutoAudit = #{autoaudit}, </if>
+			<if test="auditvaliddays != null">AuditValidDays = #{auditvaliddays}, </if>
+			<if test="allowauditdays != null">AllowAuditDays = #{allowauditdays}, </if>
+			<if test="merchantcode != null">MerchantCode = #{merchantcode}, </if>
+			<if test="state != null">State = #{state}, </if>
+			<if test="createdby != null">CreatedBy = #{createdby}, </if>
+			<if test="createddate != null">CreatedDate = #{createddate}, </if>
+			<if test="updatedby != null">UpdatedBy = #{updatedby}, </if>
+			<if test="updateddate != null">UpdatedDate = #{updateddate},</if>
+			<if test="minBalance != null">MinBalance = #{minBalance},</if>
+			<if test="subCardTypeID != null">SubCardTypeID = #{subCardTypeID},</if>
+			<if test="times != null">Times = #{times}</if>
+		</set>
+		where ID = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from BAR_CardType where ID = #{id}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from BAR_CardType where ID in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

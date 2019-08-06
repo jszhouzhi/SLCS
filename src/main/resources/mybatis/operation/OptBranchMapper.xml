@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.slzr.operation.dao.OptBranchDao">
+	<select id="get" resultType="com.slzr.operation.domain.OptBranchDO">
+		select ID,MerchantCode,BranchCode,BranchName,Address,Lat,Lng,State,Remark,CreatedDate,CreatedBy,UpdatedDate,UpdatedBy from OPT_Branch where ID = #{value}
+	</select>
+
+	<select id="list" resultType="com.slzr.operation.domain.OptBranchDO">
+		select m.MerchantName as MerchantCode,OPT_Branch.* from OPT_Branch
+		left join BAR_Merchant m on m.MerchantCode = OPT_Branch.MerchantCode 
+        <where>  
+         		  <if test="searchName != null and searchName != ''">(   OPT_Branch.BranchName LIKE	 '${searchName}%' OR OPT_Branch.Address LIKE	 '${searchName}%')</if>
+		  		  <if test="id != null and id != ''"> and OPT_Branch.ID = #{id} </if>
+		  		  <if test="merchantCode != null and merchantCode != ''"> and OPT_Branch.MerchantCode = #{merchantCode} </if>
+		  		  <if test="branchCode != null and branchCode != ''"> and OPT_Branch.BranchCode = #{branchCode} </if>
+		  		  <if test="branchName != null and branchName != ''"> and OPT_Branch.BranchName = #{branchName} </if>
+		  		  <if test="address != null and address != ''"> and OPT_Branch.Address = #{address} </if>
+		  		  <if test="lat != null and lat != ''"> and OPT_Branch.Lat = #{lat} </if>
+		  		  <if test="lng != null and lng != ''"> and OPT_Branch.Lng = #{lng} </if>
+		  		  <if test="state != null and state != ''"> and OPT_Branch.State = #{state} </if>
+		  		  <if test="remark != null and remark != ''"> and OPT_Branch.Remark = #{remark} </if>
+		  		  <if test="createdDate != null and createdDate != ''"> and OPT_Branch.CreatedDate = #{createdDate} </if>
+		  		  <if test="createdBy != null and createdBy != ''"> and OPT_Branch.CreatedBy = #{createdBy} </if>
+		  		  <if test="updatedDate != null and updatedDate != ''"> and OPT_Branch.UpdatedDate = #{updatedDate} </if>
+		  		  <if test="updatedBy != null and updatedBy != ''"> and OPT_Branch.UpdatedBy = #{updatedBy} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by OPT_Branch.ID desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			 Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from OPT_Branch
+		 <where>  
+		  		  <if test="searchName != null and searchName != ''">(   OPT_Branch.BranchName LIKE	 '${searchName}%' OR OPT_Branch.Address LIKE	 '${searchName}%')</if>
+		  		  <if test="id != null and id != ''"> and ID = #{id} </if>
+		  		  <if test="merchantCode != null and merchantCode != ''"> and MerchantCode = #{merchantCode} </if>
+		  		  <if test="branchCode != null and branchCode != ''"> and BranchCode = #{branchCode} </if>
+		  		  <if test="branchName != null and branchName != ''"> and BranchName = #{branchName} </if>
+		  		  <if test="address != null and address != ''"> and Address = #{address} </if>
+		  		  <if test="lat != null and lat != ''"> and Lat = #{lat} </if>
+		  		  <if test="lng != null and lng != ''"> and Lng = #{lng} </if>
+		  		  <if test="state != null and state != ''"> and State = #{state} </if>
+		  		  <if test="remark != null and remark != ''"> and Remark = #{remark} </if>
+		  		  <if test="createdDate != null and createdDate != ''"> and CreatedDate = #{createdDate} </if>
+		  		  <if test="createdBy != null and createdBy != ''"> and CreatedBy = #{createdBy} </if>
+		  		  <if test="updatedDate != null and updatedDate != ''"> and UpdatedDate = #{updatedDate} </if>
+		  		  <if test="updatedBy != null and updatedBy != ''"> and UpdatedBy = #{updatedBy} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.slzr.operation.domain.OptBranchDO">
+		insert into OPT_Branch
+		(
+			  
+			MerchantCode, 
+			BranchCode, 
+			BranchName, 
+			Address, 
+			Lat, 
+			Lng, 
+			State, 
+			Remark, 
+			CreatedDate, 
+			CreatedBy, 
+			UpdatedDate, 
+			UpdatedBy
+		)
+		values
+		(
+			  
+			#{merchantCode,jdbcType=VARCHAR}, 
+			#{branchCode,jdbcType=VARCHAR}, 
+			#{branchName,jdbcType=VARCHAR}, 
+			#{address,jdbcType=VARCHAR}, 
+			#{lat,jdbcType=VARCHAR}, 
+			#{lng,jdbcType=VARCHAR}, 
+			#{state,jdbcType=VARCHAR}, 
+			#{remark,jdbcType=VARCHAR}, 
+			#{createdDate,jdbcType=TIMESTAMP}, 
+			#{createdBy,jdbcType=INTEGER}, 
+			#{updatedDate,jdbcType=TIMESTAMP}, 
+			#{updatedBy,jdbcType=INTEGER}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.slzr.operation.domain.OptBranchDO">
+		update OPT_Branch 
+		<set>
+			<if test="merchantCode != null">MerchantCode = #{merchantCode,jdbcType=VARCHAR}, </if>
+			<if test="branchCode != null">BranchCode = #{branchCode,jdbcType=VARCHAR}, </if>
+			<if test="branchName != null">BranchName = #{branchName,jdbcType=VARCHAR}, </if>
+			<if test="address != null">Address = #{address,jdbcType=VARCHAR}, </if>
+			<if test="lat != null">Lat = #{lat,jdbcType=VARCHAR}, </if>
+			<if test="lng != null">Lng = #{lng,jdbcType=VARCHAR}, </if>
+			<if test="state != null">State = #{state,jdbcType=CHAR}, </if>
+			<if test="remark != null">Remark = #{remark,jdbcType=VARCHAR}, </if>
+			<if test="createdDate != null">CreatedDate = #{createdDate,jdbcType=TIMESTAMP}, </if>
+			<if test="createdBy != null">CreatedBy = #{createdBy,jdbcType=INTEGER}, </if>
+			<if test="updatedDate != null">UpdatedDate = #{updatedDate,jdbcType=TIMESTAMP}, </if>
+			<if test="updatedBy != null">UpdatedBy = #{updatedBy,jdbcType=INTEGER}</if>
+		</set>
+		where ID = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from OPT_Branch where ID = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from OPT_Branch where ID in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

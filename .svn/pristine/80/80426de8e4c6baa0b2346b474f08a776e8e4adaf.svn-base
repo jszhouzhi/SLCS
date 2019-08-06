@@ -1,0 +1,33 @@
+package com.slzr.system.service;
+
+import com.slzr.common.domain.Tree;
+import com.slzr.system.domain.DeptDO;
+
+import java.util.List;
+import java.util.Map;
+
+/** 
+ * 部门
+ * 2018.02.08
+ * @author Administrator
+ */
+public interface DeptService {
+	
+	DeptDO get(Long deptId);
+	
+	List<DeptDO> list(Map<String, Object> map);
+	
+	int count(Map<String, Object> map);
+	
+	int save(DeptDO sysDept);
+	
+	int update(DeptDO sysDept);
+	
+	int remove(Long deptId);
+	
+	int batchRemove(Long[] deptIds);
+
+	Tree<DeptDO> getTree();
+	
+	boolean checkDeptHasUser(Long deptId);
+}

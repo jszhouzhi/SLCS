@@ -1,0 +1,22 @@
+package com.slzr.ureport.bean;
+
+import com.slzr.ureport.domain.BCountDo;
+import com.slzr.ureport.service.BCountDeptLineSerive;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.Map;
+
+public class BCountDeptLineBean {
+
+    @Autowired
+    private BCountDeptLineSerive bCountDeptLineSerive;
+
+    public List<BCountDo> getListAccount(String dsName, String datasetName, Map<String,Object> parameters){
+
+
+        List<BCountDo> list= bCountDeptLineSerive.list(parameters);;
+
+        return list;
+    }
+}

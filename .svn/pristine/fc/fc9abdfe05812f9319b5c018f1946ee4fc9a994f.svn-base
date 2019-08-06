@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.operationCancelDao">
+
+	<sql id="BAR_DailySummary_Topup_Column">
+        BAR_DailySummary_Topup.ID as ID
+        ,BAR_DailySummary_Topup.AuditRemark as AuditRemark
+        ,BAR_DailySummary_Topup.TxnDate as TxnDate
+        ,BAR_DailySummary_Topup.RefundAmount as RefundAmount
+        ,BAR_DailySummary_Topup.TopupNum as TopupNum
+        ,BAR_DailySummary_Topup.RefundNum as RefundNum
+        ,BAR_DailySummary_Topup.ServiceFee as ServiceFee
+        ,BAR_DailySummary_Topup.AuditUID as AuditUID
+        ,BAR_DailySummary_Topup.AuditStatus as AuditStatus
+        ,BAR_DailySummary_Topup.AuditDateTime as AuditDateTime
+        ,BAR_DailySummary_Topup.SummaryDateTime as SummaryDateTime
+        ,BAR_DailySummary_Topup.PayMethodId as PayMethodId
+        ,BAR_DailySummary_Topup.TopupAmount as TopupAmount
+    </sql>
+	<select id="get" resultType="com.slzr.operation.domain.DailysummaryTopupDO">
+		select 
+		<include refid="BAR_DailySummary_Topup_Column" /> 
+		from BAR_DailySummary_Topup where ID = #{value}
+	</select>
+
+	<select id="list" resultType="com.slzr.operation.domain.DailysummaryTopupDO">
+		select 
+		<include refid="BAR_DailySummary_Topup_Column" /> 
+		from BAR_DailySummary_Topup
+        <where>
+            <if test="topupAmount != null "> and BAR_DailySummary_Topup.TopupAmount = #{topupAmount}</if>
+            <if test="payMethodId != null "> and BAR_DailySummary_Topup.PayMethodId = #{payMethodId}</if>
+            <if test="summaryDateTime != null "> and BAR_DailySummary_Topup.SummaryDateTime = #{summaryDateTime}</if>
+            <if test="auditDateTime != null "> and BAR_DailySummary_Topup.AuditDateTime = #{auditDateTime}</if>
+            <if test="auditStatus != null "> and BAR_DailySummary_Topup.AuditStatus = #{auditStatus}</if>
+            <if test="auditUID != null "> and BAR_DailySummary_Topup.AuditUID = #{auditUID}</if>
+            <if test="serviceFee != null "> and BAR_DailySummary_Topup.ServiceFee = #{serviceFee}</if>
+            <if test="refundNum != null "> and BAR_DailySummary_Topup.RefundNum = #{refundNum}</if>
+            <if test="topupNum != null "> and BAR_DailySummary_Topup.TopupNum = #{topupNum}</if>
+            <if test="refundAmount != null "> and BAR_DailySummary_Topup.RefundAmount = #{refundAmount}</if>
+            <if test="txnDate != null "> and BAR_DailySummary_Topup.TxnDate = #{txnDate}</if>
+            <if test="auditRemark != null "> and BAR_DailySummary_Topup.AuditRemark = #{auditRemark}</if>
+            <if test="iD != null "> and BAR_DailySummary_Topup.ID = #{iD}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by ID desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from BAR_DailySummary_Topup
+        <where>
+            <if test="topupAmount != null "> and BAR_DailySummary_Topup.TopupAmount = #{topupAmount}</if>
+            <if test="payMethodId != null "> and BAR_DailySummary_Topup.PayMethodId = #{payMethodId}</if>
+            <if test="summaryDateTime != null "> and BAR_DailySummary_Topup.SummaryDateTime = #{summaryDateTime}</if>
+            <if test="auditDateTime != null "> and BAR_DailySummary_Topup.AuditDateTime = #{auditDateTime}</if>
+            <if test="auditStatus != null "> and BAR_DailySummary_Topup.AuditStatus = #{auditStatus}</if>
+            <if test="auditUID != null "> and BAR_DailySummary_Topup.AuditUID = #{auditUID}</if>
+            <if test="serviceFee != null "> and BAR_DailySummary_Topup.ServiceFee = #{serviceFee}</if>
+            <if test="refundNum != null "> and BAR_DailySummary_Topup.RefundNum = #{refundNum}</if>
+            <if test="topupNum != null "> and BAR_DailySummary_Topup.TopupNum = #{topupNum}</if>
+            <if test="refundAmount != null "> and BAR_DailySummary_Topup.RefundAmount = #{refundAmount}</if>
+            <if test="txnDate != null "> and BAR_DailySummary_Topup.TxnDate = #{txnDate}</if>
+            <if test="auditRemark != null "> and BAR_DailySummary_Topup.AuditRemark = #{auditRemark}</if>
+            <if test="iD != null "> and BAR_DailySummary_Topup.ID = #{iD}</if>
+        </where>
+	</select>
+	 
+
+
+</mapper>

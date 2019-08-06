@@ -1,0 +1,93 @@
+var input_content;
+$().ready(function() {
+	validateRule();
+	
+});
+
+$.validator.setDefaults({
+	submitHandler : function() {
+		save();
+	}
+});
+
+function addBtn(){
+    // 获取form的值
+    var fromAmount = $("input[name='fromAmount']").val();
+    var toAmount = $("input[name='toAmount']").val();
+    var discountAmount = $("input[name='discountAmount']").val();
+    
+    // 在table 中生成tr 
+    var tr = $("<tr><td>"+fromAmount+"</td><td>"+toAmount+"</td><td>"+discountAmount+"</td><td><a href='#' onclick='deleteItem(this);'>删除</a></td></tr>");
+    $("table").append(tr);
+    
+    input_content += fromAmount+"&"+toAmount+"&"+discountAmount
+    // form重置，清除刚才表单填写的内容
+    $("form")[0].reset();
+   
+}
+
+//删除
+function deleteItem(a){
+    // 删除 a 元素所在行 
+    $(a).parents("tr").remove();
+}
+
+function save() {
+	//alert(input_content);
+	var content = $('#signupForm').serialize()+"&"+input_content;
+	$.ajax({
+		cache : true,
+		type : "POST",
+		url : "/operation/sendcase/save",
+		data : {content:content},// 你的formid
+		async : false,
+		error : function(request) {
+			parent.layer.alert("Connection error");
+		},
+		success : function(data) {
+			if (data.code == 0) {
+				parent.layer.msg("操作成功");
+				parent.reLoad();
+				var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+				parent.layer.close(index);
+
+			} else {
+				parent.layer.alert(data.msg)
+			}
+
+		}
+	});
+
+}
+function validateRule() {
+	var icon = "<i class='fa fa-times-circle'></i> ";
+	$("#signupForm").validate({
+		rules : {
+			name : {
+				required : true
+			}
+		},
+		messages : {
+			name : {
+				required : icon + "请输入姓名"
+			}
+		}
+	})
+}
+
+
+layui.use(['laydate'], function(){
+	  var form = layui.form
+	  ,layer = layui.layer
+	  ,layedit = layui.layedit
+	  ,laydate = layui.laydate;
+	  
+	  //日期
+	  laydate.render({
+	    elem: '#effectivedatetime'
+	  });
+	  laydate.render({
+	    elem: '#expireddatetime'
+	  });
+	  
+	});

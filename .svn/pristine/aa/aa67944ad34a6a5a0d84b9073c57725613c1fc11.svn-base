@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+<title th:text="${proTitle}"></title>
+<meta name="keywords" content="web管理系统">
+<meta name="description" content="web管理系统">
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+<link href="/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+<link href="/css/animate.css" rel="stylesheet">
+<link href="/css/style.css" rel="stylesheet">
+<link href="/css/login.css" rel="stylesheet">
+<!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+<script>
+	if (window.top !== window.self) {
+		window.top.location = window.location;
+	}
+</script>
+
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+	<script type="text/javascript" src='/js/bg-canvas.js'></script>
+		<div class="signinpanel">
+		<div class="row">
+			<div class="col-sm-7">
+				<div class="signin-info">
+					<div class="logopanel m-b">
+						<h1 th:text="${proName}"></h1>
+					</div>
+					<div class="m-b"></div>
+					<h3>
+						Web <strong>后台管理系统</strong>
+					</h3>
+
+
+				</div>
+			</div>
+			<div class="col-sm-5">
+				<form id="signupForm">
+					<h3 class="text-center">用户登录</h3>
+					<p class="m-t-md text-center">欢迎登录web后台系统</p>
+					<input type="text" name="username" class="form-control uname"
+						value="admin" />
+					<input type="password" name="password"
+						class="form-control pword m-b" value="111111" />
+					<button class="btn btn-login btn-block">登录</button>
+					<!--按钮模块-->
+
+					
+				</form>
+			</div>
+		</div>
+		<div class="signup-footer">
+			 <div class="pull-left">Copyright © 2018 ：三联众瑞科技有限公司
+			</div>
+		</div>
+	</div>
+	
+		<!-- 全局js -->
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.6"></script>
+
+	<!-- 自定义js -->
+	<script src="/js/content.js?v=1.0.0"></script>
+
+	<!-- jQuery Validation plugin javascript-->
+	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+	<script src="/js/plugins/validate/messages_zh.min.js"></script>
+	<script src="/js/plugins/layer/layer.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			showbg();
+			validateRule();
+			//$("#signupForm").validate();
+		});
+		$.validator.setDefaults({
+			submitHandler : function() {
+				login();
+			}
+		});
+
+		function login() {
+			$.ajax({
+				type : "POST",
+				url : "/login",
+				data : $('#signupForm').serialize(),
+				success : function(r) {
+					if (r.code == 0) {
+						parent.location.href = '/index';
+					} else {
+						layer.msg(r.msg);
+					}
+				}
+			});
+		}
+
+		function validateRule() {
+			var icon = "<i class='fa fa-times-circle'></i> ";
+			$("#signupForm").validate({
+				rules : {
+					username : {
+						required : true
+					},
+					password : {
+						required : true
+					}
+				},
+				messages : {
+					username : {
+						required : icon + "请输入您的用户名",
+					},
+					password : {
+						required : icon + "请输入您的密码",
+					}
+				}
+			})
+		}
+		
+        var imgs =["../img/home-bg.jpg", 
+                   "../img/p_big3.jpg",
+                   "../img/login-background.jpg",
+                   "../img/background_login.jpg",
+                   "../img/backg02.jpg"
+                   ];
+     	var index=Math.round(Math.random()*4);
+     	var img = imgs[index];
+     	
+     	function showbg(){
+
+     		document.body.style.backgroundImage="url("+img+")";
+
+     	}
+     	
+        //回车事件
+        document.onkeydown = function(e){
+      	   if(!e){
+      	    	e = window.event;
+      	   }
+      	   if((e.keyCode || e.which) == 13){
+      		 login();
+      	   }
+      	 }
+	</script>
+
+</body>
+</html>

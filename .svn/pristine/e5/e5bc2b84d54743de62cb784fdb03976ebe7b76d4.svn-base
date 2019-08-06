@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.ArticleDao">
+
+	<sql id="thisColumns">
+        BAR_Article.ID as ID
+        ,BAR_Article.UpdateDate as UpdateDate
+        ,BAR_Article.PhotoPath as PhotoPath
+        ,BAR_Article.Contents as Contents
+        ,BAR_Article.CreatedBy as CreatedBy
+        ,BAR_Article.MerchantCode as MerchantCode
+        ,BAR_Article.Abstracts as Abstracts
+        ,BAR_Article.CreatedDate as CreatedDate
+        ,BAR_Article.Title as Title
+        ,BAR_Article.ViewNum as ViewNum
+        ,BAR_Article.ArticleType as ArticleType
+        ,BAR_Article.UpdateBy as UpdateBy
+    </sql>
+	<select id="get" resultType="com.slzr.operation.domain.ArticleDO">
+		select 
+		<include refid="thisColumns" /> 
+		from BAR_Article where ID = #{id}
+	</select>
+
+	<select id="list" resultType="com.slzr.operation.domain.ArticleDO">
+		select 
+		<include refid="thisColumns" /> 
+		from BAR_Article
+        <where>
+            <if test="auditRemark != null and  auditRemark != ''"> and BAR_Article.ID like '%${auditRemark}%'</if>
+            <if test="auditRemark != null and  auditRemark != ''"> OR BAR_Article.Title like '%${auditRemark}%'</if>
+            <if test="type != null and  type != ''"> OR BAR_Article.ArticleType like '${type}'</if>
+
+
+            <if test="sdate != null and  sdate!= ''"> and BAR_Article.CreatedDate &gt;= '${sdate} 0:00:00'</if>
+            <if test="edate != null and  edate!= ''"> and BAR_Article.CreatedDate &lt;= '${edate} 23:59:59'</if>
+
+
+
+
+        </where>
+
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by CreatedDate desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from BAR_Article
+        <where>
+            <if test="auditRemark != null and  auditRemark != ''"> and BAR_Article.ID like '%${auditRemark}%'</if>
+            <if test="auditRemark != null and  auditRemark != ''"> OR BAR_Article.Title like '%${auditRemark}%'</if>
+            <if test="type != null and  type != ''"> OR BAR_Article.ArticleType like '${type}'</if>
+
+            <if test="sdate != null and  sdate!= ''"> and BAR_Article.CreatedDate &gt;= '${sdate} 0:00:00'</if>
+            <if test="edate != null and  edate!= ''"> and BAR_Article.CreatedDate &lt;= '${edate} 23:59:59'</if>
+
+        </where>
+	</select>
+
+
+    <delete id="remove">
+        delete from BAR_Article where ID = #{value}
+    </delete>
+    
+    <insert id="add">
+    	insert into BAR_Article (ArticleType,Title,PhotoPath,Contents,Abstracts,CreatedBy,CreatedDate) 
+    	values (#{arttype},#{arttitle},NULL,#{content},#{artsummary},#{userid},getdate())
+	</insert>
+
+</mapper>

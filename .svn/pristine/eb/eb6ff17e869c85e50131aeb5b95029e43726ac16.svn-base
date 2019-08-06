@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.system.dao.DeptDao">
+
+	<select id="get" resultType="com.slzr.system.domain.DeptDO">
+		select
+		DeptId,ParentId,Name,OrderNum,DelFlag from SYS_Dept
+		where DeptId = #{value}
+	</select>
+
+	<select id="list" resultType="com.slzr.system.domain.DeptDO">
+		select DeptId,ParentId,Name,OrderNum,DelFlag from
+		SYS_Dept
+		<where>
+			<if test="deptId != null and deptId != ''"> and DeptId = #{deptId} </if>
+			<if test="parentId != null and parentId != ''"> and ParentId = #{parentId} </if>
+			<if test="name != null and name != ''"> and Name = #{name} </if>
+			<if test="orderNum != null and orderNum != ''"> and OrderNum = #{orderNum} </if>
+			<if test="delFlag != null and delFlag != ''"> and DelFlag = #{delFlag} </if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by DeptId desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+
+	<select id="count" resultType="int">
+		select count(*) from SYS_Dept
+		<where>
+			<if test="deptId != null and deptId != ''"> and DeptId = #{deptId} </if>
+			<if test="parentId != null and parentId != ''"> and ParentId = #{parentId} </if>
+			<if test="name != null and name != ''"> and Name = #{name} </if>
+			<if test="orderNum != null and orderNum != ''"> and OrderNum = #{orderNum} </if>
+			<if test="delFlag != null and delFlag != ''"> and DelFlag = #{delFlag} </if>
+		</where>
+	</select>
+
+	<insert id="save" parameterType="com.slzr.system.domain.DeptDO"
+		useGeneratedKeys="true" keyProperty="deptId">
+		insert into SYS_Dept
+		(
+		ParentId,
+		Name,
+		OrderNum,
+		DelFlag
+		)
+		values
+		(
+		#{parentId,jdbcType=BIGINT},
+		#{name,jdbcType=VARCHAR},
+		#{orderNum,jdbcType=INTEGER},annotation-config
+		#{delFlag,jdbcType=INTEGER}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.slzr.system.domain.DeptDO">
+		update SYS_Dept
+		<set>
+			<if test="parentId != null">ParentId = #{parentId}, </if>
+			<if test="name != null">Name = #{name}, </if>
+			<if test="orderNum != null">OrderNum = #{orderNum}, </if>
+			<if test="delFlag != null">DelFlag = #{delFlag}</if>
+		</set>
+		where DeptId = #{deptId}
+	</update>
+
+	<delete id="remove">
+		delete from SYS_Dept where DeptId = #{value}
+	</delete>
+
+	<delete id="batchRemove">
+		delete from SYS_Dept where DeptId in
+		<foreach item="deptId" collection="array" open="(" separator=","
+			close=")">
+			#{deptId}
+		</foreach>
+	</delete>
+	
+	<select id="listParentDept" resultType="long">
+		select DISTINCT ParentId from SYS_Dept
+	</select>
+
+    <select id="getDeptUserNumber" resultType="int">
+		select count(*) from SYS_User where DeptId = #{value}
+	</select>
+</mapper>

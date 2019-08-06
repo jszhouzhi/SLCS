@@ -1,0 +1,17 @@
+package com.slzr.system.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.slzr.common.controller.BaseController;
+
+@Controller
+@RequestMapping("/bar/DailySummary")
+public class DailySummary  extends BaseController{
+	private String prefix = "bar/DailySummary";
+	@GetMapping("/Topup")
+	public String Topup() {
+		return prefix + "/Topup";
+	}
+}

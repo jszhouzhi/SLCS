@@ -1,0 +1,37 @@
+package com.slzr.ureport.bean;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import com.slzr.ureport.domain.ACountDo;
+
+
+/**
+ * 一级统计  部门消费统计
+ * @author Administrator
+ *
+ */
+public class ACountDeptBean {
+    public List<ACountDo> loadReportData(String dsName,String datasetName,Map<String,Object> parameters){
+    	List<ACountDo> aCountDeptDoList=new ArrayList<ACountDo>();        
+        String p = null;
+        if(parameters.containsKey("a")){  
+        	p = parameters.get("a").toString();
+        }
+        int i;
+        for(i=1;i<15;i++) {
+        	ACountDo aCountDeptDoDo=new ACountDo();
+        	aCountDeptDoDo.setId((long) i);
+        	aCountDeptDoDo.setDateTime(new Date());
+        	aCountDeptDoDo.setDept(" 部门消费统计(O_o)??部"+i+"参数为:"+p);       	
+        	aCountDeptDoDo.setConsumptionPerson(3);
+        	aCountDeptDoDo.setConsumptionAmount( new BigDecimal(33));       
+        	
+        	aCountDeptDoList.add(aCountDeptDoDo);
+        }    
+        return aCountDeptDoList;
+    }
+}

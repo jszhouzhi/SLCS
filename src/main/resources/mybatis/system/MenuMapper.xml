@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.system.dao.MenuDao">
+
+	<select id="get" resultType="com.slzr.system.domain.MenuDO">
+		select
+		MenuId,ParentId,Name,Url,Perms,Type,Icon,OrderNum,GmtCreate,GmtModified
+		from SYS_Menu where MenuId = #{value}
+	</select>
+
+	<select id="list" resultType="com.slzr.system.domain.MenuDO">
+		select * from SYS_Menu 
+
+		<where>
+			<if test="roleId != null"> 
+					MenuId in (		
+					select MenuId from SYS_RoleMenu where RoleId = #{roleId}
+					)
+			 </if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by MenuId desc
+			</otherwise>
+		</choose>
+
+	</select>
+
+	<select id="count" resultType="int">
+		select count(*)
+		FROM
+		SYS_Menu me
+		LEFT JOIN SYS_RoleMenu rm ON me.MenuId = rm.MenuId
+		LEFT JOIN SYS_Role ro ON rm.RoleId = ro.RoleId
+		LEFT JOIN SYS_UserRole ur ON ro.RoleId = ur.RoleId
+		LEFT JOIN SYS_User [use] ON ur.UserId = [use].ID
+		<where>
+			<if test="merchantCode != null and merchantCode != ''"> and MerchantCode = #{merchantCode} </if>
+			<if test="roleId != null and roleId != ''"> and ro.RoleId IN = #{roleId} </if>
+		</where>
+	</select>
+
+	<insert id="save" parameterType="com.slzr.system.domain.MenuDO"
+		useGeneratedKeys="true" keyProperty="menuId">
+		insert into SYS_Menu
+		(
+		ParentId,
+		Name,
+		Url,
+		Perms,
+		Type,
+		Icon,
+		OrderNum,
+		GmtCreate,
+		GmtModified
+		)
+		values
+		(
+		#{parentId,jdbcType=BIGINT},
+		#{name,jdbcType=VARCHAR},
+		#{url,jdbcType=VARCHAR},
+		#{perms,jdbcType=VARCHAR},
+		#{type,jdbcType=INTEGER},
+		#{icon,jdbcType=VARCHAR},
+		#{orderNum,jdbcType=INTEGER},
+		#{gmtCreate,jdbcType=TIMESTAMP},
+		#{gmtModified,jdbcType=TIMESTAMP}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.slzr.system.domain.MenuDO">
+		update SYS_Menu
+		<set>
+			<if test="parentId != null">ParentId = #{parentId}, </if>
+			<if test="name != null">Name = #{name}, </if>
+			<if test="url != null">Url = #{url}, </if>
+			<if test="perms != null">Perms = #{perms}, </if>
+			<if test="type != null">Type = #{type}, </if>
+			<if test="icon != null">Icon = #{icon}, </if>
+			<if test="orderNum != null">OrderNum = #{orderNum}, </if>
+			<if test="gmtCreate != null">GmtCreate = #{gmtCreate}, </if>
+			<if test="gmtModified != null">GmtModified = #{gmtModified}</if>
+		</set>
+		where MenuId = #{menuId}
+	</update>
+
+	<delete id="remove">
+		delete from SYS_Menu where MenuId = #{value}
+	</delete>
+
+	<delete id="batchRemove">
+		delete from SYS_Menu where MenuId in
+		<foreach item="menuId" collection="array" open="(" separator=","
+			close=")">
+			#{menuId}
+		</foreach>
+	</delete>
+
+	<select id="listMenuByUserId" resultType="com.slzr.system.domain.MenuDO">
+		select distinct
+		m.MenuId , ParentId, Name, Url,
+		Perms,Type,icon,OrderNum,GmtCreate, GmtModified
+		from SYS_Menu m
+		left
+		join SYS_RoleMenu rm on m.MenuId = rm.MenuId left join
+		SYS_UserRole ur
+		on rm.RoleId =ur.RoleId where ur.UserId = #{id}
+		and
+		m.Type in(0,1)
+		order by
+		m.OrderNum
+	</select>
+
+	<select id="listUserPerms" resultType="string">
+		select distinct m.perms
+		from SYS_Menu m left join
+		SYS_RoleMenu rm on m.MenuId = rm.MenuId
+		left join SYS_UserRole ur
+		on rm.RoleId = ur.RoleId where ur.UserId
+		= #{id}
+	</select>
+</mapper>

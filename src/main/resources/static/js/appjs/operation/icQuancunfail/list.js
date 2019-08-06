@@ -1,0 +1,242 @@
+
+var prefix = "/operation/icQuancunfail"
+$(function() {
+	load();
+});
+$('#exampleTable').on('load-success.bs.table', function (e, data) {
+    if (data.total && !data.rows.length) {
+        $('#exampleTable').bootstrapTable('selectPage').bootstrapTable('refresh');
+    }
+});
+
+layui.use(['form'], function() {
+	form=layui.form;
+	form.on('select(setdate)', function(data){   
+	//var val=data.value;
+	//console.info(val);
+	$('#exampleTable').bootstrapTable('refresh');
+	});
+});
+
+function load() {
+	$('#exampleTable')
+			.bootstrapTable(
+					{
+						method : 'get', // 服务器数据的请求方式 get or post
+						url : prefix + "/list", // 服务器数据的加载地址
+					//	showRefresh : true,
+					//	showToggle : true,
+					//	showColumns : true,
+						iconSize : 'outline',
+						toolbar : '#exampleToolbar',
+						striped : true, // 设置为true会有隔行变色效果
+						dataType : "json", // 服务器返回的数据类型
+						pagination : true, // 设置为true会在底部显示分页条
+						// queryParamsType : "limit",
+						// //设置为limit则会发送符合RESTFull格式的参数
+						singleSelect : false, // 设置为true将禁止多选
+						// contentType : "application/x-www-form-urlencoded",
+						// //发送到服务器的数据编码类型
+						pageSize : 10, // 如果设置了分页，每页数据条数
+						pageNumber : 1, // 如果设置了分布，首页页码
+						//search : true, // 是否显示搜索框
+						showColumns : false, // 是否显示内容下拉框（选择显示的列）
+						sidePagination : "server", // 设置在哪里进行分页，可选值为"client" 或者 "server"
+						queryParams : function(params) {
+							return {
+								//说明：传入后台的参数包括offset开始索引，limit步长，sort排序列，order：desc或者,以及所有列的键值对
+								limit: params.limit,
+								offset:params.offset,
+								searchName:$('#searchName').val(),
+								merchantCode : $('#merchantCode').val(),
+								setdate:$('#setdate').val()
+					           // name:$('#searchName').val(),
+					           // username:$('#searchName').val()
+							};
+						},
+						// //请求服务器数据时，你可以通过重写参数的方式添加一些额外的参数，例如 toolbar 中的参数 如果
+						// queryParamsType = 'limit' ,返回参数必须包含
+						// limit, offset, search, sort, order 否则, 需要包含:
+						// pageSize, pageNumber, searchText, sortName,
+						// sortOrder.
+						// 返回false将会终止请求
+						columns : [
+						           
+									{
+										field : 'merchantCode',
+										title : '商户',
+										align:'center'
+									},
+									{
+										field : 'cardno', 
+										align : 'center',
+										title : '卡号' 
+									},	
+									{
+										field : 'orderno', 
+										align : 'center',
+										title : '订单号' 
+									},
+
+									{
+										field : 'txnamount', 										
+										title : '交易金额',
+										align:'right',
+										formatter : function(value, row, index) {
+											if(value!=null){
+												return value.toFixed(2);
+											}
+										}
+									},	
+									{
+										field : 'balance', 
+										title : '余额',
+										align:'right',
+										formatter : function(value, row, index) {
+											if(value!=null){
+												return value.toFixed(2);
+											}
+										}
+									},
+								
+									{
+										field : 'loadstate', 
+										align : 'left',
+										title : '状态' ,
+										formatter: function(value){
+											if(value=='-1'){
+												return '待审核';
+											}else if(value=='0'){
+												return '圈存失败';
+											}else if(value=='1'){
+												return '圈存成功';
+											}
+											
+/*											if(value=='4'){
+												return '锁定';
+											}else if(value=='5'){
+												return '圈存失败';
+											}else if(value=='6'){
+												return '圈存成功';
+											}else if(value=='7'){
+												return '已退款';
+											}else if(value=='1'){
+												return '未支付';
+											}else if(value=='2'){
+												return '支付成功';
+											}else if(value=='3'){
+												return '支付失败';
+											}else if(value=='-1'){
+												return '待审核';
+											}*/
+										}
+									},
+									{
+										field : 'loaddescribe', 
+										align : 'left',
+										title : '描述' 
+									},
+									{
+										field : 'loadbackdate', 
+										align : 'center',
+										title : '交易时间' 
+									},
+									
+									{
+										field : 'paytime', 
+										align : 'center',
+										title : '支付时间' 
+									},
+										
+									{
+										field : 'terminalno', 
+										align : 'center',
+										title : '自助终端编号' 
+									},
+							
+									{
+									title : '操作',
+									field : 'id',
+									align : 'center',
+									formatter : function(value, row, index) {
+										var s = '<button class="layui-btn layui-btn-sm'+s_g_h+'" type="button" onclick="editS(\''+ row.id	
+										+ '\')">圈存写卡成功</button> ';
+										var f = '<button class="layui-btn layui-btn-sm'+s_g_h+'" type="button" onclick="editF(\''+ row.id	
+										+ '\')">圈存写卡失败</button> ';											
+										
+										return s+f ;
+								
+									}
+								} ]
+					});
+}
+function reLoad() {
+	$('#exampleTable').bootstrapTable('refresh');
+}
+
+function editS(id) {
+	layer.confirm('圈存写卡成功？', {
+		btn : [ '确定', '取消' ]
+	}, function() {
+		$.ajax({
+				url : "/operation/icQuancunfail/operation",
+				type : "post",
+				data : {
+					'id' : id,
+					'operationType' : '1'
+				},
+				success : function(r) {
+					if (r.code == 0) {
+						layer.msg(r.msg);
+						var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+						parent.layer.close(index);  // 关闭layer
+						
+						location.reload();
+					} else {
+						layer.msg(r.msg);
+					}
+				}
+		});
+	})
+}
+
+function editF(id) {
+	layer.confirm('圈存写卡失败？', {
+		btn : [ '确定', '取消' ]
+	}, function() {
+		$.ajax({
+				url : "/operation/icQuancunfail/operation",
+				type : "post",
+				data : {
+					'id' : id,
+					'operationType' : '0'
+				},
+				success : function(r) {
+					if (r.code == 0) {
+						layer.msg(r.msg);
+						var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+						parent.layer.close(index);  // 关闭layer
+						
+						location.reload();
+					} else {
+						layer.msg(r.msg);
+					}
+				}
+		});
+	})
+}
+
+
+
+function excel(){
+	var searchName = $("#searchName").val();
+	var merchantCode = $("#merchantCode").val();
+	layer.confirm('您确定导出吗？', {
+		  btn: ['是','否']
+	}, function(){
+		window.location.href= prefix + '/expexcel?searchName=' + searchName + '&merchantCode=' + merchantCode;
+		layer.closeAll('dialog');
+	}, function(){
+	});
+}
+

@@ -1,0 +1,109 @@
+package com.slzr.ureport.controller;
+
+import com.slzr.operation.domain.OPTBusDO;
+import com.slzr.operation.domain.OPTDepartmentDO;
+import com.slzr.operation.domain.OPTDriverDO;
+import com.slzr.operation.domain.OPTLineDO;
+import com.slzr.operation.service.OPTBusService;
+import com.slzr.operation.service.OPTDepartmentService;
+import com.slzr.operation.service.OPTDriverService;
+import com.slzr.operation.service.OPTLineService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@RequestMapping("/report")
+@Controller
+public class PageController {
+
+	@Autowired
+	private OPTDepartmentService optDepartmentService;
+
+	@Autowired
+	private OPTLineService optLineService;
+	
+	@Autowired
+	private OPTDriverService optDriverService;
+	
+	@Autowired
+	private OPTBusService optBusService;
+
+	private String prefix = "report";
+	
+	@GetMapping("/icTopupTrans")
+	public String icTopupTrans() {
+		return prefix + "/icTopupTrans";
+	}
+
+	@GetMapping("/DeptLine")
+	public String deptLine(Model model) {
+		Map<String,Object> params=new HashMap<>();
+		List<OPTDepartmentDO> Dept = optDepartmentService.list(params);
+
+		List<OPTLineDO> lineName = optLineService.list(params);
+		model.addAttribute("dept",Dept);
+		model.addAttribute("line",lineName);
+		return prefix + "/deptLine";
+	}
+
+	@GetMapping("/LineBus")
+	public String LineBus(Model model) {
+		Map<String,Object> params=new HashMap<>();
+		List<OPTDepartmentDO> Dept = optDepartmentService.list(params);
+
+		List<OPTLineDO> lineName = optLineService.list(params);
+		model.addAttribute("dept",Dept);
+		model.addAttribute("line",lineName);
+		return prefix + "/lineBus";
+	}
+	@GetMapping("/BusDriver")
+	public String BusDriver(Model model) {
+		Map<String,Object> params=new HashMap<>();
+		List<OPTDepartmentDO> Dept = optDepartmentService.list(params);
+
+		List<OPTLineDO> lineName = optLineService.list(params);
+		model.addAttribute("dept",Dept);
+		model.addAttribute("line",lineName);
+		return prefix + "/busDriver";
+	}
+
+	@GetMapping("/CountDept")
+	public String ACountDept(Model model) {
+		Map<String,Object> params=new HashMap<>();
+		List<OPTDepartmentDO> Dept = optDepartmentService.list(params);
+		model.addAttribute("Dept",Dept);
+		return prefix + "/CountDept";
+	}
+	
+	@GetMapping("/CountLine")
+	public String CountLine(Model model) {
+		Map<String,Object> params=new HashMap<>();
+		List<OPTLineDO> lineName = optLineService.list(params);
+		model.addAttribute("lineName",lineName);
+		return prefix + "/CountLine";
+	}
+	
+	@GetMapping("/CountDriver")
+	public String CountDriver(Model model) {
+		Map<String,Object> params=new HashMap<>();
+		List<OPTDriverDO> driverName = optDriverService.list(params);
+		model.addAttribute("driverName",driverName);
+		return prefix + "/CountDriver";
+	}
+	
+	@GetMapping("/CountCar")
+	public String CountCar(Model model) {
+		Map<String,Object> params=new HashMap<>();
+		List<OPTBusDO> bus = optBusService.list(params);
+		model.addAttribute("bus",bus);
+		return prefix + "/CountCar";
+	}
+	
+
+}

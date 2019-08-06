@@ -1,0 +1,80 @@
+package com.slzr.operation.controller;
+
+
+import com.slzr.common.annotation.SystemControllerLog;
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.utils.*;
+import com.slzr.operation.domain.DailysummarySettleDO;
+import com.slzr.operation.domain.SendCaseDo;
+import com.slzr.operation.service.SendCaseService;
+import com.slzr.set.domain.MerchDo;
+import com.slzr.set.service.MerchService;
+import com.slzr.system.domain.UserDO;
+import com.slzr.system.service.UserService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@RequestMapping("/send/send")
+@Controller
+public class SendCaseController extends BaseController{
+
+    private String prefix = "operation/settle";
+
+    @Autowired
+    private SendCaseService sendCaseService;
+    @Autowired
+    private MerchService merchService;
+
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("/list")
+    @SystemControllerLog(description="0")
+    public String list(Model model) {
+        HashMap<String,Object> params=new HashMap<>();
+        UserDO userDO = userService.get(getId());
+        List<MerchDo> merchantList=null;
+        if(userDO.getMerchantCode()==""||userDO.getMerchantCode()==null){
+            merchantList=merchService.list(params);
+        }else{
+            params.put("merchantCode",userDO.getMerchantCode());
+            merchantList=merchService.list(params);
+        }
+        model.addAttribute("merchantList",merchantList);
+        return prefix + "/list";
+    }
+
+    @ResponseBody
+    @GetMapping("api/list")
+    @RequiresPermissions("operation:settle:list")
+    public PageUtils list(@RequestParam Map<String, Object> params) {
+        UserDO userDO = userService.get(getId());
+        PageUtils pageUtil=null;
+        if(userDO.getMerchantCode()==""||userDO.getMerchantCode()==null){
+            //查询列表数据
+            Query query = new Query(params);
+            List<SendCaseDo> list = sendCaseService.list(query);
+            int total = sendCaseService.count(query);
+            pageUtil = new PageUtils(list, total);
+        }else{
+            params.put("merchantCode",userDO.getMerchantCode());
+            //查询列表数据
+            Query query = new Query(params);
+            List<SendCaseDo> list = sendCaseService.list(query);
+            int total = sendCaseService.count(query);
+            pageUtil = new PageUtils(list, total);
+        }
+
+        return pageUtil;
+    }
+}

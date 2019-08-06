@@ -1,0 +1,334 @@
+package com.slzr.operation.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.slzr.common.controller.BaseController;
+import com.slzr.system.domain.UserDO;
+import com.slzr.system.service.UserService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.slzr.common.utils.DateUtils;
+import com.slzr.common.utils.ExcelExportTool;
+import com.slzr.common.utils.PageUtils;
+import com.slzr.common.utils.Query;
+import com.slzr.operation.domain.DebitTransDO;
+import com.slzr.operation.domain.TopupTransDO;
+import com.slzr.operation.service.DebitTransService;
+
+@RequestMapping("/operation/debitTrans")
+@Controller
+public class DebitTransController extends BaseController{
+	@Autowired
+	UserService userService;
+
+	private String prefix = "operation/debitTrans";
+	@Autowired
+	private DebitTransService debittransservice;
+	
+	@GetMapping("/list")
+	public String list() {
+		return prefix + "/list";
+	}
+	
+	@ResponseBody
+	@GetMapping("api/list")
+	@RequiresPermissions("operation:debitTrans:list")
+	public PageUtils list(@RequestParam Map<String, Object> params) {
+
+		UserDO userDO = userService.get(getUserId());
+		PageUtils pageUtil=null;
+		if(userDO.getMerchantCode()==""||userDO.getMerchantCode()==null){
+			//查询列表数据
+			Query query = new Query(params);
+			List<DebitTransDO> list = debittransservice.list(query);
+			int total = debittransservice.count(query);
+			pageUtil = new PageUtils(list, total);
+		}else{
+			params.put("merchantCode",userDO.getMerchantCode());
+			Query query = new Query(params);
+			List<DebitTransDO> list = debittransservice.list(query);
+			int total = debittransservice.count(query);
+			 pageUtil = new PageUtils(list, total);
+		}
+
+		return pageUtil;
+	}
+
+    @RequestMapping("/expexcel")
+	public void expExceluser(ModelMap model,HttpServletRequest request,HttpServletResponse response,@RequestParam Map<String, Object> params){
+		String fileName = "消费交易报表.xls";
+		
+		String[] title = new String[]{"商户代码","终端计数器","终端编号","卡类型ID","交易类型ID","交易记录余额","二维码账号","账号余额","交易金额","商户代码","交易时间","司机编号","机构代码","线路编号","交易计数器","票据MAC","密钥版本","终端ID","记录TAC","应用版本","票据数据","上传时间","解包时间","来源文件ID","上车站点代码","上车站点时间","结束站点代码","结束站点时间","票价","折扣","方向","状态","状态更新时间","结算时间"};
+		
+		List<DebitTransDO> list = null;
+		
+			try {
+				list = debittransservice.list(params);
+				List<Object[]> data = new ArrayList<Object[]>();
+				for(int i=0; i<list.size();i++){
+		        Object[] str = new Object[title.length];
+			        //商户代码
+			        if(null!=list.get(i).getMerchantCode() && !list.get(i).getMerchantCode().equals("")){
+		        		str[0] = list.get(i).getMerchantCode();
+			        }
+		        		else {
+			        	str[0] = "";
+			        }
+			        //终端计数器
+			        if(null!=list.get(i).getTerminalCounter()){
+		        		str[1] = list.get(i).getTerminalCounter();
+			        }
+	        		else {
+			        	str[1] = "";
+			        }
+			        //终端编号
+			        if(null!=list.get(i).getTerminalNO() && !list.get(i).getTerminalNO().equals("")){
+		        		str[2] = list.get(i).getTerminalNO();
+			        }
+	        		else {
+			        	str[2] = "";
+			        }
+			        //卡类型ID
+			        if(null!=list.get(i).getCardTypeID()){
+		        		str[3] = list.get(i).getCardTypeID();
+			        }
+	        		else {
+			        	str[3] = "";
+			        }
+			        //交易类型ID
+			        if(null!=list.get(i).getTxnTypeID()){
+		        		str[4] = list.get(i).getTxnTypeID();
+			        }
+	        		else {
+			        	str[4] = "";
+			        }
+			        //交易记录余额
+			        if(null!=list.get(i).getTxnBalance()){
+		        		str[5] = list.get(i).getTxnBalance();
+			        }
+	        		else {
+			        	str[5] = "";
+			        }
+			        //二维码账号
+			        if(null!=list.get(i).getAccountNO() && !list.get(i).getAccountNO().equals("")){
+		        		str[6] = list.get(i).getAccountNO();
+			        }
+	        		else {
+			        	str[6] = "";
+			        }
+			        //账号余额
+			        if(null!=list.get(i).getBalance()){
+		        		str[7] = list.get(i).getBalance();
+			        }
+	        		else {
+			        	str[7] = "";
+			        }
+			        //交易金额
+			        if(null!=list.get(i).getTxnAmount()){
+		        		str[8] = list.get(i).getTxnAmount();
+			        }
+	        		else {
+			        	str[8] = "";
+			        }
+			        //商户代码
+			        if(null!=list.get(i).getMerchantCode() && !list.get(i).getMerchantCode().equals("")){
+		        		str[9] = list.get(i).getMerchantCode();
+			        }
+	        		else {
+			        	str[9] = "";
+			        }
+			        //交易时间
+			        if(null!=list.get(i).getTxnDateTime()){
+		        		str[10] = DateUtils.format(list.get(i).getTxnDateTime(), DateUtils.DATE_TIME_PATTERN);
+			        }
+	        		else {
+			        	str[10] = "";
+			        }
+			        //司机编号
+			        if(null!=list.get(i).getDriverNO() && !list.get(i).getDriverNO().equals("")){
+		        		str[11] = list.get(i).getDriverNO();
+			        }
+	        		else {
+			        	str[11] = "";
+			        }
+			        //机构代码
+			        if(null!=list.get(i).getCompanyCode() && !list.get(i).getCompanyCode().equals("")){
+		        		str[12] = list.get(i).getCompanyCode();
+			        }
+	        		else {
+			        	str[12] = "";
+			        }
+			        //线路编号
+			        if(null!=list.get(i).getLineNO() && !list.get(i).getLineNO().equals("")){
+		        		str[13] = list.get(i).getLineNO();
+			        }
+	        		else {
+			        	str[13] = "";
+			        }
+			        //交易计数器
+			        if(null!=list.get(i).getCounter()){
+		        		str[14] = list.get(i).getCounter();
+			        }
+	        		else {
+			        	str[14] = "";
+			        }
+			        //票据MAC
+			        if(null!=list.get(i).getTicketMac() && !list.get(i).getTicketMac().equals("")){
+		        		str[15] = list.get(i).getTicketMac();
+			        }
+	        		else {
+			        	str[15] = "";
+			        }
+			        //密钥版本
+			        if(null!=list.get(i).getKerVersion()){
+		        		str[16] = list.get(i).getKerVersion();
+			        }
+	        		else {
+			        	str[16] = "";
+			        }
+			        //终端ID
+			        if(null!=list.get(i).getTerminalID() && !list.get(i).getTerminalID().equals("")){
+		        		str[17] = list.get(i).getTerminalID();
+			        }
+	        		else {
+			        	str[17] = "";
+			        }
+			        //记录TAC
+			        if(null!=list.get(i).getRecordTAC() && !list.get(i).getRecordTAC().equals("")){
+		        		str[18] = list.get(i).getRecordTAC();
+			        }
+	        		else {
+			        	str[18] = "";
+			        }
+			        //应用版本
+			        if(null!=list.get(i).getAppVersion()){
+		        		str[19] = list.get(i).getAppVersion();
+			        }
+	        		else {
+			        	str[19] = "";
+			        }
+			        //票据数据
+			        if(null!=list.get(i).getTicketData() && !list.get(i).getTicketData().equals("")){
+		        		str[20] = list.get(i).getTicketData();
+			        }
+	        		else {
+			        	str[20] = "";
+			        }
+			        //上传时间
+			        if(null!=list.get(i).getUploadDateTime()){
+		        		str[21] = DateUtils.format(list.get(i).getUploadDateTime(), DateUtils.DATE_TIME_PATTERN);
+			        }
+	        		else {
+			        	str[21] = "";
+			        }
+			        //解包时间
+			        if(null!=list.get(i).getUnpackDateTime()){
+		        		str[22] = DateUtils.format(list.get(i).getUnpackDateTime(), DateUtils.DATE_TIME_PATTERN);
+			        }
+	        		else {
+			        	str[22] = "";
+			        }
+			        //来源文件ID
+			        if(null!=list.get(i).getFromFileID()){
+		        		str[23] = list.get(i).getFromFileID();
+			        }
+	        		else {
+			        	str[23] = "";
+			        }
+			        //上车站点代码
+			        if(null!=list.get(i).getStartStationCode() && !list.get(i).getStartStationCode().equals("")){
+		        		str[24] = list.get(i).getStartStationCode();
+			        }
+	        		else {
+			        	str[24] = "";
+			        }
+			        //上车站点时间
+			        if(null!=list.get(i).getStartStationTime()){
+		        		str[25] = DateUtils.format(list.get(i).getStartStationTime(), DateUtils.DATE_TIME_PATTERN);
+			        }
+	        		else {
+			        	str[25] = "";
+			        }
+			        //结束站点代码
+			        if(null!=list.get(i).getEndStationCode() && !list.get(i).getEndStationCode().equals("")){
+		        		str[26] = list.get(i).getEndStationCode();
+			        }
+	        		else {
+			        	str[26] = "";
+			        }
+			        //结束站点时间
+			        if(null!=list.get(i).getEndStaionTime()){
+		        		str[27] = DateUtils.format(list.get(i).getEndStaionTime(), DateUtils.DATE_TIME_PATTERN);
+			        }
+	        		else {
+			        	str[27] = "";
+			        }
+			        //票价
+			        if(null!=list.get(i).getTicketPrice()){
+		        		str[28] = list.get(i).getTicketPrice();
+			        }
+	        		else {
+			        	str[28] = "";
+			        }
+			        //折扣
+			        if(null!=list.get(i).getDiscount()){
+		        		str[29] = list.get(i).getDiscount();
+			        }
+	        		else {
+			        	str[29] = "";
+			        }
+			        //方向
+			        if(null!=list.get(i).getDirection() && !list.get(i).getDirection().equals("")){
+		        		str[30] = list.get(i).getDirection();
+			        }
+	        		else {
+			        	str[30] = "";
+			        }
+			        //状态
+			        if(null!=list.get(i).getDebitStatus()){
+		        		str[31] = list.get(i).getDebitStatus();
+			        }
+	        		else {
+			        	str[31] = "";
+			        }
+			        //状态更新时间
+			        if(null!=list.get(i).getUpdateStatusDateTime()){
+		        		str[32] = DateUtils.format(list.get(i).getUpdateStatusDateTime(), DateUtils.DATE_TIME_PATTERN);
+			        }
+	        		else {
+			        	str[32] = "";
+			        }
+			        //结算时间
+			        if(null!=list.get(i).getSettleDateTime()){
+		        		str[33] = DateUtils.format(list.get(i).getSettleDateTime(), DateUtils.DATE_TIME_PATTERN);
+			        }
+	        		else {
+			        	str[33] = "";
+			        }
+			        data.add(str);
+				}
+				String sheetName = "expExcel";
+				byte[] b = fileName.getBytes("UTF-8"); 
+			    String formatFileName = new String(b,"ISO-8859-1");
+			    response.setContentType("application/ms-excel");
+			    response.setHeader("Content-disposition", "attachment;filename="+formatFileName);
+			    ExcelExportTool.exportExcel(formatFileName, sheetName, title, data, response);
+			 } catch (Exception e) {
+				 e.printStackTrace();
+			 }finally{
+				 list=null;
+			 }
+    }
+}

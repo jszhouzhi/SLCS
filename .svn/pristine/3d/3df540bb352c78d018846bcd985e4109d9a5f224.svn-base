@@ -1,0 +1,157 @@
+$().ready(function() {
+    validateRule();
+});
+
+$.validator.setDefaults({
+    submitHandler : function() {
+        save();
+    }
+});
+function save() {
+    $.ajax({
+        cache : true,
+        type : "POST",
+        url : "/Merchant/merchantSet/update",
+        data : $('#signupForm').serialize(),// 你的formid
+        async : false,
+        error : function(request) {
+            parent.layer.alert("Connection error");
+        },
+        success : function(data) {
+            if (data.code == 0) {
+                parent.layer.msg("操作成功");
+                parent.reLoad();
+                var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+                parent.layer.close(index);
+
+            } else {
+                parent.layer.alert(data.msg)
+            }
+
+        }
+    });
+
+}
+function validateRule() {
+    var icon = "<i class='fa fa-times-circle'></i> ";
+    $("#signupForm").validate({
+        rules : {
+            name : {
+                required : true
+            },
+            merchantCode : {
+                required : true,
+                minlength : 4,
+                remote : {
+                    url : "/Merchant/merchantSet/exit", // 后台处理程序
+                    type : "post", // 数据发送方式
+                    dataType : "json", // 接受数据格式
+                    data : { // 要传递的数据
+                        merchantCode : function() {
+                            return $("#merchantCode").val();
+                        }
+                    }
+                }
+            },
+            merchantName : {
+                required : true,
+                minlength : 2,
+                remote : {
+                    url : "/Merchant/merchantSet/exit", // 后台处理程序
+                    type : "post", // 数据发送方式
+                    dataType : "json", // 接受数据格式
+                    data : { // 要传递的数据
+                        merchantName : function() {
+                            return $("#merchantName").val();
+                        }
+                    }
+                }
+            },
+            shortName : {
+                required : true,
+                minlength : 2,
+                remote : {
+                    url : "/Merchant/merchantSet/exit", // 后台处理程序
+                    type : "post", // 数据发送方式
+                    dataType : "json", // 接受数据格式
+                    data : { // 要传递的数据
+                        shortName : function() {
+                            return $("#shortName").val();
+                        }
+                    }
+                }
+            },
+            cityCode : {
+                required : true,
+                minlength : 4,
+            },
+            settleMethod : {
+                required : true,
+            },
+            settlePeriod  :{
+                required : true,
+            },
+            settlePeriodUnit :{
+                required : true,
+            },
+            settleDay :{
+                required : true,
+            },
+            settleRate :{
+                required : true,
+                number : true,
+            },
+            serviceFee :{
+                required : true,
+                number : true,
+            },
+            topic : {
+                required : "#newsletter:checked",
+                minlength : 2
+            },
+            agree : "required"
+        },
+        messages : {
+
+            cityCode : {
+                required : icon + "请输入城市代码",
+                minlength :icon + "城市代码必须四个字符以上"
+            },
+            merchantCode : {
+                required : icon + "请输入商户代码",
+                minlength : icon + "商户代码必须四个字符以上",
+                remote : icon + "商户代码已经存在"
+            },
+            merchantName : {
+                required : icon + "请输入商户名称",
+                minlength : icon + "商户名称必须两个字符以上",
+                remote : icon + "商户名称已经存在"
+            },
+            shortName : {
+                required : icon + "请输入商户简称",
+                minlength : icon + "商户简称必须两个字符以上",
+                remote : icon + "商户简称已经存在"
+            },
+            settleMethod : {
+                required : icon + "请选择结算方式",
+            },
+            settlePeriod  :{
+                required : icon + "请选择结算周期",
+            },
+            settlePeriodUnit :{
+                required : icon + "请选择结算单位",
+            },
+            settleDay  :{
+                required : icon + "请选择结算日",
+            },
+            settleRate   :{
+                required : icon + "请输入结算费率",
+                number :icon +"请输出数字格式",
+            },
+            serviceFee   :{
+                required : icon + "请输入结算费率",
+                number :icon +"请输出数字格式",
+            }
+        }
+    })
+}

@@ -1,0 +1,79 @@
+package com.slzr.ureport.bean;
+
+
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.utils.TimeConverUtils;
+import com.slzr.ureport.domain.AccountCountDo;
+import com.slzr.ureport.service.AccountCountService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+public class AccountCountBean extends BaseController{
+
+    @Autowired
+    private AccountCountService accountCountService;
+
+    public List<AccountCountDo> getListAccount(String dsName, String datasetName, Map<String,Object> parameters){
+
+
+        Map<String, Object> stringObjectMap=null;
+        if (parameters != null) {
+            stringObjectMap = TimeConverUtils.converDate(parameters);
+        }
+        List<AccountCountDo> list=accountCountService.list(stringObjectMap);
+
+        for (int i=0;i<list.size();i++){
+            list.get(i).setUserName(getUsername());
+            list.get(i).setStartDate(stringObjectMap.get("startDate").toString());
+            list.get(i).setEndDate(stringObjectMap.get("endDate").toString());
+        }
+
+        /*Date date = new Date();
+        Calendar c=Calendar.getInstance();
+        SimpleDateFormat sdf=new SimpleDateFormat();
+        c.setTime(date);
+        c.add(Calendar.DAY_OF_MONTH,1);
+        Date dd=c.getTime();
+        for (int i=0;i<4;i++){
+            AccountCountDo accountCountDo=new AccountCountDo();
+            accountCountDo.setTxnDate(sdf.format(new Date()));
+            accountCountDo.setUserName("张三丰");
+            accountCountDo.setPayAddress("长沙站点"+i);
+           for(int j=1;j<3;j++) {
+               if (j<2) {
+                   accountCountDo.setPayMethod("微信支付");
+                   accountCountDo.setTopupNum(10*i);
+                   accountCountDo.setTopupAmount(new BigDecimal(100*i));
+               } else  {
+                   accountCountDo.setPayMethod("支付宝支付");
+                   accountCountDo.setTopupNum(10*i);
+                   accountCountDo.setTopupAmount(new BigDecimal(100*i));
+               }
+           }
+            list.add(accountCountDo);
+        }
+        for (int i=0;i<4;i++){
+            AccountCountDo accountCountDo=new AccountCountDo();
+            accountCountDo.setTxnDate(sdf.format(dd));
+            accountCountDo.setPayAddress("长沙站点"+i);
+            for(int j=1;j<3;j++) {
+                if (i<2) {
+                    accountCountDo.setPayMethod("微信支付");
+                    accountCountDo.setTopupNum(10*i);
+                    accountCountDo.setTopupAmount(new BigDecimal(100*i));
+                } else {
+                    accountCountDo.setPayMethod("支付宝支付");
+                    accountCountDo.setTopupNum(10*i);
+                    accountCountDo.setTopupAmount(new BigDecimal(100*i));
+                }
+            }
+            list.add(accountCountDo);
+        }*/
+        return list;
+    }
+
+
+}

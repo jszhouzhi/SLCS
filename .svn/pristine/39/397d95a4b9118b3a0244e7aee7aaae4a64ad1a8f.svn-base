@@ -1,0 +1,4 @@
+package com.slzr.ureport.service.impl;
+
+public class AccountCountServiceImpl {
+}

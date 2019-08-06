@@ -1,0 +1,145 @@
+package com.slzr.operation.controller;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.slzr.common.annotation.SystemControllerLog;
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.utils.DWMQDateUtil;
+import com.slzr.common.utils.DWMQDateVO;
+import com.slzr.common.utils.DateUtils;
+import com.slzr.common.utils.ExcelExportTool;
+import com.slzr.common.utils.PageUtils;
+import com.slzr.common.utils.Query;
+import com.slzr.operation.domain.DailysummarySettleDO;
+import com.slzr.operation.domain.DebitTransDO;
+import com.slzr.operation.domain.DebittransactionDistanceDO;
+import com.slzr.operation.domain.OPTBusDO;
+import com.slzr.operation.domain.OPTDepartmentDO;
+import com.slzr.operation.domain.OPTDriverDO;
+import com.slzr.operation.domain.OPTLineDO;
+import com.slzr.operation.service.DebittransactionDistanceService;
+import com.slzr.operation.service.OPTBusService;
+import com.slzr.operation.service.OPTDepartmentService;
+import com.slzr.operation.service.OPTDriverService;
+import com.slzr.operation.service.OPTLineService;
+import com.slzr.set.domain.MerchDo;
+import com.slzr.set.service.MerchService;
+import com.slzr.system.domain.UserDO;
+import com.slzr.system.service.UserService;
+
+/**
+ * 分段交易查询
+ * 
+ * @author lc
+ * @date 2018-05-23 11:08:01
+ */
+ 
+@Controller
+@RequestMapping("/operation/debittransactionDistance")
+public class DebittransactionDistanceController extends BaseController{
+	@Autowired
+	private DebittransactionDistanceService debittransactionDistanceService;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	private MerchService merchService;
+	
+	@Autowired
+	private OPTDepartmentService optDepartmentService;
+	@Autowired
+	private OPTLineService optLineService;
+	@Autowired
+	private OPTBusService optBusService;	
+	@Autowired
+	private OPTDriverService optDriverService;
+	
+	@GetMapping()
+	@SystemControllerLog(description="0")
+	@RequiresPermissions("operation:debittransactionDistance:debittransactionDistance")
+	String DebittransactionDistance(Model model){
+		HashMap<String,Object> params=new HashMap<>();
+		UserDO userDO = userService.get(getId());
+		List<MerchDo> merchantList=null;
+		if(userDO.getMerchantCode()==""||userDO.getMerchantCode()==null){
+			merchantList=merchService.list(params);
+		}else{
+			params.put("merchantCode",userDO.getMerchantCode());
+			merchantList=merchService.list(params);
+		}
+		model.addAttribute("merchantList",merchantList);
+		
+		DWMQDateVO dwmq = null;
+		try {
+			dwmq = DWMQDateUtil.GetDWMQDateVO(DateUtils.format(Calendar.getInstance().getTime(), DateUtils.DATE_PATTERN));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		List<OPTDepartmentDO> Dept = optDepartmentService.list(new HashMap<>());
+		List<OPTLineDO> lineName = optLineService.list(new HashMap<>());
+		List<OPTBusDO> bus = optBusService.list(new HashMap<>());
+		List<OPTDriverDO> driverName = optDriverService.list(new HashMap<>());
+		
+		model.addAttribute("dwmq", dwmq);
+		model.addAttribute("lineName",lineName);
+		model.addAttribute("Dept",Dept);
+		model.addAttribute("bus",bus);
+		model.addAttribute("driverName",driverName);
+		
+	    return "operation/debittransactionDistance/debittransactionDistance";
+	}
+	
+	@ResponseBody
+	@GetMapping("/list")
+	@RequiresPermissions("operation:debittransactionDistance:debittransactionDistance")
+	public PageUtils list(@RequestParam Map<String, Object> params){
+		//查询列表数据
+        Query query = new Query(params);
+		List<DebittransactionDistanceDO> debittransactionDistanceList = debittransactionDistanceService.list(query);
+		int total = debittransactionDistanceService.count(query);
+		PageUtils pageUtils = new PageUtils(debittransactionDistanceList, total);
+		return pageUtils;
+	}
+	
+	@SystemControllerLog(description="4")
+    @RequestMapping("/expexcel")
+	public void expExceluser(ModelMap model,HttpServletRequest request,HttpServletResponse response,@RequestParam Map<String, Object> params){
+    	List<DebittransactionDistanceDO>  list = debittransactionDistanceService.list(params);
+    	LinkedHashMap<String, String> map = new LinkedHashMap<>();
+    	map.put("账号", "accountno");
+    	map.put("线路", "lineno");
+    	map.put("车辆", "terminalno");
+    	map.put("上下车标识", "doorFlagName");
+    	map.put("方向", "directionName");
+    	map.put("全程票价", "txnamount");
+    		    	
+    	map.put("站点", "stationcode");
+    	map.put("交易时间", "txndatetime");
+    	
+    	
+ 
+    	export(response, "分段交易报表",map,list);
+    }
+	
+}

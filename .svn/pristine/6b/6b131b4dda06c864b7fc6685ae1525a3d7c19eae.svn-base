@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.slz.opertion.DailysummaryTopupDao">
+    <!-- BarDailysummaryTopup的resultMap,column是给数据库列起的别名,它对应property类的属性-->
+    <resultMap id="result_BarDailysummaryTopup_Map" type="com.slzr.operation.domain.DailysummaryTopup">
+        <id column="ID" property="iD" />
+        <result column="AuditRemark" property="auditRemark" />
+        <result column="TxnDate" property="txnDate" />
+        <result column="RefundAmount" property="refundAmount" />
+        <result column="TopupNum" property="topupNum" />
+        <result column="RefundNum" property="refundNum" />
+        <result column="ServiceFee" property="serviceFee" />
+        <result column="AuditUID" property="auditUID" />
+        <result column="AuditStatus" property="auditStatus" />
+        <result column="AuditDateTime" property="auditDateTime" />
+        <result column="SummaryDateTime" property="summaryDateTime" />
+        <result column="PayMethodId" property="payMethodId" />
+        <result column="TopupAmount" property="topupAmount" />
+    </resultMap>
+
+    <!-- 数据库中表名为:BAR_DailySummary_Topup的列名,as前是数据库的列明,as后是列的别名用于映射成实体类中的属性,需要注意的是别名必须与resultMap中的column别名一致 -->
+    <sql id="BAR_DailySummary_Topup_Column">
+        BAR_DailySummary_Topup.ID as ID
+        ,BAR_DailySummary_Topup.AuditRemark as AuditRemark
+        ,BAR_DailySummary_Topup.TxnDate as TxnDate
+        ,BAR_DailySummary_Topup.RefundAmount as RefundAmount
+        ,BAR_DailySummary_Topup.TopupNum as TopupNum
+        ,BAR_DailySummary_Topup.RefundNum as RefundNum
+        ,BAR_DailySummary_Topup.ServiceFee as ServiceFee
+        ,BAR_DailySummary_Topup.AuditUID as AuditUID
+        ,BAR_DailySummary_Topup.AuditStatus as AuditStatus
+        ,BAR_DailySummary_Topup.AuditDateTime as AuditDateTime
+        ,BAR_DailySummary_Topup.SummaryDateTime as SummaryDateTime
+        ,BAR_DailySummary_Topup.PayMethodId as PayMethodId
+        ,BAR_DailySummary_Topup.TopupAmount as TopupAmount
+    </sql>
+
+    <!-- 获得一个BarDailysummaryTopup对象,以参数BarDailysummaryTopup对象中不为空的属性作为条件进行查询-->
+    <select id="selectBarDailysummaryTopupByObj" parameterType="com.slzr.operation.domain.DailysummaryTopup" resultMap="result_BarDailysummaryTopup_Map">
+        select 
+            <include refid="BAR_DailySummary_Topup_Column" /> 
+        from BAR_DailySummary_Topup
+        <where>
+            <if test="topupAmount != null "> and BAR_DailySummary_Topup.TopupAmount = #{topupAmount}</if>
+            <if test="payMethodId != null "> and BAR_DailySummary_Topup.PayMethodId = #{payMethodId}</if>
+            <if test="summaryDateTime != null "> and BAR_DailySummary_Topup.SummaryDateTime = #{summaryDateTime}</if>
+            <if test="auditDateTime != null "> and BAR_DailySummary_Topup.AuditDateTime = #{auditDateTime}</if>
+            <if test="auditStatus != null "> and BAR_DailySummary_Topup.AuditStatus = #{auditStatus}</if>
+            <if test="auditUID != null "> and BAR_DailySummary_Topup.AuditUID = #{auditUID}</if>
+            <if test="serviceFee != null "> and BAR_DailySummary_Topup.ServiceFee = #{serviceFee}</if>
+            <if test="refundNum != null "> and BAR_DailySummary_Topup.RefundNum = #{refundNum}</if>
+            <if test="topupNum != null "> and BAR_DailySummary_Topup.TopupNum = #{topupNum}</if>
+            <if test="refundAmount != null "> and BAR_DailySummary_Topup.RefundAmount = #{refundAmount}</if>
+            <if test="txnDate != null "> and BAR_DailySummary_Topup.TxnDate = #{txnDate}</if>
+            <if test="auditRemark != null "> and BAR_DailySummary_Topup.AuditRemark = #{auditRemark}</if>
+            <if test="iD != null "> and BAR_DailySummary_Topup.ID = #{iD}</if>
+        </where>
+    </select> 
+
+    <!-- 通过BarDailysummaryTopup的id获得对应数据库中表的数据对象-->
+    <select id="selectBarDailysummaryTopupById" parameterType="java.lang.Object" resultMap="result_BarDailysummaryTopup_Map">
+        select 
+            <include refid="BAR_DailySummary_Topup_Column" /> 
+        from BAR_DailySummary_Topup
+        where BAR_DailySummary_Topup.ID = #{id}
+    </select> 
+
+    <!-- 将BarDailysummaryTopup插入到对应数据库的表中,包括属性值为null的数据-->
+
+    <insert id="insertBarDailysummaryTopup" parameterType="com.slzr.operation.domain.DailysummaryTopup">
+        insert into BAR_DailySummary_Topup(ID,AuditRemark,TxnDate,RefundAmount,TopupNum,RefundNum,ServiceFee,AuditUID,AuditStatus,AuditDateTime,SummaryDateTime,PayMethodId,TopupAmount) 
+        values(#{iD},#{auditRemark},#{txnDate},#{refundAmount},#{topupNum},#{refundNum},#{serviceFee},#{auditUID},#{auditStatus},#{auditDateTime},#{summaryDateTime},#{payMethodId},#{topupAmount})
+    </insert>
+
+    <!-- 将BarDailysummaryTopup中属性值不为null的数据,插入到对应数据库的表中-->
+    <insert id="insertNonEmptyBarDailysummaryTopup" parameterType="com.slzr.operation.domain.DailysummaryTopup">
+        insert into BAR_DailySummary_Topup
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="iD != null">ID,</if>
+            <if test="auditRemark != null">AuditRemark,</if>
+            <if test="txnDate != null">TxnDate,</if>
+            <if test="refundAmount != null">RefundAmount,</if>
+            <if test="topupNum != null">TopupNum,</if>
+            <if test="refundNum != null">RefundNum,</if>
+            <if test="serviceFee != null">ServiceFee,</if>
+            <if test="auditUID != null">AuditUID,</if>
+            <if test="auditStatus != null">AuditStatus,</if>
+            <if test="auditDateTime != null">AuditDateTime,</if>
+            <if test="summaryDateTime != null">SummaryDateTime,</if>
+            <if test="payMethodId != null">PayMethodId,</if>
+            <if test="topupAmount != null">TopupAmount,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="iD != null"> #{iD},</if>
+            <if test="auditRemark != null"> #{auditRemark},</if>
+            <if test="txnDate != null"> #{txnDate},</if>
+            <if test="refundAmount != null"> #{refundAmount},</if>
+            <if test="topupNum != null"> #{topupNum},</if>
+            <if test="refundNum != null"> #{refundNum},</if>
+            <if test="serviceFee != null"> #{serviceFee},</if>
+            <if test="auditUID != null"> #{auditUID},</if>
+            <if test="auditStatus != null"> #{auditStatus},</if>
+            <if test="auditDateTime != null"> #{auditDateTime},</if>
+            <if test="summaryDateTime != null"> #{summaryDateTime},</if>
+            <if test="payMethodId != null"> #{payMethodId},</if>
+            <if test="topupAmount != null"> #{topupAmount},</if>
+        </trim>
+    </insert>
+
+    <!-- 将BarDailysummaryTopup批量插入到对应数据库的表中-->
+    <insert id="insertBarDailysummaryTopupByBatch" parameterType="ArrayList">
+        insert into BAR_DailySummary_Topup(ID,AuditRemark,TxnDate,RefundAmount,TopupNum,RefundNum,ServiceFee,AuditUID,AuditStatus,AuditDateTime,SummaryDateTime,PayMethodId,TopupAmount) 
+        <foreach collection="list" item="item" index="index" separator=" union all " >
+            select #{item.iD},#{item.auditRemark},#{item.txnDate},#{item.refundAmount},#{item.topupNum},#{item.refundNum},#{item.serviceFee},#{item.auditUID},#{item.auditStatus},#{item.auditDateTime},#{item.summaryDateTime},#{item.payMethodId},#{item.topupAmount}
+        </foreach>
+    </insert>
+
+    <!-- 通过BarDailysummaryTopup的id将数据库表中对应的数据删除-->
+    <delete id="deleteBarDailysummaryTopupById" parameterType="java.lang.Object">
+        delete from BAR_DailySummary_Topup
+        where ID = #{id}
+    </delete>
+
+    <!-- 通过BarDailysummaryTopup的id将BarDailysummaryTopup的数据更新到数据库中对应的表,包括值null的数据-->
+    <update id="updateBarDailysummaryTopupById" parameterType="com.slzr.operation.domain.DailysummaryTopup">
+        update BAR_DailySummary_Topup set
+            AuditRemark=#{auditRemark}
+            ,TxnDate=#{txnDate}
+            ,RefundAmount=#{refundAmount}
+            ,TopupNum=#{topupNum}
+            ,RefundNum=#{refundNum}
+            ,ServiceFee=#{serviceFee}
+            ,AuditUID=#{auditUID}
+            ,AuditStatus=#{auditStatus}
+            ,AuditDateTime=#{auditDateTime}
+            ,SummaryDateTime=#{summaryDateTime}
+            ,PayMethodId=#{payMethodId}
+            ,TopupAmount=#{topupAmount}
+        where ID=#{iD}
+    </update>
+
+    <!-- 通过BarDailysummaryTopup的id将BarDailysummaryTopup中属性值不为null的数据更新到数据库对应的表中-->
+    <update id="updateNonEmptyBarDailysummaryTopupById" parameterType="com.slzr.operation.domain.DailysummaryTopup">
+        update BAR_DailySummary_Topup
+        <set>
+            <if test="auditRemark != null">
+                AuditRemark=#{auditRemark},
+            </if>
+            <if test="txnDate != null">
+                TxnDate=#{txnDate},
+            </if>
+            <if test="refundAmount != null">
+                RefundAmount=#{refundAmount},
+            </if>
+            <if test="topupNum != null">
+                TopupNum=#{topupNum},
+            </if>
+            <if test="refundNum != null">
+                RefundNum=#{refundNum},
+            </if>
+            <if test="serviceFee != null">
+                ServiceFee=#{serviceFee},
+            </if>
+            <if test="auditUID != null">
+                AuditUID=#{auditUID},
+            </if>
+            <if test="auditStatus != null">
+                AuditStatus=#{auditStatus},
+            </if>
+            <if test="auditDateTime != null">
+                AuditDateTime=#{auditDateTime},
+            </if>
+            <if test="summaryDateTime != null">
+                SummaryDateTime=#{summaryDateTime},
+            </if>
+            <if test="payMethodId != null">
+                PayMethodId=#{payMethodId},
+            </if>
+            <if test="topupAmount != null">
+                TopupAmount=#{topupAmount},
+            </if>
+        </set>
+        where ID=#{iD}
+    </update>
+
+</mapper>

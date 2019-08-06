@@ -1,0 +1,8 @@
+package com.slzr.ureport.dao;
+
+
+
+
+public interface AccountCountDao {
+
+}

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.DailysummarySettleDao">
+
+	<sql id="BAR_DailySummary_Settle_Column">
+        BAR_DailySummary_Settle.ID as ID
+        ,BAR_DailySummary_Settle.TransferOrderNO as TransferOrderNO
+        ,BAR_DailySummary_Settle.DebitNum as DebitNum
+        ,BAR_DailySummary_Settle.SettleRate as SettleRate
+        ,BAR_DailySummary_Settle.TransferRemark as TransferRemark
+        ,BAR_DailySummary_Settle.RefundAmount as RefundAmount
+        ,BAR_DailySummary_Settle.TopupNum as TopupNum
+        ,BAR_DailySummary_Settle.SettleEndDate as SettleEndDate
+        ,BAR_DailySummary_Settle.RefundNum as RefundNum
+        ,BAR_DailySummary_Settle.RefundServiceFee as RefundServiceFee
+        ,BAR_DailySummary_Settle.AuditUID as AuditUID
+        ,BAR_DailySummary_Settle.TransferAmount as TransferAmount
+        ,BAR_DailySummary_Settle.ServiceCharge as ServiceCharge
+        ,BAR_DailySummary_Settle.SettleAmount as SettleAmount
+        ,BAR_DailySummary_Settle.AuditStatus as AuditStatus
+        ,BAR_DailySummary_Settle.AuditDateTime as AuditDateTime
+        ,BAR_DailySummary_Settle.MerchantCode as MerchantCode
+        ,BAR_DailySummary_Settle.SummaryDateTime as SummaryDateTime
+        ,BAR_DailySummary_Settle.SettleMethod as SettleMethod
+        ,BAR_DailySummary_Settle.TransferStatus as TransferStatus
+        ,BAR_DailySummary_Settle.SettleFromDate as SettleFromDate
+        ,BAR_DailySummary_Settle.TransferDateTime as TransferDateTime
+        ,BAR_DailySummary_Settle.TopupAmount as TopupAmount
+        ,BAR_DailySummary_Settle.DebitAmount as DebitAmount
+        ,BAR_Merchant.MerchantName as MerchantName
+        ,SYS_User.UserName as AuditUserName
+    </sql>
+	<select id="get" resultType="com.slzr.operation.domain.DailysummarySettleDO">
+		select 
+		<include refid="BAR_DailySummary_Settle_Column" /> 
+		,SYS_User.UserName as AuditUserName
+		from BAR_DailySummary_Settle left join SYS_User on BAR_DailySummary_Settle.AuditUID=SYS_User.ID left join BAR_Merchant on BAR_Merchant.MerchantCode=BAR_DailySummary_Settle.MerchantCode where BAR_DailySummary_Settle.ID = #{id}
+	</select>
+
+	<select id="list" resultType="com.slzr.operation.domain.DailysummarySettleDO">
+		select 
+		CASE BAR_DailySummary_Settle.SettleMethod WHEN  1 THEN '充值金额' WHEN 2 THEN '消费金额' END  settleMethodName,
+		CASE BAR_DailySummary_Settle.TransferStatus WHEN  0 THEN '未转账' WHEN 1 THEN '已转账' END  transferStatusName,
+		CASE BAR_DailySummary_Settle.AuditStatus WHEN  -1 THEN '未审核' WHEN 0 THEN '审核不通过' WHEN 1 THEN '审核通过'  END  auditStatusName,
+		<include refid="BAR_DailySummary_Settle_Column" /> 
+		,SYS_User.UserName as AuditUserName
+		from BAR_DailySummary_Settle left join SYS_User on BAR_DailySummary_Settle.AuditUID=SYS_User.ID left join BAR_Merchant on BAR_Merchant.MerchantCode=BAR_DailySummary_Settle.MerchantCode
+        <where>
+            <if test="debitAmount != null and debitAmount != ''"> and BAR_DailySummary_Settle.DebitAmount = #{debitAmount}</if>
+            <if test="topupAmount != null and topupAmount != ''"> and BAR_DailySummary_Settle.TopupAmount = #{topupAmount}</if>
+            <if test="transferDateTime != null and transferDateTime != ''"> and BAR_DailySummary_Settle.TransferDateTime = #{transferDateTime}</if>
+            <if test="settleFromDate != null and settleFromDate != ''"> and BAR_DailySummary_Settle.SettleFromDate = #{settleFromDate}</if>
+            <if test="transferStatus != null and transferStatus != ''"> and BAR_DailySummary_Settle.TransferStatus = #{transferStatus}</if>
+            <if test="settleMethod != null and settleMethod != ''"> and BAR_DailySummary_Settle.SettleMethod = #{settleMethod}</if>
+            <if test="summaryDateTime != null and summaryDateTime != ''"> and BAR_DailySummary_Settle.SummaryDateTime = #{summaryDateTime}</if>
+            <if test="merchantCode != null and merchantCode != ''"> and BAR_DailySummary_Settle.MerchantCode = #{merchantCode}</if>
+            <if test="auditDateTime != null and auditDateTime != ''"> and BAR_DailySummary_Settle.AuditDateTime = #{auditDateTime}</if>
+            <if test="auditStatus != null and auditStatus != ''"> and BAR_DailySummary_Settle.AuditStatus = #{auditStatus}</if>
+            <if test="settleAmount != null and settleAmount != ''"> and BAR_DailySummary_Settle.SettleAmount = #{settleAmount}</if>
+            <if test="serviceCharge != null and serviceCharge != ''"> and BAR_DailySummary_Settle.ServiceCharge = #{serviceCharge}</if>
+            <if test="transferAmount != null and transferAmount != ''"> and BAR_DailySummary_Settle.TransferAmount = #{transferAmount}</if>
+            <if test="auditUID != null and auditUID != ''"> and BAR_DailySummary_Settle.AuditUID = #{auditUID}</if>
+            <if test="refundServiceFee != null and refundServiceFee != ''"> and BAR_DailySummary_Settle.RefundServiceFee = #{refundServiceFee}</if>
+            <if test="refundNum != null and refundNum != ''"> and BAR_DailySummary_Settle.RefundNum = #{refundNum}</if>
+            <if test="settleEndDate != null and settleEndDate != ''"> and BAR_DailySummary_Settle.SettleEndDate = #{settleEndDate}</if>
+            <if test="topupNum != null and topupNum != ''"> and BAR_DailySummary_Settle.TopupNum = #{topupNum}</if>
+            <if test="refundAmount != null and refundAmount != ''"> and BAR_DailySummary_Settle.RefundAmount = #{refundAmount}</if>
+            <if test="settleRate != null and settleRate != ''"> and BAR_DailySummary_Settle.SettleRate = #{settleRate}</if>
+            <if test="debitNum != null and debitNum != ''"> and BAR_DailySummary_Settle.DebitNum = #{debitNum}</if>
+            <if test="transferOrderNO != null and transferOrderNO != ''"> and BAR_DailySummary_Settle.TransferOrderNO = #{transferOrderNO}</if>
+            <if test="iD != null and iD != ''"> and BAR_DailySummary_Settle.ID = #{iD}</if>
+            <if test="settletype != null and settletype != ''"> and BAR_DailySummary_Settle.SettleMethod = #{settletype}</if>
+            <if test="checktype != null and checktype != ''"> and BAR_DailySummary_Settle.AuditStatus = #{checktype}</if>
+            <if test="transstatus != null and transstatus != ''"> and BAR_DailySummary_Settle.TransferStatus = #{transstatus}</if>
+            <if test="searchvalue != null and  searchvalue != ''"> and (BAR_DailySummary_Settle.MerchantCode like '${searchvalue}%' or BAR_Merchant.MerchantName like '${searchvalue}%')</if>
+            <if test="(datetype == null or datetype == '' or datetype==1) and (sdate!=null and sdate!='')"> and BAR_DailySummary_Settle.SummaryDateTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="(datetype == null or datetype == '' or datetype==1) and (edate!=null and edate!='')"> and BAR_DailySummary_Settle.SummaryDateTime &lt;= '${edate} 23:59:59'</if>
+            <if test="datetype != null and datetype != '' and datetype==2 and sdate!=null and sdate!=''"> and BAR_DailySummary_Settle.AuditDateTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="datetype != null and datetype != '' and datetype==2 and edate!=null and edate!=''"> and BAR_DailySummary_Settle.AuditDateTime &lt;= '${edate} 23:59:59'</if>
+            <if test="datetype != null and datetype != '' and datetype==3 and sdate!=null and sdate!=''"> and BAR_DailySummary_Settle.TransferDateTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="datetype != null and datetype != '' and datetype==3 and edate!=null and edate!=''"> and BAR_DailySummary_Settle.TransferDateTime &lt;= '${edate} 23:59:59'</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by SummaryDateTime desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from BAR_DailySummary_Settle left join BAR_Merchant on BAR_Merchant.MerchantCode=BAR_DailySummary_Settle.MerchantCode
+        <where>
+            <if test="debitAmount != null and debitAmount != ''"> and BAR_DailySummary_Settle.DebitAmount = #{debitAmount}</if>
+            <if test="topupAmount != null and topupAmount != ''"> and BAR_DailySummary_Settle.TopupAmount = #{topupAmount}</if>
+            <if test="transferDateTime != null and transferDateTime != ''"> and BAR_DailySummary_Settle.TransferDateTime = #{transferDateTime}</if>
+            <if test="settleFromDate != null and settleFromDate != ''"> and BAR_DailySummary_Settle.SettleFromDate = #{settleFromDate}</if>
+            <if test="transferStatus != null and transferStatus != ''"> and BAR_DailySummary_Settle.TransferStatus = #{transferStatus}</if>
+            <if test="settleMethod != null and settleMethod != ''"> and BAR_DailySummary_Settle.SettleMethod = #{settleMethod}</if>
+            <if test="summaryDateTime != null and summaryDateTime != ''"> and BAR_DailySummary_Settle.SummaryDateTime = #{summaryDateTime}</if>
+            <if test="merchantCode != null and merchantCode != ''"> and BAR_DailySummary_Settle.MerchantCode = #{merchantCode}</if>
+            <if test="auditDateTime != null and auditDateTime != ''"> and BAR_DailySummary_Settle.AuditDateTime = #{auditDateTime}</if>
+            <if test="auditStatus != null and auditStatus != ''"> and BAR_DailySummary_Settle.AuditStatus = #{auditStatus}</if>
+            <if test="settleAmount != null and settleAmount != ''"> and BAR_DailySummary_Settle.SettleAmount = #{settleAmount}</if>
+            <if test="serviceCharge != null and serviceCharge != ''"> and BAR_DailySummary_Settle.ServiceCharge = #{serviceCharge}</if>
+            <if test="transferAmount != null and transferAmount != ''"> and BAR_DailySummary_Settle.TransferAmount = #{transferAmount}</if>
+            <if test="auditUID != null and auditUID != ''"> and BAR_DailySummary_Settle.AuditUID = #{auditUID}</if>
+            <if test="refundServiceFee != null and refundServiceFee != ''"> and BAR_DailySummary_Settle.RefundServiceFee = #{refundServiceFee}</if>
+            <if test="refundNum != null and refundNum != ''"> and BAR_DailySummary_Settle.RefundNum = #{refundNum}</if>
+            <if test="settleEndDate != null and settleEndDate != ''"> and BAR_DailySummary_Settle.SettleEndDate = #{settleEndDate}</if>
+            <if test="topupNum != null and topupNum != ''"> and BAR_DailySummary_Settle.TopupNum = #{topupNum}</if>
+            <if test="refundAmount != null and refundAmount != ''"> and BAR_DailySummary_Settle.RefundAmount = #{refundAmount}</if>
+            <if test="settleRate != null and settleRate != ''"> and BAR_DailySummary_Settle.SettleRate = #{settleRate}</if>
+            <if test="debitNum != null and debitNum != ''"> and BAR_DailySummary_Settle.DebitNum = #{debitNum}</if>
+            <if test="transferOrderNO != null and transferOrderNO != ''"> and BAR_DailySummary_Settle.TransferOrderNO = #{transferOrderNO}</if>
+            <if test="iD != null and iD != ''"> and BAR_DailySummary_Settle.ID = #{iD}</if>
+            <if test="settletype != null and settletype != ''"> and BAR_DailySummary_Settle.SettleMethod = #{settletype}</if>
+            <if test="checktype != null and checktype != ''"> and BAR_DailySummary_Settle.AuditStatus = #{checktype}</if>
+            <if test="transstatus != null and transstatus != ''"> and BAR_DailySummary_Settle.TransferStatus = #{transstatus}</if>
+            <if test="searchvalue != null and  searchvalue != ''"> and (BAR_DailySummary_Settle.MerchantCode like '${searchvalue}%' or BAR_Merchant.MerchantName like '${searchvalue}%')</if>
+            <if test="(datetype == null or datetype == '' or datetype==1) and (sdate!=null and sdate!='')"> and BAR_DailySummary_Settle.SummaryDateTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="(datetype == null or datetype == '' or datetype==1) and (edate!=null and edate!='')"> and BAR_DailySummary_Settle.SummaryDateTime &lt;= '${edate} 23:59:59'</if>
+            <if test="datetype != null and datetype != '' and datetype==2 and sdate!=null and sdate!=''"> and BAR_DailySummary_Settle.AuditDateTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="datetype != null and datetype != '' and datetype==2 and edate!=null and edate!=''"> and BAR_DailySummary_Settle.AuditDateTime &lt;= '${edate} 23:59:59'</if>
+            <if test="datetype != null and datetype != '' and datetype==3 and sdate!=null and sdate!=''"> and BAR_DailySummary_Settle.TransferDateTime &gt;= '${sdate} 0:00:00'</if>
+            <if test="datetype != null and datetype != '' and datetype==3 and edate!=null and edate!=''"> and BAR_DailySummary_Settle.TransferDateTime &lt;= '${edate} 23:59:59'</if>
+        </where>
+	</select>
+	
+	<select id="updateAudit">
+		update BAR_DailySummary_Settle 
+		set BAR_DailySummary_Settle.AuditStatus = #{auditvalue},
+		BAR_DailySummary_Settle.AuditUID = #{chkuserid},
+		BAR_DailySummary_Settle.AuditDateTime=getdate() 
+		where BAR_DailySummary_Settle.ID=#{id}
+	</select>
+	 
+	<select id="updateTransStatus">
+		update BAR_DailySummary_Settle set BAR_DailySummary_Settle.AuditUID = #{chkuserid},BAR_DailySummary_Settle.AuditDateTime=getdate(), BAR_DailySummary_Settle.TransferRemark=#{remark}
+		<if test="amount != null and amount != ''">,BAR_DailySummary_Settle.TransferAmount=#{amount}</if>
+		,BAR_DailySummary_Settle.TransferDateTime=#{transdate,jdbcType=TIMESTAMP}
+		,BAR_DailySummary_Settle.TransferOrderNO=#{transno}
+		,BAR_DailySummary_Settle.TransferStatus=#{transstatus}
+		 where BAR_DailySummary_Settle.ID=#{id}
+	</select>
+
+</mapper>

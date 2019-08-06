@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.GuestMessageReplayDao">
+
+
+	<select id="getByID" resultType="com.slzr.operation.domain.GuestMessageReplayDo">
+		select
+		ID,MsgID,ReplyUID,ReplyContent,ReplyDateTime
+		from BAR_GuestMessageReply where id = #{value}
+	</select>
+
+
+	<insert id="save" parameterType="com.slzr.operation.domain.GuestMessageReplayDo">
+		insert into BAR_GuestMessageReply
+		(
+			MsgID,
+			ReplyUID,
+			ReplyContent,
+			ReplyDateTime
+		)
+		values
+		(
+			#{msgid,jdbcType=INTEGER},
+			#{replyuid,jdbcType=INTEGER},
+			#{replycontent,jdbcType=INTEGER},
+			#{replydatetime,jdbcType=TIMESTAMP}
+		)
+	</insert>
+
+
+
+	<update id="update" parameterType="com.slzr.operation.domain.GuestMessageReplayDo">
+		update BAR_GuestMessageReply
+		<set>
+			<if test="msgid != null">MsgID = #{msgid}, </if>
+			<if test="replyuid != null">ReplyUID = #{replyuid}, </if>
+			<if test="replycontent != null">ReplyContent = #{replycontent}, </if>
+			<if test="replydatetime != null">ReplyDateTime = #{replydatetime}, </if>
+		</set>
+		where ID = #{id}
+	</update>
+
+</mapper>

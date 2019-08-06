@@ -1,0 +1,15 @@
+package com.slzr.operation.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/operation")
+public class GuestMessageController {
+	private String prefix = "operation";
+	@GetMapping("/guestMessage")
+	public String topup() {
+		return prefix + "/guestMessage";
+	}
+}

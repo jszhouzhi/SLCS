@@ -1,0 +1,36 @@
+package com.slzr.ureport.bean;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.slzr.ureport.domain.ACountDo;
+import com.slzr.ureport.service.ACountService;
+
+/**
+ * 一级统计  线路消费统计
+ * @author Administrator
+ *
+ */
+public class ACountLineBean {
+	@Autowired
+	private ACountService qCountService;
+	
+    public List<ACountDo> loadReportData(String dsName,String datasetName,Map<String,Object> parameters){
+    	
+        String p = null;
+        if(parameters.containsKey("a")){  
+        	p = parameters.get("a").toString();
+        }
+        
+    	List<ACountDo> aCountDo = qCountService.ACountLine(parameters);       
+
+  
+        return aCountDo;
+    }
+}

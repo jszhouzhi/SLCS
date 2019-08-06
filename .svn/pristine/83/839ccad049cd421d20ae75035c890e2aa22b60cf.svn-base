@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.account.dao.VipMemberApplyDao">
+
+	<select id="get" resultType="com.slzr.account.domain.VipMemberApplyDO">
+		select  ID , UID , OrderNO , AccountNO , VipMemberID , BuyDays , Price , DiscountPrice , ApplyDateTime , PayMethodId , PayDateTime , PayResult , PayMessage  from AD_VipMemberApply where ID = #{value}
+	</select>
+
+	<select id="list" resultType="com.slzr.account.domain.VipMemberApplyDO">
+			select top ${limit}  *  from (					 							
+				SELECT 
+				ROW_NUMBER() OVER(ORDER BY a.ApplyDateTime desc) AS Seq, 
+				
+				a.ID,
+				m.NickName as nickName,
+				a.OrderNO,
+				a.AccountNO,
+				p.Name as vipMemberName,
+				a.BuyDays,
+				a.Price,
+				a.DiscountPrice,
+				a.ApplyDateTime,
+				a.PayMethodId,
+				a.PayDateTime,
+				a.PayResult,
+				a.PayMessage
+			FROM
+				AD_VipMemberApply a
+			LEFT JOIN AD_VipMemberPlan p ON p.ID = a.VipMemberID
+			LEFT JOIN BAR_Member m ON m.ID = a.UID
+        <where>  
+        		  <if test="searchName != null and searchName != ''">(   a.AccountNO LIKE	 '${searchName}%' OR a.OrderNO LIKE	 '${searchName}%')
+				  </if>
+		  		  <if test="id != null and id != ''"> and a.ID = #{id} </if>
+		  		  <if test="uid != null and uid != ''"> and a.UID = #{uid} </if>
+		  		  <if test="orderNo != null and orderNo != ''"> and a.OrderNO = #{orderNo} </if>
+		  		  <if test="accountNo != null and accountNo != ''"> and a.AccountNO = #{accountNo} </if>
+		  		  <if test="vipMemberId != null and vipMemberId != ''"> and a.VipMemberID = #{vipMemberId} </if>
+		  		  <if test="buyDays != null and buyDays != ''"> and a.BuyDays = #{buyDays} </if>
+		  		  <if test="price != null and price != ''"> and a.Price = #{price} </if>
+		  		  <if test="discountPrice != null and discountPrice != ''"> and a.DiscountPrice = #{discountPrice} </if>
+		  		  <if test="applyDateTime != null and applyDateTime != ''"> and a.ApplyDateTime = #{applyDateTime} </if>
+		  		  <if test="payMethodId != null and payMethodId != ''"> and a.PayMethodId = #{payMethodId} </if>
+		  		  <if test="payDateTime != null and payDateTime != ''"> and a.PayDateTime = #{payDateTime} </if>
+		  		  <if test="payResult != null and payResult != ''"> and a.PayResult = #{payResult} </if>
+		  		  <if test="payMessage != null and payMessage != ''"> and a.PayMessage = #{payMessage} </if>
+		  		</where>
+		  		
+		  				) b
+		where seq BETWEEN ${offset+1} and ${limit+offset}
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by b.ApplyDateTime desc
+			</otherwise>
+        </choose>
+ 
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from AD_VipMemberApply a
+		 <where>  
+        		  <if test="searchName != null and searchName != ''">(   a.AccountNO LIKE	 '${searchName}%' OR a.OrderNO LIKE	 '${searchName}%')
+				  </if>
+		  		  <if test="id != null and id != ''"> and a.ID = #{id} </if>
+		  		  <if test="uid != null and uid != ''"> and a.UID = #{uid} </if>
+		  		  <if test="orderNo != null and orderNo != ''"> and a.OrderNO = #{orderNo} </if>
+		  		  <if test="accountNo != null and accountNo != ''"> and a.AccountNO = #{accountNo} </if>
+		  		  <if test="vipMemberId != null and vipMemberId != ''"> and a.VipMemberID = #{vipMemberId} </if>
+		  		  <if test="buyDays != null and buyDays != ''"> and a.BuyDays = #{buyDays} </if>
+		  		  <if test="price != null and price != ''"> and a.Price = #{price} </if>
+		  		  <if test="discountPrice != null and discountPrice != ''"> and a.DiscountPrice = #{discountPrice} </if>
+		  		  <if test="applyDateTime != null and applyDateTime != ''"> and a.ApplyDateTime = #{applyDateTime} </if>
+		  		  <if test="payMethodId != null and payMethodId != ''"> and a.PayMethodId = #{payMethodId} </if>
+		  		  <if test="payDateTime != null and payDateTime != ''"> and a.PayDateTime = #{payDateTime} </if>
+		  		  <if test="payResult != null and payResult != ''"> and a.PayResult = #{payResult} </if>
+		  		  <if test="payMessage != null and payMessage != ''"> and a.PayMessage = #{payMessage} </if>
+		  		</where>
+	</select>
+	 
+ 
+	
+	<delete id="remove">
+		delete from AD_VipMemberApply where ID = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from AD_VipMemberApply where ID in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

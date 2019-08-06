@@ -1,0 +1,117 @@
+package com.slzr.operation.service.Impl;
+
+import com.slzr.common.controller.BaseController;
+import com.slzr.operation.dao.SendCaseDao;
+import com.slzr.operation.domain.SendCaseDo;
+import com.slzr.operation.service.SendCaseService;
+import org.omg.CORBA.INTERNAL;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import sun.security.x509.DistributionPointName;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+@Service
+@Transactional(readOnly = true,rollbackFor = Exception.class)
+public class SendCaseServiceImpl extends BaseController implements SendCaseService{
+
+    @Autowired
+    private SendCaseDao sendCaseDao;
+    @Override
+    public List<SendCaseDo> list(Map<String, Object> map) {
+        return sendCaseDao.list(map);
+    }
+    @Override
+    public List<SendCaseDo> lists(Map<String, Object> map) {
+        return sendCaseDao.lists(map);
+    }
+
+    @Override
+    public int count(Map<String, Object> map) {
+        return sendCaseDao.count(map);
+    }
+
+    @Override
+    @Transactional(readOnly = false,rollbackFor = Exception.class)
+    public int save(Map<String, Object> params) {
+
+        String  content = params.get("content").toString();
+        String end = content.substring(content.indexOf("fromAmount"), content.length());
+        String head=content.substring(0,content.indexOf("&!fromAmount"));
+
+
+        String merchantCode = head.substring(head.indexOf("merchantCode=")+13, head.lastIndexOf("&discountname"));
+        String discountname = head.substring(head.indexOf("discountname=")+13, head.lastIndexOf("&discountdesc"));
+        String discountdesc = head.substring(head.indexOf("discountdesc=")+13, head.lastIndexOf("&effectivedatetime"));
+        String effectivedatetime=head.substring(head.indexOf("effectivedatetime=")+18, head.lastIndexOf("&expireddatetime"));
+        String expireddatetime=head.substring(head.indexOf("expireddatetime=")+16, head.lastIndexOf("&enabled"));
+        String enabled=head.substring(head.indexOf("enabled=")+8, head.length());
+
+        SendCaseDo sendCase1=new SendCaseDo();
+        sendCase1.setMerchantCode(merchantCode);
+        sendCase1.setDiscountName(discountname);
+        sendCase1.setDiscountDesc(discountdesc);
+        sendCase1.setEffectiveDateTime(effectivedatetime);
+        sendCase1.setExpiredDateTime(expireddatetime);
+        sendCase1.setCreatedBy(new Long(getId()).intValue());
+        sendCase1.setCreatedDateTime(new Date());
+        sendCase1.setEnabled(enabled);
+        sendCaseDao.save1(sendCase1);
+        Integer id = sendCase1.getId();
+
+        /**
+         * 将本条数据存储之后返回一个ID
+         */
+
+
+        String [] ends=end.split("&!");
+        int count =0;
+        for(String cont:ends){
+            SendCaseDo sendCase2=new SendCaseDo();
+            String fromAmount = cont.substring(cont.indexOf("fromAmount=")+11, cont.indexOf("&toAmount"));
+            String toAmount = cont.substring(cont.indexOf("toAmount=")+9, cont.indexOf("&discountAmount"));
+            String discountAmount = cont.substring(cont.indexOf("discountAmount=")+15, cont.length());
+            sendCase2.setDiscountSettingID(id);
+            sendCase2.setFromAmount(Integer.parseInt(fromAmount));
+            sendCase2.setToAmount(Integer.parseInt(toAmount));
+            sendCase2.setDiscountAmount(Integer.parseInt(discountAmount));
+            count = sendCaseDao.save2(sendCase2);
+        }
+
+        return count;
+    }
+
+    @Override
+    @Transactional(readOnly = false,rollbackFor = Exception.class)
+    public int update(SendCaseDo sendCaseDo) {
+        int i = sendCaseDao.update1(sendCaseDo);
+        int i2 = sendCaseDao.update2(sendCaseDo);
+
+        return i;
+    }
+
+    @Override
+    @Transactional(readOnly = false,rollbackFor = Exception.class)
+    public int remove(SendCaseDo sendCaseDo) {
+        int i = sendCaseDao.remove1(1);
+        sendCaseDao.remove2(2);
+        return i;
+    }
+
+    /**
+     * 启用优惠方案
+     * @param sendCaseDo
+     * @return
+     */
+    @Override
+    public int updateEnable(SendCaseDo sendCaseDo) {
+        return 0;
+    }
+
+
+}

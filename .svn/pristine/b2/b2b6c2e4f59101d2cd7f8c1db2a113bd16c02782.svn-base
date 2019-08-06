@@ -1,0 +1,192 @@
+package com.slzr.operation.controller;
+
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.utils.PageUtils;
+import com.slzr.common.utils.PathUtils;
+import com.slzr.common.utils.Query;
+import com.slzr.common.utils.R;
+import com.slzr.operation.domain.*;
+import com.slzr.operation.service.ArticleService;
+import com.slzr.operation.service.OPTBusService;
+import com.slzr.operation.service.OPTDepartmentService;
+import com.slzr.operation.service.OPTLineService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.*;
+import java.util.*;
+
+@RequestMapping("/operation/optbus")
+@Controller
+public class OPTBusController extends BaseController{
+	private String prefix = "operation/optbus";
+	@Autowired
+	private OPTBusService oPTBusService;
+
+	@Autowired
+	private OPTDepartmentService oPTDepartmentService;
+
+	@Autowired
+	private OPTLineService oPTLineService;
+	
+	@GetMapping("/list")
+	public String list() {
+		return prefix + "/list";
+	}
+	
+	@GetMapping("/add")
+	public String add(Model model) {
+		Query query = new Query();
+		List<OPTDepartmentDO>  departmentList = oPTDepartmentService.list(query);
+		model.addAttribute("departmentList",departmentList);
+
+		List<OPTLineDO>  lineList = oPTLineService.list(query);
+		model.addAttribute("lineList",lineList);
+		return prefix + "/add";
+	}
+	
+	@GetMapping("/edit/{id}")
+	public String edit(Model model,@PathVariable("id") String id) {
+		OPTBusDO o = oPTBusService.getByID(Integer.valueOf(id));
+		model.addAttribute("model",oPTBusService.getByID(Integer.valueOf(id)));
+		Map<String, Object> params = new HashMap<String, Object>();
+		Query query = new Query();
+		List<OPTDepartmentDO>  departmentList = oPTDepartmentService.list(query);
+		model.addAttribute("departmentList",departmentList);
+
+		List<OPTLineDO>  lineList = oPTLineService.list(query);
+		model.addAttribute("lineList",lineList);
+		return prefix + "/edit";
+	}
+	
+	@ResponseBody
+	@GetMapping("api/list")
+	public PageUtils list(@RequestParam Map<String, Object> params) {
+		//查询列表数据
+        Query query = new Query(params);
+		List<OPTBusDO> list = oPTBusService.list(query);
+		int total = oPTBusService.count(query);
+		PageUtils pageUtils = new PageUtils(list, total);
+		return pageUtils;
+	}
+	
+	@ResponseBody
+	@PostMapping("api/add")
+	public R apiadd(@RequestParam Map<String, Object> params){
+		try {
+			OPTBusDO oPTBusDO = new OPTBusDO();
+			String deptName = params.get("deptName").toString();
+			String busCode = params.get("busCode").toString();
+			String busNO = params.get("busNO").toString();
+			String busModel = params.get("busModel").toString();
+			String busPlateNO = params.get("busPlateNO").toString();
+			String runCardNO = params.get("runCardNO").toString();
+			String lineName = params.get("lineName").toString();
+			String terminalNum = params.get("terminalNum").toString();
+			String factory = params.get("factory").toString();
+			String buyDate = params.get("buyDate").toString();
+			String state = params.get("state").toString();
+			String remark = params.get("remark").toString();
+			String lineID = params.get("lineID").toString();
+
+			oPTBusDO.setMerchantCode("LXBS");
+			oPTBusDO.setDeptName(deptName);
+			oPTBusDO.setBusCode(busCode);
+			oPTBusDO.setBusNO(busNO);
+			oPTBusDO.setBusModel(busModel);
+			oPTBusDO.setBusPlateNO(busPlateNO);
+			oPTBusDO.setRunCardNO(runCardNO);
+			oPTBusDO.setLineName(lineName);
+			oPTBusDO.setTerminalNum(terminalNum);
+			oPTBusDO.setFactory(factory);
+//			oPTBusDO.setBuyDate(buyDate);
+			oPTBusDO.setState(state);
+			oPTBusDO.setRemark(remark);
+			oPTBusDO.setLineID(lineID);
+			oPTBusDO.setCreatedDate(new Date());
+			oPTBusDO.setCreatedBy(getUserId()+"");
+
+			oPTBusService.save(oPTBusDO);
+		}catch (Exception e) {
+			System.out.print(e);
+			return R.error("添加失败");
+		}
+		return R.ok("添加成功");
+	}
+	
+	@ResponseBody
+	@PostMapping("api/edit")
+	public R apiedit(@RequestParam Map<String, Object> params){
+
+		try {
+
+			int id = Integer.parseInt(params.get("id").toString());
+			OPTBusDO oPTBusDO = oPTBusService.getByID(id);
+//			String deptName = params.get("deptName").toString();
+			String busCode = params.get("busCode").toString();
+			String busNO = params.get("busNO").toString();
+			String busModel = params.get("busModel").toString();
+			String busPlateNO = params.get("busPlateNO").toString();
+			String runCardNO = params.get("runCardNO").toString();
+			String terminalNum = params.get("terminalNum").toString();
+			String factory = params.get("factory").toString();
+			String buyDate = params.get("buyDate").toString();
+			String state = params.get("state").toString();
+			String remark = params.get("remark").toString();
+			String lineID = params.get("lineID").toString();
+
+			oPTBusDO.setMerchantCode("LXBS");
+
+//			oPTBusDO.setDeptName(deptName);
+			oPTBusDO.setBusCode(busCode);
+			oPTBusDO.setBusNO(busNO);
+			oPTBusDO.setBusModel(busModel);
+			oPTBusDO.setBusPlateNO(busPlateNO);
+			oPTBusDO.setRunCardNO(runCardNO);
+
+			oPTBusDO.setLineID(lineID);
+
+			oPTBusDO.setTerminalNum(terminalNum);
+			oPTBusDO.setFactory(factory);
+			oPTBusDO.setBuyDate(buyDate);
+			oPTBusDO.setState(state);
+			oPTBusDO.setRemark(remark);
+
+			oPTBusDO.setCreatedDate(new Date());
+			oPTBusDO.setCreatedBy(getUserId()+"");
+			oPTBusDO.setUpdatedBy(getUserId()+"");
+			oPTBusDO.setLineID(lineID);
+
+			oPTBusService.update(oPTBusDO);
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.out.print(e);
+			return R.error("编辑失败");
+		}
+		return R.ok("编辑成功");
+	}
+
+	/**
+	 * 标记 删除
+	 */
+	@PostMapping("/delete")
+	@ResponseBody
+	//	@RequiresPermissions("operation:GuestMessage:remove")
+	public R deleteart(Integer id){
+		try {
+//			GuestMessageDO Do = GuestMessageService.getByID(id);
+			oPTBusService.remove(id);
+			return R.ok();
+		}catch (Exception e) {
+			e.printStackTrace();
+			return R.error();
+		}
+	}
+
+
+
+}

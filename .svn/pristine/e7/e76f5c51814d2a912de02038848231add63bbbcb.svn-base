@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.common.dao.LogDao">
+
+	<select id="get" resultType="com.slzr.common.domain.LogDO">
+		select ID,DictCode,DataCode,DataValue,OrderNo,State,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,Remark from SYS_Dictionary where ID = #{value}
+	</select>
+
+	<insert id="createLog" parameterType="com.slzr.common.domain.LogDO" >
+		insert into SYS_SystemLog
+		(
+		UserID,
+		OperateTypeID,
+		ModuleID,
+		LogTypeID,
+		LogContent,
+		LogDateTime,
+		IP,
+		SourceMethod
+		)
+		values
+		(
+		#{userId},
+		#{operateTypeID},
+		#{moduleID},
+		#{logTypeID},
+		#{logContent},
+		#{logDateTime},
+		#{ip},
+		#{sourceMethod}
+		)
+	</insert>
+
+	<update id="updateLog" parameterType="com.slzr.common.domain.LogDO">
+		update SYS_SystemLog
+		<set>
+			<if test="logTypeID != null">logTypeID = #{logTypeID}, </if>
+			<if test="logContent != null">logContent = #{logContent}, </if>
+		</set>
+		where moduleID = #{moduleID} AND  operateTypeID=#{operateTypeID} AND  logDateTime=#{logDateTime}
+	</update>
+
+
+
+	<select id="list" resultType="com.slzr.common.domain.LogDO">
+		SELECT
+		log.id,
+		[user].userName,
+		dic1.DataValue AS operateType,
+		log.ModuleID,
+		me.Name moduleName,
+		log.logTypeID,
+		log.logContent,
+		log.logDateTime AS logDateTime,
+		log.ip
+		FROM
+		SYS_SystemLog log
+		LEFT JOIN SYS_User [user] ON [user].ID = log.UserID
+		LEFT JOIN (
+		SELECT
+		DataCode,
+		DataValue
+		FROM
+		SYS_Dictionary
+		WHERE
+		DictCode = 'OperateType'
+		) AS dic1 ON dic1.DataCode = log.OperateTypeID
+		LEFT JOIN SYS_Menu me ON me.MenuId = log.ModuleID
+		<where>
+			<if test="sdate != null and  sdate!= ''"> and log.logDateTime >= '${sdate} 0:00:00'</if>
+			<if test="edate != null and  edate!= ''"> and log.logDateTime &lt;= '${edate} 23:59:59'</if>
+		</where>
+		<choose>
+			<when test="sort != null and sort.trim() != ''">
+				order by ${sort} ${order}
+			</when>
+			<otherwise>
+				order by logDateTime desc
+			</otherwise>
+		</choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+
+	<select id="count" resultType="int">
+		SELECT
+		COUNT (*)
+		FROM
+		SYS_SystemLog log
+		LEFT JOIN SYS_User [user] ON [user].ID = log.UserID
+		LEFT JOIN (
+		SELECT
+		DataCode,
+		DataValue
+		FROM
+		SYS_Dictionary
+		WHERE
+		DictCode = 'OperateType'
+		) AS dic1 ON dic1.DataCode = log.OperateTypeID
+		LEFT JOIN SYS_Menu me ON me.MenuId = log.ModuleID
+		<where>
+			<if test="sdate != null and  sdate!= ''"> and log.logDateTime &gt;= '${sdate} 0:00:00'</if>
+			<if test="edate != null and  edate!= ''"> and log.logDateTime &lt;= '${edate} 23:59:59'</if>
+		</where>
+	</select>
+</mapper>

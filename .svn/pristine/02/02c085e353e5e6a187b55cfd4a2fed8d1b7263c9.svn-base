@@ -1,0 +1,5 @@
+.commonquerypage .searchbox{margin-left:10px;}
+.commonquerypage .querybtns{margin-left:10px;}
+.commonquerypage .modechangebtn{padding-top:18px;cursor:pointer;color:#ffffff;}
+.commonquerypage .fixed-table-toolbar{background-color:#3f5060;padding:0 10px;}
+.commonquerypage .query-inputs{padding:10px;border:1px solid #e7eaec;background-color:#ffffff;display:none;}

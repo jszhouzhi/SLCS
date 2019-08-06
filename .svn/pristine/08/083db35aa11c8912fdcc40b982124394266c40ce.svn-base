@@ -1,0 +1,82 @@
+package com.slzr.ureport.domain;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+public class BCountDo {
+    private static final long serialVersionUID = 1L;
+    private Long id;
+    //日期
+    private String txnDate;
+    //部門
+    private  String deptName;
+    //線路
+    private String lineName;
+    //車輛編號
+    private  String busNO;
+
+    //消費人次
+    private Integer consumptionPerson;
+    //消費金額
+    private BigDecimal consumptionAmount;
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTxnDate() {
+        return txnDate;
+    }
+
+    public void setTxnDate(String txnDate) {
+        this.txnDate = txnDate;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
+    }
+
+    public String getLineName() {
+        return lineName;
+    }
+
+    public void setLineName(String lineName) {
+        this.lineName = lineName;
+    }
+
+    public String getBusNO() {
+        return busNO;
+    }
+
+    public void setBusNO(String busNO) {
+        this.busNO = busNO;
+    }
+
+    public Integer getConsumptionPerson() {
+        return consumptionPerson;
+    }
+
+    public void setConsumptionPerson(Integer consumptionPerson) {
+        this.consumptionPerson = consumptionPerson;
+    }
+
+    public BigDecimal getConsumptionAmount() {
+        return consumptionAmount;
+    }
+
+    public void setConsumptionAmount(BigDecimal consumptionAmount) {
+        this.consumptionAmount = consumptionAmount;
+    }
+}

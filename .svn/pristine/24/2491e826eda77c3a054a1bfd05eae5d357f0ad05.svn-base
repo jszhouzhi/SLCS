@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg commonquerypage">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-11">
+            <div class="ibox">
+                <div class="ibox-body">
+                    <div class="fixed-table-toolbar">
+                        <div id="comquerybar" class="columns">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">开始日期</label>
+                                <div class="layui-input-block">
+                                    <input id="sdate" class="form-control" type="text" data-date-format="yyyy-mm-dd"
+                                           th:value="${dwmq.StartDay}">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">结束日期</label>
+                                <div class="layui-input-block">
+                                    <input id="edate" class="form-control" type="text" data-date-format="yyyy-mm-dd"
+                                           th:value="${dwmq.EndDay}">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <button class="btn btn-success" onclick="reLoad()">查询</button>
+                            </div>
+                        </div>
+                    </div>
+                    <table id="exampleTable" data-mobile-responsive="true">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div th:include="include :: footer"></div>
+<script type="text/javascript" src="/js/appjs/sys/log/log.js"></script>
+<script type="text/javascript">
+    $("#document").ready(function () {
+        $('#sdate,#edate').datetimepicker({
+            format: 'yyyy-mm-dd',
+            language: 'zh-CN',
+            weekStart: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 0
+        });
+    });
+</script>
+</body>
+</html>

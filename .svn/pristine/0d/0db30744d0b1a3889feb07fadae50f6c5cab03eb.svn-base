@@ -1,0 +1,136 @@
+package com.slzr.ureport.domain;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+
+/**
+ * IC卡圈存统计
+ */
+public class IcTransferCountDo {
+
+    private Integer id;
+    //充值日期
+    private Date date;
+    //卡类型
+    private String cardType;
+    //支付笔数
+    private  Integer payNum;
+    //支付金额
+    private BigDecimal ayAmount;
+
+    //未圈存数
+   private Integer unTopupNum;
+    //未圈存金额
+    private BigDecimal unTopupAmount;
+    //补圈存数
+    private  Integer oldTopupOKNum;
+    //补圈存金额
+    private BigDecimal  oldTopupOKAmount;
+    //退款数
+    private  Integer refundNum;
+    //退款金额
+   private BigDecimal refundAmount;
+
+   //补退款数
+    private Integer oldRefundNum;
+
+    //补退款金额
+    private BigDecimal oldRefundAmount;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public String getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
+    }
+
+    public Integer getPayNum() {
+        return payNum;
+    }
+
+    public void setPayNum(Integer payNum) {
+        this.payNum = payNum;
+    }
+
+    public BigDecimal getAyAmount() {
+        return ayAmount;
+    }
+
+    public void setAyAmount(BigDecimal ayAmount) {
+        this.ayAmount = ayAmount;
+    }
+
+    public Integer getUnTopupNum() {
+        return unTopupNum;
+    }
+
+    public void setUnTopupNum(Integer unTopupNum) {
+        this.unTopupNum = unTopupNum;
+    }
+
+    public BigDecimal getUnTopupAmount() {
+        return unTopupAmount;
+    }
+
+    public void setUnTopupAmount(BigDecimal unTopupAmount) {
+        this.unTopupAmount = unTopupAmount;
+    }
+
+    public Integer getOldTopupOKNum() {
+        return oldTopupOKNum;
+    }
+
+    public void setOldTopupOKNum(Integer oldTopupOKNum) {
+        this.oldTopupOKNum = oldTopupOKNum;
+    }
+
+    public Integer getRefundNum() {
+        return refundNum;
+    }
+
+    public void setRefundNum(Integer refundNum) {
+        this.refundNum = refundNum;
+    }
+
+    public BigDecimal getRefundAmount() {
+        return refundAmount;
+    }
+
+    public void setRefundAmount(BigDecimal refundAmount) {
+        this.refundAmount = refundAmount;
+    }
+
+    public Integer getOldRefundNum() {
+        return oldRefundNum;
+    }
+
+    public void setOldRefundNum(Integer oldRefundNum) {
+        this.oldRefundNum = oldRefundNum;
+    }
+
+    public BigDecimal getOldRefundAmount() {
+        return oldRefundAmount;
+    }
+
+    public void setOldRefundAmount(BigDecimal oldRefundAmount) {
+        this.oldRefundAmount = oldRefundAmount;
+    }
+}

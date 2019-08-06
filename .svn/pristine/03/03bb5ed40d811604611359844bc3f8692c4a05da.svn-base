@@ -1,0 +1,83 @@
+package com.slzr.operation.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import com.slzr.common.utils.R;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.utils.PageUtils;
+import com.slzr.common.utils.Query;
+import com.slzr.operation.domain.ArticleDO;
+import com.slzr.operation.domain.DailysummaryTopupDO;
+import com.slzr.operation.service.ArticleService;
+
+@RequestMapping("/operation/article")
+@Controller
+public class ArticleController extends BaseController{
+	private String prefix = "operation/article";
+	@Autowired
+	private ArticleService articleservice;
+	
+	@GetMapping("/list")
+	public String list() {
+		return prefix + "/list";
+	}
+	
+	@GetMapping("/add")
+	public String add() {
+		return prefix + "/add";
+	}
+	
+	@GetMapping("/edit/{id}")
+	public String edit(@PathVariable("id") String id) {
+		return prefix + "/edit";
+	}
+	
+	@ResponseBody
+	@GetMapping("api/list")
+	@RequiresPermissions("operation:article:list")
+	public PageUtils list(@RequestParam Map<String, Object> params) {
+		//查询列表数据
+        Query query = new Query(params);
+		List<ArticleDO> list = articleservice.list(query);
+		int total = articleservice.count(query);
+		PageUtils pageUtils = new PageUtils(list, total);
+		return pageUtils;
+	}
+	
+	@ResponseBody
+	@PostMapping("api/add")
+	public R apiadd(@RequestParam Map<String, Object> params){
+		try
+		{
+			
+			return R.ok("添加成功");
+		}catch(Exception ex)
+		{
+	        return R.error("添加失败");
+		}
+	}
+
+
+	/**
+	 * 标记 删除
+	 */
+	@PostMapping("/deleteart")
+	@ResponseBody
+	//	@RequiresPermissions("operation:GuestMessage:remove")
+	public R deleteart(Integer id){
+		try {
+//			GuestMessageDO Do = GuestMessageService.getByID(id);
+			articleservice.remove(id);
+			return R.ok();
+		}catch (Exception e) {
+			return R.error();
+		}
+	}
+	
+}

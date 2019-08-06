@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.DailysummaryTopupDao">
+
+	<sql id="BAR_DailySummary_Topup_Column">
+        BAR_DailySummary_Topup.ID as ID
+        ,BAR_DailySummary_Topup.AuditRemark as AuditRemark
+        ,BAR_DailySummary_Topup.TxnDate as TxnDate
+        ,BAR_DailySummary_Topup.RefundAmount as RefundAmount
+        ,BAR_DailySummary_Topup.TopupNum as TopupNum
+        ,BAR_DailySummary_Topup.RefundNum as RefundNum
+        ,BAR_DailySummary_Topup.ServiceFee as ServiceFee
+        ,BAR_DailySummary_Topup.AuditUID as AuditUID
+        ,BAR_DailySummary_Topup.AuditStatus as AuditStatus
+        ,BAR_DailySummary_Topup.AuditDateTime as AuditDateTime
+        ,BAR_DailySummary_Topup.SummaryDateTime as SummaryDateTime
+        ,BAR_DailySummary_Topup.PayMethodId as PayMethodId
+        ,BAR_DailySummary_Topup.TopupAmount as TopupAmount
+    </sql>
+	<select id="get" resultType="com.slzr.operation.domain.DailysummaryTopupDO">
+		select 
+		<include refid="BAR_DailySummary_Topup_Column" /> 
+		from BAR_DailySummary_Topup where ID = #{id}
+	</select>
+
+	<select id="list" resultType="com.slzr.operation.domain.DailysummaryTopupDO">
+		select 
+		<include refid="BAR_DailySummary_Topup_Column" />, 
+		
+		CASE BAR_DailySummary_Topup.PayMethodId WHEN  0 THEN '微信' WHEN 1 THEN '支付宝' END  payMethodName,
+		CASE BAR_DailySummary_Topup.AuditStatus WHEN  -1 THEN '未审核' WHEN 0 THEN '审核不通过' WHEN 1 THEN '审核通过'  END  auditStatusName
+		
+        ,SYS_User.UserName as AuditUserName
+		from BAR_DailySummary_Topup left join SYS_User on BAR_DailySummary_Topup.AuditUID=SYS_User.ID
+        <where>
+            <if test="topupAmount != null and  topupAmount != ''"> and BAR_DailySummary_Topup.TopupAmount = #{topupAmount}</if>
+            <if test="payMethodId != null and  payMethodId != ''"> and BAR_DailySummary_Topup.PayMethodId = #{payMethodId}</if>
+            <if test="summaryDateTime != null and  summaryDateTime != ''"> and BAR_DailySummary_Topup.SummaryDateTime = #{summaryDateTime}</if>
+            <if test="auditDateTime != null and  auditDateTime != ''"> and BAR_DailySummary_Topup.AuditDateTime = #{auditDateTime}</if>
+            <if test="auditStatus != null and  auditStatus != ''"> and BAR_DailySummary_Topup.AuditStatus = #{auditStatus}</if>
+            <if test="auditUID != null and  auditUID != ''"> and BAR_DailySummary_Topup.AuditUID = #{auditUID}</if>
+            <if test="serviceFee != null and  serviceFee != ''"> and BAR_DailySummary_Topup.ServiceFee = #{serviceFee}</if>
+            <if test="refundNum != null and  refundNum != ''"> and BAR_DailySummary_Topup.RefundNum = #{refundNum}</if>
+            <if test="topupNum != null and  topupNum != ''"> and BAR_DailySummary_Topup.TopupNum = #{topupNum}</if>
+            <if test="refundAmount != null and  refundAmount != ''"> and BAR_DailySummary_Topup.RefundAmount = #{refundAmount}</if>
+           <!--  <if test="txnDate != null and  txnDate != ''"> and BAR_DailySummary_Topup.TxnDate = #{txnDate}</if> -->
+            <if test="auditRemark != null and  auditRemark != ''"> and BAR_DailySummary_Topup.AuditRemark like '${auditRemark}%'</if>
+            <if test="iD != null and  iD != ''"> and BAR_DailySummary_Topup.ID = #{iD}</if>
+            <if test="sdate != null and  sdate!= ''"> and BAR_DailySummary_Topup.TxnDate &gt;= '${sdate}'</if>
+            <if test="edate != null and  edate!= ''"> and BAR_DailySummary_Topup.TxnDate &lt;= '${edate}'</if>
+            <if test="rechargetype != null and  rechargetype!= ''"> and BAR_DailySummary_Topup.PayMethodId = #{rechargetype}</if>
+            <if test="checktype != null and  checktype != ''"> and BAR_DailySummary_Topup.AuditStatus = #{checktype}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by TxnDate desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from BAR_DailySummary_Topup
+        <where>
+            <if test="topupAmount != null and  topupAmount != ''"> and BAR_DailySummary_Topup.TopupAmount = #{topupAmount}</if>
+            <if test="payMethodId != null and  payMethodId != ''"> and BAR_DailySummary_Topup.PayMethodId = #{payMethodId}</if>
+            <if test="summaryDateTime != null and  summaryDateTime != ''"> and BAR_DailySummary_Topup.SummaryDateTime = #{summaryDateTime}</if>
+            <if test="auditDateTime != null and  auditDateTime != ''"> and BAR_DailySummary_Topup.AuditDateTime = #{auditDateTime}</if>
+            <if test="auditStatus != null and  auditStatus != ''"> and BAR_DailySummary_Topup.AuditStatus = #{auditStatus}</if>
+            <if test="auditUID != null and  auditUID != ''"> and BAR_DailySummary_Topup.AuditUID = #{auditUID}</if>
+            <if test="serviceFee != null and  serviceFee != ''"> and BAR_DailySummary_Topup.ServiceFee = #{serviceFee}</if>
+            <if test="refundNum != null and  refundNum != ''"> and BAR_DailySummary_Topup.RefundNum = #{refundNum}</if>
+            <if test="topupNum != null and  topupNum != ''"> and BAR_DailySummary_Topup.TopupNum = #{topupNum}</if>
+            <if test="refundAmount != null and  refundAmount != ''"> and BAR_DailySummary_Topup.RefundAmount = #{refundAmount}</if>
+           <!--  <if test="txnDate != null and  txnDate != ''"> and BAR_DailySummary_Topup.TxnDate = #{txnDate}</if> -->
+            <if test="auditRemark != null and  auditRemark != ''"> and BAR_DailySummary_Topup.AuditRemark like '${auditRemark}%'</if>
+            <if test="iD != null and  iD != ''"> and BAR_DailySummary_Topup.ID = #{iD}</if>
+            <if test="sdate != null and  sdate!= ''"> and BAR_DailySummary_Topup.TxnDate &gt;= '${sdate}'</if>
+            <if test="edate != null and  edate!= ''"> and BAR_DailySummary_Topup.TxnDate &lt;= '${edate}'</if>
+            <if test="rechargetype != null and  rechargetype!= ''"> and BAR_DailySummary_Topup.PayMethodId = #{rechargetype}</if>
+            <if test="checktype != null and  checktype != ''"> and BAR_DailySummary_Topup.AuditStatus = #{checktype}</if>
+        </where>
+	</select>
+	
+	<update id="updateAudit">
+		update BAR_DailySummary_Topup set BAR_DailySummary_Topup.AuditStatus = #{auditvalue},BAR_DailySummary_Topup.AuditUID = #{chkuserid},BAR_DailySummary_Topup.AuditDateTime=getdate(), BAR_DailySummary_Topup.AuditRemark=#{remark} where BAR_DailySummary_Topup.ID=#{id}
+	</update>
+	
+	<select id="againDaily" resultType="String">
+        declare @returnMsg VARCHAR(20)
+		exec Proc_DailySummary_Topup @returnMsg out,#{txndate}
+		select @returnMsg
+    </select>
+
+
+</mapper>

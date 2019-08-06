@@ -1,0 +1,98 @@
+package com.slzr.account.controller;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.ui.Model;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.slzr.account.domain.IcCardAuditDO;
+import com.slzr.account.service.IcCardAuditService;
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.utils.PageUtils;
+import com.slzr.common.utils.Query;
+import com.slzr.common.utils.R;
+import com.slzr.set.domain.MerchDo;
+import com.slzr.set.service.MerchService;
+
+ 
+ 
+@Controller
+@RequestMapping("/account/icCardAudit")
+public class IcCardAuditController extends BaseController{
+	@Autowired
+	private IcCardAuditService icCardAuditService;
+	
+	@Autowired
+	private MerchService merchService;
+	
+	@GetMapping()
+	@RequiresPermissions("account:icCardAudit:icCardAudit")
+	String icCardAudit(){
+	    return "account/icCardAudit/icCardAudit";
+	}
+	
+	@ResponseBody
+	@GetMapping("/list")
+	@RequiresPermissions("account:icCardAudit:icCardAudit")
+	public PageUtils list(@RequestParam Map<String, Object> params){
+		//查询列表数据
+        Query query = new Query(params);
+		List<IcCardAuditDO> icCardAuditList = icCardAuditService.list(query);
+		int total = icCardAuditService.count(query);
+		PageUtils pageUtils = new PageUtils(icCardAuditList, total);
+		return pageUtils;
+	}
+	
+ 
+	/**
+	 * 审核页面
+	 */
+	@GetMapping("/edit/{id}")
+	@RequiresPermissions("account:icCardAudit:edit")
+	String edit(@PathVariable("id") Integer id,Model model){
+		IcCardAuditDO icCardAudit = icCardAuditService.getByid(id);
+		model.addAttribute("icCardAudit", icCardAudit);
+		
+		List<MerchDo> merchantList =merchService.list(null);
+		model.addAttribute("merchantList",merchantList);
+		
+	    return "account/icCardAudit/deal";
+	}
+	
+ 
+	/**
+	 * 审核 保存
+	 */
+	@ResponseBody
+	@RequestMapping("/Deal")
+	@RequiresPermissions("account:icCardAudit:edit")
+	public R update( Long id,String operationType,String desctext){
+		
+		IcCardAuditDO icCardAudit = new IcCardAuditDO();
+		
+		icCardAudit.setId(id);
+		
+		icCardAudit.setAuditDesc(desctext);
+		icCardAudit.setState(Integer.parseInt(operationType));
+		icCardAudit.setUpdatedDate(new Date());
+		icCardAudit.setUpdatedByName(getUserName());
+		icCardAudit.setUpdatedBy(getId());
+		
+		icCardAuditService.update(icCardAudit);
+		return R.ok();
+	}
+	
+ 
+ 
+	
+}

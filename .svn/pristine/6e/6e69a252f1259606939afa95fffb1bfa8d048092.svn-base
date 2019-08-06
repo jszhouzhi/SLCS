@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.OPTDriverDao">
+
+	<select id="list" resultType="com.slzr.operation.domain.OPTDriverDO">
+		select *  FROM OPT_Driver d
+
+        <where>  
+			<if test="searchName != null and searchName != ''"> and d.DriverNO like  CONCAT('%', #{searchName}, '%')   </if>
+			<if test="type != null and type != ''"> and d.DriverState = #{type} </if>
+			<if test="isresolved != null and isresolved != ''"> and IsResolved = #{isresolved} </if>
+			<if test="id != null and isresolved != ''"> and id = #{id} </if>
+		</where>
+
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by d.ID desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from OPT_Driver
+		 <where>  
+		  		  <if test="id != null and id != ''"> and ID = #{id} </if>
+		  		  <if test="msgtypeid != null and msgtypeid != ''"> and MsgTypeID = #{msgtypeid} </if>
+		  		  <if test="uid != null and uid != ''"> and UID = #{uid} </if>
+		  		  <if test="mobilephone != null and mobilephone != ''"> and MobilePhone = #{mobilephone} </if>
+		  		  <if test="truename != null and truename != ''"> and TrueName = #{truename} </if>
+		  		  <if test="gender != null and gender != ''"> and Gender = #{gender} </if>
+		  		  <if test="msgcontent != null and msgcontent != ''"> and MsgContent = #{msgcontent} </if>
+		  		  <if test="attachphotourl != null and attachphotourl != ''"> and AttachPhotoUrl = #{attachphotourl} </if>
+		  		  <if test="submitdatetime != null and submitdatetime != ''"> and SubmitDateTime = #{submitdatetime} </if>
+		  		  <if test="lastreplyuid != null and lastreplyuid != ''"> and LastReplyUID = #{lastreplyuid} </if>
+		  		  <if test="lastreplydatetime != null and lastreplydatetime != ''"> and LastReplyDateTime = #{lastreplydatetime} </if>
+		  		  <if test="isresolved != null and isresolved != ''"> and IsResolved = #{isresolved} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.slzr.operation.domain.OPTDriverDO">
+		insert into OPT_Driver
+		(
+
+			MerchantCode,
+			DriverCode	,
+			DriverNO,
+			DriverName,
+			DriverCardID,
+			IDCardNO,
+			IDCardAddr,
+			LineID,
+			Phone,
+			WorkCardNO,
+			BeginWorkDate,
+			DriverState,
+			StateChangeDate,
+			DriverImg,
+			ImageName,
+			CreatedDate,
+			CreatedBy,
+			UpdatedDate,
+			UpdatedBy
+		)
+		values
+		(
+			#{merchantCode,jdbcType=VARCHAR},
+			#{driverCode,jdbcType=VARCHAR},
+			#{driverNO,jdbcType=VARCHAR},
+			#{driverName,jdbcType=VARCHAR},
+			#{driverCardID,jdbcType=VARCHAR},
+			#{iDCardNO,jdbcType=VARCHAR},
+			#{iDCardAddr,jdbcType=VARCHAR},
+			#{lineID,jdbcType=INTEGER},
+			#{phone,jdbcType=VARCHAR},
+			#{workCardNO,jdbcType=VARCHAR},
+			#{beginWorkDate,jdbcType=TIMESTAMP},
+			#{driverState,jdbcType=INTEGER},
+			#{stateChangeDate,jdbcType=INTEGER},
+			#{driverImg,jdbcType=VARCHAR},
+			#{imageName,jdbcType=VARCHAR},
+			#{createdDate,jdbcType=TIMESTAMP},
+			#{createdBy,jdbcType=INTEGER},
+			#{updatedDate,jdbcType=TIMESTAMP},
+			#{updatedBy,jdbcType=INTEGER}
+		)
+	</insert>
+
+
+	<select id="getByID" resultType="com.slzr.operation.domain.OPTDriverDO">
+		select * from OPT_Driver   where  ID = #{value}
+	</select>
+
+
+	<update id="update" parameterType="com.slzr.operation.domain.OPTDriverDO">
+		update OPT_Driver
+		<set>
+			<if test="merchantCode != null">MerchantCode = #{merchantCode}, </if>
+			<if test="driverCode != null">DriverCode = #{driverCode}, </if>
+			<if test="driverNO != null">DriverNO = #{driverNO}, </if>
+			<if test="driverName != null">DriverName = #{driverName}, </if>
+			<if test="driverCardID != null">DriverCardID = #{driverCardID}, </if>
+			<if test="iDCardNO != null">IDCardNO = #{iDCardNO}, </if>
+			<if test="iDCardAddr != null">IDCardAddr = #{iDCardAddr}, </if>
+			<if test="lineID != null">LineID = #{lineID}, </if>
+			<if test="phone != null">Phone = #{phone}, </if>
+			<if test="workCardNO != null">WorkCardNO = #{workCardNO}, </if>
+			<if test="beginWorkDate != null">BeginWorkDate = #{beginWorkDate}, </if>
+			<if test="driverState != null">DriverState = #{driverState}, </if>
+			<if test="stateChangeDate != null">StateChangeDate = #{stateChangeDate}, </if>
+			<if test="driverImg != null">DriverImg = #{driverImg}, </if>
+			<if test="createdDate != null">CreatedDate = #{createdDate}, </if>
+			<if test="createdBy != null">CreatedBy = #{createdBy}, </if>
+			<if test="updatedBy != null">UpdatedBy = #{updatedBy}, </if>
+		</set>
+		where ID = #{iD}
+	</update>
+
+	<delete id="remove">
+		delete from OPT_Driver where ID = #{value}
+	</delete>
+	
+
+</mapper>

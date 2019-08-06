@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg commonquerypage">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox">
+					<div class="ibox-body">
+						<div class="fixed-table-toolbar clearfix">
+							<div class="columns pull-left">
+								<button shiro:hasPermission="account:accountCancel:expexcel" class="btn  btn-warning" onclick="excel()" type="button">
+									<i aria-hidden="true" class="fa fa-trash hidden"></i>导出
+								</button>
+							</div>
+							
+							<div class="searchbox columns pull-left col-md-4 nopadding">
+								<input class="searchinput form-control" id="searchName" placeholder="请输入关键字进行搜索,如账号、手机号码" type="text">
+							</div>
+							<div class="querybtns columns pull-left">
+								<button class="btn btn-success btn-sm" onclick="reLoad()">查询</button>
+								<button id="btnreset" class="btn btn-success btn-sm">重置</button>
+							</div>
+							<span class="modechangebtn pull-right">高级查询 <i class="fa fa-chevron-down"></i></span>
+						</div>
+						<div class="query-inputs clearfix">
+						  <div class="layui-form">
+						  	  <div class="layui-form-item">
+						  	  	<div class="layui-inline">
+								    <label class="layui-form-label">审核状态：</label>
+								    <div class="layui-input-block">
+								      <select name="dealresult" lay-verify="required" id="dealresult">
+										<option value="">全部</option>
+								        <option value="-1">未审核</option>
+								        <option value="0">审核不通过</option>
+								        <option value="1">审核通过</option>
+								      </select>
+								    </div>
+						  	  	</div>
+						  	  	<div class="layui-inline">
+								    <label class="layui-form-label">退款状态：</label>
+								    <div class="layui-input-block">
+								      <select name="refundresult" lay-verify="required" id="refundresult">
+			        					<option value="">全部</option>
+								        <option value="0">未退款</option>
+								        <option value="1">已退款</option>
+								      </select>
+								    </div>
+						  	  	</div>
+						  	  	
+								  <div class="layui-inline">
+								    <div class="layui-input-block">
+								      <input type="checkbox" name="isday" id="isday"   title="七天前">
+								    </div>
+								  </div>
+						  	  	
+							  </div>
+						  </div>
+						</div>
+						<table id="exampleTable" data-mobile-responsive="true">
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		 
+		<div>
+			<script type="text/javascript">
+	            var s_deal_h = 'hidden';
+
+			</script>
+		</div>
+		<div shiro:hasPermission="account:accountCancel:deal">
+			<script type="text/javascript">
+	            s_deal_h = '';
+			</script>
+		</div>
+
+
+	</div>
+	<div th:include="include :: footer"></div>
+	<script type="text/javascript" src="/js/appjs/account/accountCancel/accountCancel.js"></script>
+</body>
+</html>

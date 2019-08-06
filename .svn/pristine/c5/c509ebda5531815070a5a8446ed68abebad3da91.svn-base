@@ -1,0 +1,62 @@
+package com.slzr.set.controller;
+
+
+import com.slzr.common.annotation.Log;
+import com.slzr.common.controller.BaseController;
+import com.slzr.common.utils.JSONUtils;
+import com.slzr.common.utils.R;
+import com.slzr.set.domain.ApiDo;
+import com.slzr.set.domain.OperateDo;
+import com.slzr.set.service.OperateService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+@RequestMapping("/operate/operateSet")
+@Controller
+public class OperateController extends BaseController{
+    private String  prefix = "set/operate";
+
+    @Autowired
+    private OperateService operateService;
+
+    @RequiresPermissions("set:operateSet:operateSet")
+    @GetMapping("")
+    String merch(Model model) {
+        List<String> options=new ArrayList<>();
+        for(int i=0;i<32;i++){
+            options.add(i+"");
+        }
+        model.addAttribute("options", options);
+        OperateDo operateDo = operateService.selectOperateDo();
+        String setting = operateDo.getSetting();
+        Map<String, Object> set= JSONUtils.jsonToMap(setting);
+        model.addAttribute("setting",set);
+        //将得到的json字符串转成对象
+        return prefix + "/operate";
+    }
+
+    @Log("更新运营参数")
+    @PostMapping("/update")
+    @ResponseBody
+    public R save(@RequestParam Map<String,Object> params){
+        OperateDo operate=new OperateDo();
+        //param对象转为json
+        String setting = JSONUtils.beanToJson(params);
+        operate.setSetting(setting);
+        operate.setUpdatedBy(getId());
+        operate.setUpdatedDate(new Date());
+        if(operateService.update(operate)>0){
+            return R.ok();
+        }
+        return R.error();
+    }
+
+}

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link href="/css/font-awesome.css?v=4.4.0"
+	th:href="@{/css/font-awesome.css?v=4.4.0}" rel="stylesheet">
+<script th:inline="javascript">
+var baseDO = [[${baseDO}]];
+</script>
+<body class="gray-bg commonquerypage">
+	<div class="wrapper wrapper-content ">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox">
+					<div class="ibox-body">
+						<div class="fixed-table-toolbar clearfix">
+							<div class="columns pull-left">
+								<button id='btnExport' shiro:hasPermission="account:account:expexcel" class="btn  btn-warning" type="button">
+									<i aria-hidden="true" class="fa fa-trash hidden"></i>导出
+								</button>
+							</div>
+							
+							<div class="searchbox columns pull-left col-md-4 nopadding">
+								<input class="searchinput form-control" id="searchName" placeholder="请输入关键字进行搜索,如账号、手机号码" type="text">
+							</div>
+							<div class="querybtns columns pull-left">
+								<button class="btn btn-success btn-sm" onclick="base.reload()">查询</button>
+								<button id="btnreset" class="btn btn-success btn-sm">重置</button>
+							</div>
+							<span class="modechangebtn pull-right">高级查询 <i class="fa fa-chevron-down"></i></span>
+						</div>
+						<div class="query-inputs clearfix">
+						  <div class="layui-form">
+						  	  <div class="layui-form-item">
+						  	  	<div class="layui-inline">
+								    <label class="layui-form-label">账户状态：</label>
+								    <div class="layui-input-block">
+								      <select name="state" lay-verify="required" id="state">
+										<option value="">全部</option>
+										<option value="-4">申请注销中</option>
+								        <option value="-3">注销</option>
+								        <option value="-2">异常</option>
+								        <option value="-1">锁定</option>								        
+								        <option value="0">待审核</option>
+								        <option value="1">审核通过</option>
+								      </select>
+								    </div>
+						  	  	</div>
+								  <div class="layui-inline">
+									  <label class="layui-form-label">商户：</label>
+									  <div class="layui-input-block">
+										  <select name="refundresult" lay-verify="required" id="merchantCode" name="merchantCode">
+											  <option value="">全部</option>
+											  <option th:each="merchant : ${baseDO.merchantList}" th:value="${merchant.merchantCode}" th:text="${merchant.merchantName}"></option>
+										  </select>
+									  </div>
+								  </div>
+							  </div>
+						  </div>
+						</div>
+						<table id="exampleTable" data-mobile-responsive="true">
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	
+	<script type="application/javascript" th:src="@{/js/appjs/base/base.js}"></script>
+	<script type="text/javascript">
+	$(function () {
+
+		
+	
+		 base.initPage({
+			 columns : [
+					{
+						field : 'id', 
+						visible : 'false',
+						title : 'ID' 
+					},
+						{
+							field : 'accountno', 
+							align : 'center',
+							title : '账号' 
+						},
+														{
+							field : 'accountTypeName', 
+							align : 'center',
+							title : '账户类型' 
+						},
+														{
+							field : 'stateName', 
+							align : 'left',
+							title : '账户状态' 
+						},
+														{
+							field : 'mobilephone', 
+							align : 'center',
+							title : '手机号码' 
+						},
+														{
+							field : 'createddate', 
+							align : 'center',
+							title : '注册时间' 
+						},
+														{
+							field : 'balance', 									
+							title : '账户余额',
+							align:'right',
+							formatter :  fmt.fmtDecimal
+						},
+                 								  {
+							field : 'freebalance',
+							title : '赠送余额',
+							align:'right',
+							formatter : fmt.fmtDecimal
+                		 },
+														{
+							field : 'lastdebittime', 
+							title : '最后消费时间',
+							align : 'center',
+							formatter: fmt.fmtDate
+						},
+														{
+							field : 'lastdebitamount', 
+							title : '最后消费金额',
+							align:'right',
+							formatter : fmt.fmtDecimal
+						},
+														{
+							field : 'certphotourl', 
+							align : 'center',
+							title : '身份证正面照' ,
+							formatter : fmt.fmtImage
+						},
+						{
+							field : 'personphotourl', 
+							align : 'center',
+							title : '个人照', 
+							formatter : fmt.fmtImage
+						},
+						{
+							title : '操作',
+							field : 'dealresult',
+							align : 'center',
+							formatter : function(value, row, index) {
+								//如果不具备权限，返回空
+								if(!base.hasPermission("account:account:loss")) return '';
+								
+								var state = -1000;
+								var btnName = '';
+								var msg = '';
+								switch(row.state){
+									case -1://锁定
+										state = 1;
+										btnName = '解锁';
+										msg = '您确认要解锁当前账号吗？';
+										break;
+									case 0: //待审核
+										state = 1;
+										btnName = '审核通过';
+										msg = '您确认要将当前账号审核通过吗？';
+										break;
+									case 1: //审核通过
+										state = -1;
+										btnName = '锁定';
+										msg = '您确认要锁定当前账号吗？';
+										break;
+									break;										
+									default:
+										break;
+								}
+								if(state == -1000) return '';
+								
+								//组装命令参数
+								var cmd = {
+										cmd:'admin',
+										msg: msg,
+										data:{ accountno: row.accountno, operationType: state}
+								};
+								
+								return '<button class="layui-btn layui-btn-sm" type="button" ' + 
+								'onclick=\'base.doCommand('+ JSON.stringify(cmd)+')\'>'+ 
+								btnName +'</button> ';
+								
+							 
+							}
+
+						}]
+		 });
+	});
+	</script>
+</body>
+</html>

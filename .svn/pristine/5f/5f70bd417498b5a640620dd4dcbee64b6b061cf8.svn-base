@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.ureport.dao.IcTransferCountDao">
+
+	<select id="list" resultType="com.slzr.ureport.domain.IcTransferCountDo">
+		select d.SummaryDateTime,
+		CASE d.CardTypeID WHEN  3 THEN '学生卡' WHEN 2 THEN '老人卡' WHEN 1 THEN '成人卡'  END  CardTypeID,
+		SUM(d.PayNum) PayNum,SUM(d.PayAmount) PayAmount,SUM(d.UnTopupNum) UnTopupNum,SUM(d.UnTopupAmount) UnTopupAmount,
+		SUM(d.OldTopupOKNum) OldTopupOKNum,SUM(d.OldTopupOKAmount) OldTopupOKAmount,SUM(d.RefundNum) RefundNum,SUM(d.RefundAmount) RefundAmount,
+		SUM(d.OldRefundNum) OldRefundNum,SUM(d.OldRefundAmount) OldRefundAmount
+		from IC_DailySummary_Topup d
+
+		<where>
+			<if test="startDate != null and startDate != '' and endDate!='' and endDate!=null "> and d.SummaryDateTime BETWEEN #{startDate}  AND  #{endDate}</if>
+		</where>
+		GROUP by d.SummaryDateTime,d.CardTypeID
+		ORDER BY d.SummaryDateTime DESC
+	</select>
+</mapper>

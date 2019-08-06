@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.operation.dao.SendCaseDao">
+
+	<sql id="BAR_TopupDiscount_Column">
+        BAR_TopupDiscountSetting.ID as id
+        ,BAR_TopupDiscountSetting.DiscountName as discountName
+        ,BAR_TopupDiscountSetting.DiscountDesc as DiscountDesc
+        ,BAR_TopupDiscountSetting.EffectiveDateTime as effectiveDateTime
+        ,BAR_TopupDiscountSetting.ExpiredDateTime as expiredDateTime
+        ,BAR_TopupDiscountSetting.Enabled as enabled
+        ,BAR_TopupDiscountSetting_Detail.FromAmount as fromAmount
+        ,BAR_TopupDiscountSetting_Detail.ToAmount as toAmount
+        ,BAR_TopupDiscountSetting_Detail.DiscountAmount as discountAmount
+        ,BAR_TopupDiscountSetting_Detail.DiscountAmountUnit as discountAmountUnit
+    </sql>
+
+
+
+	<select id="list" resultType="com.slzr.operation.domain.SendCaseDo">
+		select 
+		<include refid="BAR_TopupDiscount_Column" />
+		from BAR_TopupDiscountSetting
+        LEFT JOIN BAR_TopupDiscountSetting_Detail  ON  BAR_TopupDiscountSetting.ID = BAR_TopupDiscountSetting_Detail.DiscountSettingID
+
+        <where>
+            <if test="merchantCode != null and  merchantCode != ''"> and BAR_TopupDiscountSetting.MerchantCode = #{merchantCode}</if>
+            <if test="discountName != null and  discountName != ''"> OR BAR_TopupDiscountSetting.discountName LIKE '%${discountName}'</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by ExpiredDateTime desc
+            </otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			Offset ${offset} Row Fetch Next ${limit} Rows Only
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from BAR_TopupDiscountSetting
+        LEFT JOIN BAR_TopupDiscountSetting_Detail  ON  BAR_TopupDiscountSetting.ID = BAR_TopupDiscountSetting_Detail.DiscountSettingID
+        <where>
+            <if test="merchantCode != null and  merchantCode != ''"> and BAR_TopupDiscountSetting.MerchantCode = #{merchantCode}</if>
+            <if test="discountName != null and  discountName != ''"> OR BAR_TopupDiscountSetting.discountName LIKE '%${discountName}'</if>
+        </where>
+	</select>
+
+    <insert id="save" parameterType="com.slzr.operation.domain.SendCaseDo">
+        insert into SYS_ApiUser(UpdatedBy,CreatedBy,AppId,UpdatedDate,AppKey,CreatedDate,ExpireTime,AppType,Remark)
+        values(#{updatedBy,jdbcType=INTEGER},#{createdBy,jdbcType=INTEGER},#{appId,jdbcType=VARCHAR},
+        #{updatedDate,jdbcType=TIMESTAMP},#{appKey,jdbcType=VARCHAR},#{createdDate,jdbcType=TIMESTAMP},
+        #{expireTime,jdbcType=TIMESTAMP},#{appType,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR})
+    </insert>
+
+</mapper>

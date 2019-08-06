@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.slzr.ureport.dao.AccountCountDao">
+
+	<select id="list" resultType="com.slzr.ureport.domain.AccountCountDo">
+		SELECT
+		dic.DataValue as payMethod ,
+		dai.TxnDate,
+		'三联' as payAddress,
+		SUM(dai.topupNum) topupNum,
+		SUM(dai.TopupAmount) topupAmount
+		FROM
+		BAR_DailySummary_Topup dai
+		LEFT JOIN SYS_Dictionary dic ON dai.PayMethodId = dic.DataCode
+		<where>
+			dic.DictCode = 'PayMethod'
+			<if test="payMethod != null and payMethod != ''"> and dic.DataValue = #{payMethod} </if>
+			<if test="startDate != null and startDate != '' and endDate!='' and endDate!=null "> and TxnDate BETWEEN #{startDate}  AND  #{endDate}</if>
+		</where>
+		GROUP by txnDate, DataValue
+		ORDER BY TxnDate DESC
+	</select>
+
+
+	<select id="get" resultType="com.slzr.ureport.domain.AccountCountDo">
+		SELECT
+		DISTINCT
+		dai.PayMethodId payMethodId,
+		dic.DataValue payMethod
+		FROM
+		SYS_Dictionary dic
+		LEFT JOIN BAR_DailySummary_Topup dai ON dai.PayMethodId = dic.DataCode
+		WHERE
+		dic.DictCode = 'PayMethod'
+	</select>
+
+
+
+</mapper>

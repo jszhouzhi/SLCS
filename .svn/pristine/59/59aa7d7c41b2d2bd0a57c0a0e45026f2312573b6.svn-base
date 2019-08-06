@@ -1,0 +1,46 @@
+package com.slzr.account.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.slzr.account.dao.VipMemberPlanDao;
+import com.slzr.account.domain.VipMemberPlanDO;
+import com.slzr.account.service.VipMemberPlanService;
+
+@Service
+public class VipMemberPlanServiceImpl implements VipMemberPlanService {
+	
+	
+	@Autowired
+	private VipMemberPlanDao vipMemberPlanDao;
+	
+	@Override
+	public List<VipMemberPlanDO> list(Map<String, Object> map) {
+		return vipMemberPlanDao.list(map);
+	}
+
+	@Override
+	public int count(Map<String, Object> map) {
+		return vipMemberPlanDao.count(map);
+	}
+
+	@Override
+	public int update(VipMemberPlanDO vipMemberPlanDO) {
+		return vipMemberPlanDao.update(vipMemberPlanDO);
+	}
+
+	@Override
+	public int save(VipMemberPlanDO vipMemberPlanDO) {
+		return vipMemberPlanDao.insert(vipMemberPlanDO);
+	}
+
+	@Override
+	public VipMemberPlanDO get(Long id) {
+		return vipMemberPlanDao.get(id);
+	}
+	
+	
+}
